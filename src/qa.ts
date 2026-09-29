@@ -7,16 +7,22 @@ import type { Tokens } from './types.ts';
 
 const THUMB_WIDTH = 270; // px; tiles are scaled down from the full canvas
 
+const MIN_GAP_SEC = 0.75; // extraction points closer than this show the same moment; keep the earlier one
+
 /**
  * Every timestamp the contact sheet extracts a frame at (SPEC section 10, gate 7): t=0, the CTA pop
- * midpoint, and the midpoint of every beat and every caption page — deduped and in chronological order.
+ * midpoint, and the midpoint of every beat and every caption page, in chronological order. A point
+ * within `MIN_GAP_SEC` of the last kept point is dropped, so the earlier of a close pair wins.
  */
 export function contactSheetTimes(timeline: Timeline): number[] {
-  const times = new Set<number>([0]);
-  if (timeline.cta_pop) times.add((timeline.cta_pop.start + timeline.cta_pop.end) / 2);
-  for (const beat of timeline.beats) times.add((beat.start + beat.end) / 2);
-  for (const page of timeline.caption_pages) times.add((page.start + page.end) / 2);
-  return [...times].sort((a, b) => a - b);
+  const all = [0];
+  if (timeline.cta_pop) all.push((timeline.cta_pop.start + timeline.cta_pop.end) / 2);
+  for (const beat of timeline.beats) all.push((beat.start + beat.end) / 2);
+  for (const page of timeline.caption_pages) all.push((page.start + page.end) / 2);
+  all.sort((a, b) => a - b);
+  const kept: number[] = [];
+  for (const t of all) if (kept.length === 0 || t - kept[kept.length - 1]! > MIN_GAP_SEC) kept.push(t);
+  return kept;
 }
 
 /**

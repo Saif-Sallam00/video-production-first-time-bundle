@@ -246,7 +246,7 @@ Automated, written to `out/<id>/qa.json` with pass/fail per check:
 4. Every word in `timeline.words` appears on exactly one caption page, in order — except words from a `captions_hidden` beat, which appear on none.
 5. All computed text boxes are inside the safe zone and don't overlap each other.
 6. CTA pop start ≤ 5.0 s (warning, not failure).
-7. Contact sheet (**pulled forward, built** — see `studio qa` above): frames at t = 0.0, the CTA pop midpoint (if any) and the midpoint of every beat and every caption page, deduped and tiled in chronological order into `contact-sheet.jpg`, each with its timestamp burned in. Extracted from the rendered MP4 itself, not the DOM, so it shows what actually rendered.
+7. Contact sheet (**pulled forward, built** — see `studio qa` above): frames at t = 0.0, the CTA pop midpoint (if any) and the midpoint of every beat and every caption page, in chronological order with any point within 0.75 s of the last kept one dropped (the earlier wins), tiled into `contact-sheet.jpg`, each with its timestamp burned in. Extracted from the rendered MP4 itself, not the DOM, so it shows what actually rendered.
 
 `out/<id>/` also gets `manifest.json`: spec hash, token hash, voice preset, TTS cache key, render time, QA summary, and `ai_generated_label` (the reminder to switch TikTok's AI-generated content label on at upload).
 
