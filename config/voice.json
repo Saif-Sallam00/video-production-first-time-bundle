@@ -1,0 +1,19 @@
+{
+  "james-default": {
+    "provider": "kokoro",
+    "model_id": "hexgrad/Kokoro-82M",
+    "voice_id": "am_puck",
+    "speed": 0.85,
+    "beat_gap_sec": 0.3
+  },
+  "james-elevenlabs": {
+    "provider": "elevenlabs",
+    "model_id": "<MODEL_ID>",
+    "voice_id": "<VOICE_ID>",
+    "speed": 1.0,
+    "stability": 0.5,
+    "similarity_boost": 0.75,
+    "style": 0.0
+  },
+  "pronunciations": { "<word>": "<spoken form>" }
+}

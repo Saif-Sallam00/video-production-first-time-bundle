@@ -1,0 +1,7 @@
+node_modules/
+cache/
+out/
+.env
+
+# Python env for Kokoro (created by uv from tts/uv.lock)
+tts/.venv/

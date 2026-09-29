@@ -1,0 +1,261 @@
+<!doctype html>
+<html
+  lang="en"
+  data-composition-variables='[{"id":"voAudioSrc","type":"string","label":"VO audio","default":""}]'
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: 'Anton';
+        src: url('fonts/Anton-Regular.ttf') format('truetype');
+      }
+      @font-face {
+        font-family: 'Inter';
+        src: url('fonts/Inter-SemiBold.ttf') format('truetype');
+        font-weight: 600;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #000;
+      }
+      #root {
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+      }
+      .layer {
+        position: absolute;
+      }
+      .fill {
+        left: 0;
+        top: 0;
+        width: 1080px;
+        height: 1920px;
+      }
+      .text-box {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .text-box .line {
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      data-duration on the root (and below, on the audio element) is resolved statically from the
+      source text before any script runs, so `studio render` templates the real duration in here
+      rather than setting it from JS (see src/render.ts).
+    -->
+    <div id="root" data-composition-id="main" data-start="0" data-duration="{{DURATION_SEC}}" data-width="1080" data-height="1920">
+      <audio id="vo-audio" class="clip" data-start="0" data-duration="{{DURATION_SEC}}" data-track-index="9" data-volume="1" data-var-src="voAudioSrc"></audio>
+    </div>
+    <script>
+      const { timeline, tokens, layout } = window.__hyperframes.getVariables();
+      const root = document.getElementById('root');
+
+      const color = (name) => tokens.colors[name] ?? name;
+
+      function make(tag, attrs = {}) {
+        const node = document.createElement(tag);
+        for (const [k, v] of Object.entries(attrs)) {
+          if (k === 'text') node.textContent = v;
+          else if (k === 'html') node.innerHTML = v;
+          else if (k === 'style') Object.assign(node.style, v);
+          else if (k === 'class') node.className = v;
+          else node.setAttribute(k, v);
+        }
+        return node;
+      }
+
+      /** A clip: positioned full-frame or boxed, visible only for [start, start+duration). */
+      function clip(tag, { start, duration, trackIndex, cls, style }) {
+        return make(tag, {
+          class: `layer clip${cls ? ' ' + cls : ''}`,
+          'data-start': String(start),
+          'data-duration': String(Math.max(duration, 0.001)),
+          'data-track-index': String(trackIndex),
+          style,
+        });
+      }
+
+      /** A text-box layout result ({ box, lines }) rendered as one line per div inside `container`. */
+      function renderLines(container, textBox, role, px, extraLineStyle = {}) {
+        const font = tokens.fonts[role];
+        for (const text of textBox.lines) {
+          container.appendChild(
+            make('div', {
+              class: 'line',
+              text,
+              style: {
+                fontFamily: font.family,
+                fontWeight: String(font.weight ?? 400),
+                fontSize: `${px}px`,
+                lineHeight: String(tokens.line_height[role]),
+                ...extraLineStyle,
+              },
+            }),
+          );
+        }
+      }
+
+      function boxStyle(box) {
+        return { left: `${box.x}px`, top: `${box.y}px`, width: `${box.w}px`, height: `${box.h}px` };
+      }
+
+      // --- Background (z=0): one full-frame clip per beat. Hard cut, no transition (SPEC section 1/6). ---
+      for (const beat of timeline.beats) {
+        const bg = clip('div', {
+          start: beat.start,
+          duration: beat.end - beat.start,
+          trackIndex: 0,
+          cls: 'fill',
+          style: { backgroundColor: color(beat.visual.color ?? 'bg') },
+        });
+        if (beat.visual.type === 'typography') {
+          const box = layout.typography[beat.id];
+          const role = 'display';
+          const px = beat.visual.style === 'number' ? tokens.type_scale.typography_number : tokens.type_scale.typography_statement;
+          const textEl = make('div', { class: 'text-box', style: boxStyle(box.box) });
+          renderLines(textEl, box, role, px, { color: color('text'), textAlign: 'center' });
+          bg.appendChild(textEl);
+        }
+        root.appendChild(bg);
+      }
+
+      // --- Series label (z=2): persistent for the full video, hidden if absent. ---
+      if (layout.label) {
+        const el = clip('div', { start: 0, duration: timeline.duration_sec, trackIndex: 1, cls: 'text-box', style: boxStyle(layout.label.box) });
+        renderLines(el, layout.label, 'body', tokens.type_scale.label, { color: color('muted'), textAlign: 'center' });
+        root.appendChild(el);
+      }
+
+      // --- Overlays (z=3): one per beat that has one, spanning its beat. ---
+      const tl = gsap.timeline({ paused: true });
+      for (const beat of timeline.beats) {
+        if (!beat.overlay) continue;
+        const box = layout.overlays[beat.id];
+        const style = beat.overlay.style ?? 'card';
+        const px = tokens.type_scale[style === 'hook_slam' ? 'hook_slam' : style === 'kicker' ? 'kicker' : 'card'];
+        const role = style === 'hook_slam' ? 'display' : 'body';
+        const [padV, padH] = style === 'card' ? tokens.padding.card : [0, 0];
+        const id = `overlay-${beat.id}`;
+        const el = clip('div', {
+          start: beat.start,
+          duration: beat.end - beat.start,
+          trackIndex: 2,
+          cls: 'text-box',
+          style: {
+            ...boxStyle(box.box),
+            padding: `${padV}px ${padH}px`,
+            backgroundColor: style === 'card' ? color('card_bg') : 'transparent',
+            borderRadius: style === 'card' ? `${tokens.radius.card}px` : '0',
+          },
+        });
+        el.id = id;
+        renderLines(el, box, role, px, { color: color('text'), textAlign: 'center' });
+        root.appendChild(el);
+        if (style === 'card') {
+          tl.fromTo(`#${id}`, { opacity: 0 }, { opacity: 1, duration: tokens.motion.overlay_in_ms / 1000 }, beat.start);
+        }
+      }
+
+      // --- Captions (z=4): one per page. word_highlight colors the active word; phrase does not. ---
+      const captionRole = 'body';
+      const captionPx = tokens.type_scale.caption;
+      timeline.caption_pages.forEach((page, i) => {
+        const el = clip('div', {
+          start: page.start,
+          duration: page.end - page.start,
+          trackIndex: 3,
+          cls: 'text-box caption-box',
+          style: boxStyle(layout.captions),
+        });
+        let w = page.word_indexes[0];
+        for (const lineWords of page.lines) {
+          // Font family/size/weight live on the line, not each span, so the plain space text nodes
+          // between spans inherit them too (SPEC section 7) — otherwise those spaces render at the
+          // browser's default font size instead of the caption size, narrower than fontkit predicted.
+          const lineEl = make('div', {
+            class: 'line',
+            style: {
+              fontFamily: tokens.fonts[captionRole].family,
+              fontWeight: String(tokens.fonts[captionRole].weight ?? 400),
+              fontSize: `${captionPx}px`,
+              lineHeight: String(tokens.line_height[captionRole]),
+              textShadow: '0 0 4px rgba(0,0,0,0.8), 0 0 4px rgba(0,0,0,0.8)',
+            },
+          });
+          lineWords.forEach((text, wi) => {
+            // A real space text node between spans, not CSS gap, so the browser lays out the same
+            // space width the fontkit layout in timeline.ts measured (SPEC section 7).
+            if (wi > 0) lineEl.appendChild(document.createTextNode(' '));
+            const span = make('span', { text, style: { color: color('text') } });
+            span.id = `word-${w}`;
+            lineEl.appendChild(span);
+            if (timeline.caption_style === 'word_highlight') {
+              const word = timeline.words[w];
+              tl.set(`#word-${w}`, { color: color('caption_highlight') }, word.start);
+              tl.set(`#word-${w}`, { color: color('text') }, word.end);
+            }
+            w++;
+          });
+          el.appendChild(lineEl);
+        }
+        root.appendChild(el);
+      });
+
+      // --- CTA pop (z=5): scales in, fades out over the last 200ms (SPEC section 7). ---
+      if (timeline.cta_pop && layout.cta) {
+        const cta = timeline.cta_pop;
+        const isBar = cta.style === 'bar';
+        const [padV, padH] = tokens.padding.pill;
+        const el = clip('div', {
+          start: cta.start,
+          duration: cta.end - cta.start,
+          trackIndex: 4,
+          cls: 'text-box',
+          style: {
+            ...boxStyle(layout.cta.box),
+            padding: isBar ? `${padV}px 0` : `${padV}px ${padH}px`,
+            backgroundColor: color('accent'),
+            borderRadius: isBar ? '0' : `${tokens.radius.pill}px`,
+            transformOrigin: 'center center',
+          },
+        });
+        el.id = 'cta-pop';
+        renderLines(el, layout.cta, 'body', tokens.type_scale.cta, { color: color('bg'), textAlign: 'center' });
+        root.appendChild(el);
+        tl.fromTo('#cta-pop', { scale: 0.9 }, { scale: 1, duration: tokens.motion.cta_in_ms / 1000 }, cta.start);
+        tl.to('#cta-pop', { opacity: 0, duration: 0.2 }, Math.max(cta.start, cta.end - 0.2));
+      }
+
+      // --- End card (z=6): optional, full frame, appended after the tail. ---
+      if (timeline.end_card && layout.end_card) {
+        const card = timeline.end_card;
+        const el = clip('div', { start: card.start, duration: card.duration_sec, trackIndex: 5, cls: 'fill', style: { backgroundColor: color('bg') } });
+        const textEl = make('div', { class: 'text-box', style: boxStyle(layout.end_card.box) });
+        renderLines(textEl, layout.end_card, 'display', tokens.type_scale.typography_statement, { color: color('text'), textAlign: 'center' });
+        el.appendChild(textEl);
+        root.appendChild(el);
+      }
+
+      window.__timelines['main'] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

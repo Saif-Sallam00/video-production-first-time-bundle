@@ -1,0 +1,235 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ttyng.local/schema/video.schema.json",
+  "title": "VideoSpec",
+  "description": "One TikTok video for The Talk You Never Got. The voiceover drives the timeline; everything else is anchored to it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "version", "beats"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Stable slug, e.g. w2-p6. Used for output folder names."
+    },
+    "version": { "const": 1 },
+    "title": { "type": "string", "maxLength": 80 },
+    "series": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "part", "total"],
+      "properties": {
+        "name": { "type": "string", "maxLength": 80 },
+        "part": { "type": "integer", "minimum": 1 },
+        "total": { "type": "integer", "minimum": 1 },
+        "label": {
+          "type": "string",
+          "maxLength": 40,
+          "description": "Persistent top label. Omit to hide."
+        }
+      }
+    },
+    "voice": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "preset": {
+          "type": "string",
+          "default": "james-default",
+          "description": "Key in config/voice.json. Keep one preset per series for consistency."
+        },
+        "speed": { "type": "number", "minimum": 0.7, "maximum": 1.2 }
+      }
+    },
+    "beats": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 12,
+      "prefixItems": [
+        {
+          "allOf": [
+            { "$ref": "#/$defs/beat" },
+            { "properties": { "role": { "const": "hook" } } }
+          ]
+        }
+      ],
+      "items": { "$ref": "#/$defs/beat" }
+    },
+    "cta_pop": { "$ref": "#/$defs/ctaPop" },
+    "captions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean", "default": true },
+        "style": { "enum": ["word_highlight", "phrase"], "default": "word_highlight" }
+      }
+    },
+    "end_card": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean", "default": false },
+        "text": { "type": "string", "maxLength": 60 },
+        "duration_sec": { "type": "number", "minimum": 0.5, "maximum": 3, "default": 1.5 }
+      }
+    },
+    "music": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file", "license_note"],
+      "properties": {
+        "file": { "type": "string", "description": "Path under assets/, e.g. music/bed-01.mp3" },
+        "gain_db": { "type": "number", "maximum": 0, "default": -22 },
+        "duck_under_vo": { "type": "boolean", "default": true },
+        "license_note": {
+          "type": "string",
+          "minLength": 3,
+          "description": "Where the rights come from. Required so nothing unlicensed ships."
+        }
+      }
+    },
+    "disclosure": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ai_generated_label": {
+          "type": "boolean",
+          "default": true,
+          "description": "Copied into the output manifest as an upload reminder."
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "description": "Pass-through notes (caption, hashtags, experiment). Ignored by the renderer.",
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "beat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "role", "vo", "visual"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+        "role": { "enum": ["hook", "context", "body", "payoff", "tease", "cta"] },
+        "vo": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400,
+          "description": "Exact spoken text for this beat. Beats are joined with a single space to form the full voiceover."
+        },
+        "visual": { "$ref": "#/$defs/visual" },
+        "overlay": { "$ref": "#/$defs/overlay" },
+        "captions_hidden": {
+          "type": "boolean",
+          "default": false,
+          "description": "When true, no caption page is shown while this beat is on screen. The VO still plays and is still captioned in the timeline's words; only paging/display is suppressed for this beat."
+        },
+        "visual_intent": {
+          "type": "string",
+          "maxLength": 140,
+          "description": "Free-text note on what this beat's visual should show. Ignored by the renderer; input for M5b asset search."
+        },
+        "search_queries": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "items": { "type": "string" },
+          "description": "Stock search terms for M5b `studio assets`. Ignored by the renderer."
+        }
+      }
+    },
+    "visual": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type"],
+          "properties": {
+            "type": { "const": "solid" },
+            "color": { "type": "string", "pattern": "^[a-z0-9_]+$", "default": "bg" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "text"],
+          "properties": {
+            "type": { "const": "typography" },
+            "text": { "type": "string", "maxLength": 90 },
+            "style": { "enum": ["statement", "number"], "default": "statement" },
+            "color": { "type": "string", "pattern": "^[a-z0-9_]+$" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "asset"],
+          "properties": {
+            "type": { "const": "still" },
+            "asset": { "type": "string", "description": "Path under assets/, e.g. stills/window-night-01.jpg" },
+            "motion": {
+              "enum": ["static", "push_in", "pull_out", "pan_left", "pan_right"],
+              "default": "push_in"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "asset"],
+          "properties": {
+            "type": { "const": "clip" },
+            "asset": { "type": "string", "description": "Path under assets/, e.g. clips/city-bokeh-02.mp4" },
+            "trim_start_sec": { "type": "number", "minimum": 0, "default": 0 },
+            "playback_rate": { "type": "number", "minimum": 0.25, "maximum": 2, "default": 1 }
+          }
+        }
+      ]
+    },
+    "overlay": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text"],
+      "properties": {
+        "text": { "type": "string", "maxLength": 90 },
+        "style": { "enum": ["hook_slam", "card", "kicker"], "default": "card" },
+        "position": { "enum": ["upper", "center"], "default": "upper" }
+      }
+    },
+    "ctaPop": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "start"],
+      "properties": {
+        "text": { "type": "string", "maxLength": 40 },
+        "start": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["at_sec"],
+              "properties": { "at_sec": { "type": "number", "minimum": 0 } }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["beat_id", "phrase"],
+              "properties": {
+                "beat_id": { "type": "string" },
+                "phrase": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Pop starts on the first word of this phrase inside the beat's vo."
+                }
+              }
+            }
+          ]
+        },
+        "duration_sec": { "type": "number", "minimum": 1, "maximum": 4, "default": 2.5 },
+        "style": { "enum": ["pill", "bar"], "default": "pill" }
+      }
+    }
+  }
+}

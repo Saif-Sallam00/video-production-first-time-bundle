@@ -1,0 +1,640 @@
+{
+  "text": "Your first time will not look like what you've seen on a screen — and that's good news. This is number six of the seven things nobody tells you; follow so you don't miss number one, it's the big one. Six: there'll be pauses. Something will be awkward. Somebody might laugh. That's not it going wrong — that's what real looks like. The guys who panic are the ones expecting a performance. So walk in expecting real, not a highlight reel. Hold onto this: awkward is normal, and it passes. Number five next — it's the one that takes all the pressure off you.",
+  "voice": {
+    "preset": "james-default",
+    "provider": "kokoro",
+    "model_id": "hexgrad/Kokoro-82M",
+    "voice_id": "am_puck",
+    "speed": 1,
+    "alignment": "kokoro-durations",
+    "settings": {}
+  },
+  "words": [
+    {
+      "text": "Your",
+      "start": 0,
+      "end": 0.042875,
+      "matched": true
+    },
+    {
+      "text": "first",
+      "start": 0.042875,
+      "end": 0.255375,
+      "matched": true
+    },
+    {
+      "text": "time",
+      "start": 0.255375,
+      "end": 0.480375,
+      "matched": true
+    },
+    {
+      "text": "will",
+      "start": 0.480375,
+      "end": 0.580375,
+      "matched": true
+    },
+    {
+      "text": "not",
+      "start": 0.580375,
+      "end": 0.730375,
+      "matched": true
+    },
+    {
+      "text": "look",
+      "start": 0.730375,
+      "end": 0.855375,
+      "matched": true
+    },
+    {
+      "text": "like",
+      "start": 0.855375,
+      "end": 1.030375,
+      "matched": true
+    },
+    {
+      "text": "what",
+      "start": 1.030375,
+      "end": 1.155375,
+      "matched": true
+    },
+    {
+      "text": "you've",
+      "start": 1.155375,
+      "end": 1.267875,
+      "matched": true
+    },
+    {
+      "text": "seen",
+      "start": 1.267875,
+      "end": 1.430375,
+      "matched": true
+    },
+    {
+      "text": "on",
+      "start": 1.430375,
+      "end": 1.530375,
+      "matched": true
+    },
+    {
+      "text": "a",
+      "start": 1.530375,
+      "end": 1.592875,
+      "matched": true
+    },
+    {
+      "text": "screen",
+      "start": 1.592875,
+      "end": 1.930375,
+      "matched": true
+    },
+    {
+      "text": "—",
+      "start": 1.930375,
+      "end": 1.980375,
+      "matched": false
+    },
+    {
+      "text": "and",
+      "start": 1.980375,
+      "end": 2.080375,
+      "matched": true
+    },
+    {
+      "text": "that's",
+      "start": 2.080375,
+      "end": 2.342875,
+      "matched": true
+    },
+    {
+      "text": "good",
+      "start": 2.342875,
+      "end": 2.542875,
+      "matched": true
+    },
+    {
+      "text": "news.",
+      "start": 2.542875,
+      "end": 3.192875,
+      "matched": true
+    },
+    {
+      "text": "This",
+      "start": 3.317875,
+      "end": 3.480375,
+      "matched": true
+    },
+    {
+      "text": "is",
+      "start": 3.480375,
+      "end": 3.555375,
+      "matched": true
+    },
+    {
+      "text": "number",
+      "start": 3.555375,
+      "end": 3.767875,
+      "matched": true
+    },
+    {
+      "text": "six",
+      "start": 3.767875,
+      "end": 3.980375,
+      "matched": true
+    },
+    {
+      "text": "of",
+      "start": 3.980375,
+      "end": 4.055375,
+      "matched": true
+    },
+    {
+      "text": "the",
+      "start": 4.055375,
+      "end": 4.142875,
+      "matched": true
+    },
+    {
+      "text": "seven",
+      "start": 4.142875,
+      "end": 4.442875,
+      "matched": true
+    },
+    {
+      "text": "things",
+      "start": 4.442875,
+      "end": 4.667875,
+      "matched": true
+    },
+    {
+      "text": "nobody",
+      "start": 4.667875,
+      "end": 5.017875,
+      "matched": true
+    },
+    {
+      "text": "tells",
+      "start": 5.017875,
+      "end": 5.292875,
+      "matched": true
+    },
+    {
+      "text": "you;",
+      "start": 5.292875,
+      "end": 5.417875,
+      "matched": true
+    },
+    {
+      "text": "follow",
+      "start": 5.467875,
+      "end": 5.742875,
+      "matched": true
+    },
+    {
+      "text": "so",
+      "start": 5.742875,
+      "end": 5.855375,
+      "matched": true
+    },
+    {
+      "text": "you",
+      "start": 5.855375,
+      "end": 5.930375,
+      "matched": true
+    },
+    {
+      "text": "don't",
+      "start": 5.930375,
+      "end": 6.080375,
+      "matched": true
+    },
+    {
+      "text": "miss",
+      "start": 6.080375,
+      "end": 6.230375,
+      "matched": true
+    },
+    {
+      "text": "number",
+      "start": 6.230375,
+      "end": 6.442875,
+      "matched": true
+    },
+    {
+      "text": "one,",
+      "start": 6.442875,
+      "end": 6.592875,
+      "matched": true
+    },
+    {
+      "text": "it's",
+      "start": 6.630375,
+      "end": 6.730375,
+      "matched": true
+    },
+    {
+      "text": "the",
+      "start": 6.730375,
+      "end": 6.817875,
+      "matched": true
+    },
+    {
+      "text": "big",
+      "start": 6.817875,
+      "end": 7.005375,
+      "matched": true
+    },
+    {
+      "text": "one.",
+      "start": 7.005375,
+      "end": 7.392875,
+      "matched": true
+    },
+    {
+      "text": "Six:",
+      "start": 7.505375,
+      "end": 7.767875,
+      "matched": true
+    },
+    {
+      "text": "there'll",
+      "start": 7.805375,
+      "end": 8.005375,
+      "matched": true
+    },
+    {
+      "text": "be",
+      "start": 8.005375,
+      "end": 8.117875,
+      "matched": true
+    },
+    {
+      "text": "pauses.",
+      "start": 8.117875,
+      "end": 8.517875,
+      "matched": true
+    },
+    {
+      "text": "Something",
+      "start": 8.567875,
+      "end": 8.830375,
+      "matched": true
+    },
+    {
+      "text": "will",
+      "start": 8.830375,
+      "end": 8.930375,
+      "matched": true
+    },
+    {
+      "text": "be",
+      "start": 8.930375,
+      "end": 9.067875,
+      "matched": true
+    },
+    {
+      "text": "awkward.",
+      "start": 9.067875,
+      "end": 9.367875,
+      "matched": true
+    },
+    {
+      "text": "Somebody",
+      "start": 9.417875,
+      "end": 9.680375,
+      "matched": true
+    },
+    {
+      "text": "might",
+      "start": 9.680375,
+      "end": 9.867875,
+      "matched": true
+    },
+    {
+      "text": "laugh.",
+      "start": 9.867875,
+      "end": 10.117875,
+      "matched": true
+    },
+    {
+      "text": "That's",
+      "start": 10.155375,
+      "end": 10.330375,
+      "matched": true
+    },
+    {
+      "text": "not",
+      "start": 10.330375,
+      "end": 10.480375,
+      "matched": true
+    },
+    {
+      "text": "it",
+      "start": 10.480375,
+      "end": 10.555375,
+      "matched": true
+    },
+    {
+      "text": "going",
+      "start": 10.555375,
+      "end": 10.742875,
+      "matched": true
+    },
+    {
+      "text": "wrong",
+      "start": 10.742875,
+      "end": 10.980375,
+      "matched": true
+    },
+    {
+      "text": "—",
+      "start": 10.980375,
+      "end": 11.030375,
+      "matched": false
+    },
+    {
+      "text": "that's",
+      "start": 11.030375,
+      "end": 11.180375,
+      "matched": true
+    },
+    {
+      "text": "what",
+      "start": 11.180375,
+      "end": 11.305375,
+      "matched": true
+    },
+    {
+      "text": "real",
+      "start": 11.305375,
+      "end": 11.480375,
+      "matched": true
+    },
+    {
+      "text": "looks",
+      "start": 11.480375,
+      "end": 11.717875,
+      "matched": true
+    },
+    {
+      "text": "like.",
+      "start": 11.717875,
+      "end": 12.117875,
+      "matched": true
+    },
+    {
+      "text": "The",
+      "start": 12.217875,
+      "end": 12.317875,
+      "matched": true
+    },
+    {
+      "text": "guys",
+      "start": 12.317875,
+      "end": 12.530375,
+      "matched": true
+    },
+    {
+      "text": "who",
+      "start": 12.530375,
+      "end": 12.642875,
+      "matched": true
+    },
+    {
+      "text": "panic",
+      "start": 12.642875,
+      "end": 12.980375,
+      "matched": true
+    },
+    {
+      "text": "are",
+      "start": 12.980375,
+      "end": 13.055375,
+      "matched": true
+    },
+    {
+      "text": "the",
+      "start": 13.055375,
+      "end": 13.130375,
+      "matched": true
+    },
+    {
+      "text": "ones",
+      "start": 13.130375,
+      "end": 13.305375,
+      "matched": true
+    },
+    {
+      "text": "expecting",
+      "start": 13.305375,
+      "end": 13.705375,
+      "matched": true
+    },
+    {
+      "text": "a",
+      "start": 13.705375,
+      "end": 13.767875,
+      "matched": true
+    },
+    {
+      "text": "performance.",
+      "start": 13.767875,
+      "end": 14.367875,
+      "matched": true
+    },
+    {
+      "text": "So",
+      "start": 14.442875,
+      "end": 14.567875,
+      "matched": true
+    },
+    {
+      "text": "walk",
+      "start": 14.567875,
+      "end": 14.755375,
+      "matched": true
+    },
+    {
+      "text": "in",
+      "start": 14.755375,
+      "end": 14.830375,
+      "matched": true
+    },
+    {
+      "text": "expecting",
+      "start": 14.830375,
+      "end": 15.292875,
+      "matched": true
+    },
+    {
+      "text": "real,",
+      "start": 15.292875,
+      "end": 15.567875,
+      "matched": true
+    },
+    {
+      "text": "not",
+      "start": 15.605375,
+      "end": 15.755375,
+      "matched": true
+    },
+    {
+      "text": "a",
+      "start": 15.755375,
+      "end": 15.817875,
+      "matched": true
+    },
+    {
+      "text": "highlight",
+      "start": 15.817875,
+      "end": 16.192875,
+      "matched": true
+    },
+    {
+      "text": "reel.",
+      "start": 16.192875,
+      "end": 16.517875,
+      "matched": true
+    },
+    {
+      "text": "Hold",
+      "start": 16.592875,
+      "end": 16.830375,
+      "matched": true
+    },
+    {
+      "text": "onto",
+      "start": 16.830375,
+      "end": 17.042875,
+      "matched": true
+    },
+    {
+      "text": "this:",
+      "start": 17.042875,
+      "end": 17.267875,
+      "matched": true
+    },
+    {
+      "text": "awkward",
+      "start": 17.317875,
+      "end": 17.630375,
+      "matched": true
+    },
+    {
+      "text": "is",
+      "start": 17.630375,
+      "end": 17.767875,
+      "matched": true
+    },
+    {
+      "text": "normal,",
+      "start": 17.767875,
+      "end": 18.092875,
+      "matched": true
+    },
+    {
+      "text": "and",
+      "start": 18.130375,
+      "end": 18.230375,
+      "matched": true
+    },
+    {
+      "text": "it",
+      "start": 18.230375,
+      "end": 18.317875,
+      "matched": true
+    },
+    {
+      "text": "passes.",
+      "start": 18.317875,
+      "end": 19.317875,
+      "matched": true
+    },
+    {
+      "text": "Number",
+      "start": 19.767875,
+      "end": 20.030375,
+      "matched": true
+    },
+    {
+      "text": "five",
+      "start": 20.030375,
+      "end": 20.392875,
+      "matched": true
+    },
+    {
+      "text": "next",
+      "start": 20.392875,
+      "end": 20.805375,
+      "matched": true
+    },
+    {
+      "text": "—",
+      "start": 20.805375,
+      "end": 20.855375,
+      "matched": false
+    },
+    {
+      "text": "it's",
+      "start": 20.855375,
+      "end": 21.030375,
+      "matched": true
+    },
+    {
+      "text": "the",
+      "start": 21.030375,
+      "end": 21.117875,
+      "matched": true
+    },
+    {
+      "text": "one",
+      "start": 21.117875,
+      "end": 21.280375,
+      "matched": true
+    },
+    {
+      "text": "that",
+      "start": 21.280375,
+      "end": 21.392875,
+      "matched": true
+    },
+    {
+      "text": "takes",
+      "start": 21.392875,
+      "end": 21.705375,
+      "matched": true
+    },
+    {
+      "text": "all",
+      "start": 21.705375,
+      "end": 21.955375,
+      "matched": true
+    },
+    {
+      "text": "the",
+      "start": 21.955375,
+      "end": 22.042875,
+      "matched": true
+    },
+    {
+      "text": "pressure",
+      "start": 22.042875,
+      "end": 22.417875,
+      "matched": true
+    },
+    {
+      "text": "off",
+      "start": 22.417875,
+      "end": 22.642875,
+      "matched": true
+    },
+    {
+      "text": "you.",
+      "start": 22.642875,
+      "end": 23.292875,
+      "matched": true
+    }
+  ],
+  "duration_sec": 23.617875,
+  "leading_silence_trimmed_sec": 0.232125
+}

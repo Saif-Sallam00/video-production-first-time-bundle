@@ -1,0 +1,28 @@
+{
+  "name": "ttyng-studio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "studio": "bin/studio.js"
+  },
+  "scripts": {
+    "studio": "tsx src/cli.ts",
+    "test": "node --import tsx --test test/*.test.ts",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "ajv": "^8.20.0",
+    "fontkit": "^2.0.4",
+    "puppeteer-core": "^25.12.0",
+    "tsx": "^4.23.15"
+  },
+  "devDependencies": {
+    "@types/fontkit": "^2.0.9",
+    "@types/node": "^22.20.4",
+    "typescript": "^7.0.2"
+  }
+}

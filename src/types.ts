@@ -1,0 +1,96 @@
+// Shapes of schema/video.schema.json and brand/tokens.json. The JSON Schema is the source of truth.
+
+export type BeatRole = 'hook' | 'context' | 'body' | 'payoff' | 'tease' | 'cta';
+
+export type Visual =
+  | { type: 'solid'; color?: string }
+  | { type: 'typography'; text: string; style?: 'statement' | 'number'; color?: string }
+  | { type: 'still'; asset: string; motion?: 'static' | 'push_in' | 'pull_out' | 'pan_left' | 'pan_right' }
+  | { type: 'clip'; asset: string; trim_start_sec?: number; playback_rate?: number };
+
+export interface Overlay {
+  text: string;
+  style?: 'hook_slam' | 'card' | 'kicker';
+  position?: 'upper' | 'center';
+}
+
+export interface Beat {
+  id: string;
+  role: BeatRole;
+  vo: string;
+  visual: Visual;
+  overlay?: Overlay;
+  /** When true, no caption page is shown while this beat is on screen; the VO still plays (SPEC section 7). */
+  captions_hidden?: boolean;
+  /** Free-text note on what this beat's visual should show. Ignored by the renderer; input for M5b asset search. */
+  visual_intent?: string;
+  /** Stock search terms for M5b `studio assets`. Ignored by the renderer. */
+  search_queries?: string[];
+}
+
+export interface CtaPop {
+  text: string;
+  start: { at_sec: number } | { beat_id: string; phrase: string };
+  duration_sec?: number;
+  style?: 'pill' | 'bar';
+}
+
+export interface VideoSpec {
+  id: string;
+  version: 1;
+  title?: string;
+  series?: { name: string; part: number; total: number; label?: string };
+  voice?: { preset?: string; speed?: number };
+  beats: Beat[];
+  cta_pop?: CtaPop;
+  captions?: { enabled?: boolean; style?: 'word_highlight' | 'phrase' };
+  end_card?: { enabled?: boolean; text?: string; duration_sec?: number };
+  music?: { file: string; gain_db?: number; duck_under_vo?: boolean; license_note: string };
+  disclosure?: { ai_generated_label?: boolean };
+  meta?: Record<string, unknown>;
+}
+
+export interface FontToken {
+  family: string;
+  file: string;
+  weight?: number;
+  license: string;
+}
+
+export interface Tokens {
+  canvas: { width: number; height: number; fps: number };
+  safe_zone: { top: number; bottom: number; left: number; right: number };
+  colors: Record<string, string>;
+  fonts: { display: FontToken; body: FontToken };
+  type_scale: {
+    hook_slam: number;
+    typography_statement: number;
+    typography_number: number;
+    card: number;
+    kicker: number;
+    caption: number;
+    label: number;
+    cta: number;
+  };
+  line_height: { display: number; body: number };
+  /** [vertical, horizontal] px */
+  padding: { card: [number, number]; pill: [number, number] };
+  radius: { card: number; pill: number };
+  caption: { max_lines: number; max_chars_per_line: number; center_y: number };
+  motion: {
+    still_zoom: [number, number];
+    still_pan_px: number;
+    cut: string;
+    overlay_in_ms: number;
+    cta_in_ms: number;
+  };
+  grade: { vignette: number; darken_behind_text: number };
+  audio: { target_lufs: number; true_peak_db: number; tail_sec: number };
+}
+
+export interface Issue {
+  level: 'error' | 'warning';
+  /** JSON pointer into the spec, e.g. /beats/2/id. Empty for batch-level issues. */
+  path: string;
+  message: string;
+}
