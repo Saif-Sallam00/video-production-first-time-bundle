@@ -1,0 +1,67 @@
+{
+  "stills/pixabay-5339659.jpg": {
+    "provider": "pixabay",
+    "source_url": "https://pixabay.com/photos/church-window-monastery-window-5339659/",
+    "creator": "Paul_Henri",
+    "creator_url": "https://pixabay.com/users/Paul_Henri-6735189/",
+    "license": "Pixabay Content License",
+    "search_queries": [
+      "bedroom window night",
+      "dark room curtains",
+      "night window city lights"
+    ],
+    "picked_at": "2026-09-30T01:06:27.833Z"
+  },
+  "stills/pixabay-4491448.jpg": {
+    "provider": "pixabay",
+    "source_url": "https://pixabay.com/photos/hands-person-grasp-hand-finger-4491448/",
+    "creator": "fotografierende",
+    "creator_url": "https://pixabay.com/users/fotografierende-4558536/",
+    "license": "Pixabay Content License",
+    "search_queries": [
+      "hands clasped waiting room",
+      "closed fists on table",
+      "person rubbing hands nervously"
+    ],
+    "picked_at": "2026-09-30T01:06:27.834Z"
+  },
+  "clips/pixabay-293332.mp4": {
+    "provider": "pixabay",
+    "source_url": "https://pixabay.com/videos/id-293332/",
+    "creator": "Vlad-X",
+    "creator_url": "https://pixabay.com/users/Vlad-X-51466350/",
+    "license": "Pixabay Content License",
+    "search_queries": [
+      "empty street dusk",
+      "city street evening",
+      "quiet street lights"
+    ],
+    "picked_at": "2026-09-30T01:06:27.834Z"
+  },
+  "stills/pixabay-7662382.jpg": {
+    "provider": "pixabay",
+    "source_url": "https://pixabay.com/photos/corridor-hall-hallway-light-door-7662382/",
+    "creator": "cubicroot",
+    "creator_url": "https://pixabay.com/users/cubicroot-809958/",
+    "license": "Pixabay Content License",
+    "search_queries": [
+      "open doorway light",
+      "door light hallway",
+      "warm hallway"
+    ],
+    "picked_at": "2026-09-30T01:06:27.837Z"
+  },
+  "stills/pixabay-6954155.jpg": {
+    "provider": "pixabay",
+    "source_url": "https://pixabay.com/photos/woman-beach-sunrise-sunset-sea-6954155/",
+    "creator": "mariya_m",
+    "creator_url": "https://pixabay.com/users/mariya_m-12752456/",
+    "license": "Pixabay Content License",
+    "search_queries": [
+      "silhouette walking sunset",
+      "backlit silhouette street",
+      "person silhouette walking"
+    ],
+    "picked_at": "2026-09-30T01:06:27.837Z"
+  }
+}

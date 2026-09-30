@@ -11,6 +11,7 @@ import { audition, speedAudition, synthesize } from './voice.ts';
 import { needsAsset, pickAssets, searchAssets } from './assets/run.ts';
 import { pexels } from './assets/pexels.ts';
 import { pixabay } from './assets/pixabay.ts';
+import { unsplash } from './assets/unsplash.ts';
 import type { StockProvider } from './assets/provider.ts';
 
 const USAGE = `usage: studio <command> <spec|dir>
@@ -25,8 +26,10 @@ commands:
   timeline <spec>       out/<id>/timeline.json from the spec + real TTS word timings
   render <spec>         renders templates/ against timeline.json -> out/<id>/<id>.mp4
   qa <spec>             out/<id>/contact-sheet.jpg from the rendered MP4 (SPEC section 10, gate 7 only)
-  assets <spec>         stock candidates for beats with search_queries and no still/clip yet
-                        -> assets/candidates/<beat>/ + out/<id>/asset-candidates.jpg (never picks)
+  assets <spec> [--beat <id>[,<id>]]
+                        stock candidates for beats with search_queries and no still/clip yet
+                        -> assets/candidates/<beat>/ + out/<id>/asset-candidates.jpg (never picks);
+                        --beat searches only those beats and writes asset-candidates-<beat>.jpg
   assets --pick <spec> <beat_id>=<n> ...
                         moves candidate n into assets/stills|clips, updates the spec, appends assets/index.json`;
 
@@ -44,7 +47,7 @@ async function main(argv: string[]): Promise<number> {
   if (command === 'render' && target) return renderCmd(target);
   if (command === 'qa' && target) return qaCmd(target);
   if (command === 'assets' && target === '--pick' && argv[2] && argv.length > 3) return assetsPickCmd(argv[2], argv.slice(3));
-  if (command === 'assets' && target && target !== '--pick') return assetsCmd(target);
+  if (command === 'assets' && target && target !== '--pick') return assetsCmd(target, argv.slice(2));
   if (command && PLANNED[command]) {
     console.error(`studio ${command}: not implemented yet (milestone ${PLANNED[command]})`);
     return 2;
@@ -207,7 +210,13 @@ async function qaCmd(target: string): Promise<number> {
   return 0;
 }
 
-async function assetsCmd(target: string): Promise<number> {
+async function assetsCmd(target: string, flags: string[]): Promise<number> {
+  const bi = flags.indexOf('--beat');
+  const only = bi >= 0 ? flags[bi + 1]?.split(',').filter(Boolean) : undefined;
+  if (bi >= 0 && !only?.length) {
+    console.error('studio assets: --beat needs a beat id (or comma-separated ids)');
+    return 1;
+  }
   if (!existsSync(target)) {
     console.error(`studio assets: ${target} does not exist`);
     return 1;
@@ -221,16 +230,12 @@ async function assetsCmd(target: string): Promise<number> {
   }
   const envFile = join(PROJECT_ROOT, '.env');
   if (existsSync(envFile)) process.loadEnvFile(envFile);
-  const providers: StockProvider[] = [];
-  if (process.env.PEXELS_API_KEY) providers.push(pexels(process.env.PEXELS_API_KEY));
-  else console.warn('  warning  PEXELS_API_KEY not set in .env; skipping Pexels');
-  if (process.env.PIXABAY_API_KEY) providers.push(pixabay(process.env.PIXABAY_API_KEY));
-  else console.warn('  warning  PIXABAY_API_KEY not set in .env; no Pixabay fallback');
+  const providers = stockProviders();
   if (!providers.length) {
-    console.error('studio assets: set PEXELS_API_KEY and/or PIXABAY_API_KEY in .env (both have free tiers)');
+    console.error('studio assets: set UNSPLASH_ACCESS_KEY (photos) and/or PIXABAY_API_KEY (video) in .env');
     return 1;
   }
-  const r = await searchAssets(spec, { root: project.root, tokens: project.tokens, providers });
+  const r = await searchAssets(spec, { root: project.root, tokens: project.tokens, providers, only });
   console.log(relative(process.cwd(), target));
   for (const s of r.skipped) console.log(`  skipped  ${s}`);
   for (const b of r.beats) {
@@ -246,7 +251,23 @@ async function assetsCmd(target: string): Promise<number> {
   return 0;
 }
 
-function assetsPickCmd(target: string, pairs: string[]): number {
+/**
+ * The stock providers in priority order, from the keys in .env. Photos come from Unsplash (real-resolution
+ * `raw` images), with Pexels behind it if its key is ever set; Pixabay is used for VIDEO only, because
+ * its photos are capped at 1280 px on the longest side and can never reach 1080x1920. Warns for what's missing.
+ */
+function stockProviders(): StockProvider[] {
+  const providers: StockProvider[] = [];
+  const env = process.env;
+  if (env.UNSPLASH_ACCESS_KEY) providers.push(unsplash(env.UNSPLASH_ACCESS_KEY));
+  if (env.PEXELS_API_KEY) providers.push(pexels(env.PEXELS_API_KEY));
+  if (env.PIXABAY_API_KEY) providers.push(pixabay(env.PIXABAY_API_KEY, fetch, ['video']));
+  if (!providers.some((p) => p.kinds.includes('photo'))) console.warn('  warning  no photo source: set UNSPLASH_ACCESS_KEY (or PEXELS_API_KEY) in .env; only video will be searched');
+  if (!providers.some((p) => p.kinds.includes('video'))) console.warn('  warning  no video source: set PIXABAY_API_KEY (or PEXELS_API_KEY) in .env; only photos will be searched');
+  return providers;
+}
+
+async function assetsPickCmd(target: string, pairs: string[]): Promise<number> {
   if (!existsSync(target)) {
     console.error(`studio assets --pick: ${target} does not exist`);
     return 1;
@@ -261,8 +282,12 @@ function assetsPickCmd(target: string, pairs: string[]): number {
     picks[m[1]] = Number(m[2]);
   }
   const project = loadProject();
-  for (const r of pickAssets(project.root, target, picks)) {
-    console.log(`  ${r.beat_id} -> assets/${r.asset}${r.moved ? '' : ' (already in the library)'}`);
+  const envFile = join(PROJECT_ROOT, '.env');
+  if (existsSync(envFile)) process.loadEnvFile(envFile);
+  const picked = await pickAssets(project.root, target, picks, { providers: stockProviders() });
+  for (const r of picked) {
+    console.log(`  ${r.beat_id} -> assets/${r.asset}${r.moved ? '' : ' (already in the library)'}${r.tracked ? ' (download tracked)' : ''}`);
+    if (r.warning) console.log(`    warning  ${r.warning}`);
   }
   const { issues } = validateFile(target, project);
   printIssues(issues);

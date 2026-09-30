@@ -2,11 +2,13 @@
 // select.ts only ever sees `StockProvider` and `Candidate`, so adding a third source means writing one
 // more file like pexels.ts and adding it to the provider list in run.ts; nothing in the picker changes.
 
+export type Kind = 'photo' | 'video';
+
 export interface Candidate {
   provider: string;
   /** The provider's own id; (provider, id) is unique. */
   id: string;
-  kind: 'photo' | 'video';
+  kind: Kind;
   /** Human-facing page for the asset (what to cite / open to review). */
   pageUrl: string;
   /** The file we would download. Its `width`/`height` are that file's, not the original upload's. */
@@ -23,12 +25,18 @@ export interface Candidate {
   tags: string[];
   /** The search query that produced this hit. */
   query: string;
+  /** A URL the provider wants pinged when the asset is actually used (Unsplash's download_location). */
+  trackUrl?: string;
 }
 
 export interface StockProvider {
   name: string;
+  /** Which kinds of media this provider supplies. The search order is per kind: a provider is only asked for a kind that earlier providers left weak. */
+  kinds: Kind[];
   /** Portrait-oriented photos and videos for one query. Throws on HTTP/auth errors. */
   search(query: string): Promise<Candidate[]>;
+  /** Optional: called once when a candidate from this provider is picked into the library. */
+  trackDownload?(trackUrl: string): Promise<void>;
 }
 
 export type FetchFn = typeof fetch;

@@ -57,9 +57,9 @@
       },
       "visual_intent": "Slow, quiet moment: hands fidgeting, a pause. Hands only, no faces.",
       "search_queries": [
-        "hands fidgeting",
-        "hands nervous table",
-        "hands waiting close"
+        "hands clasped waiting room",
+        "closed fists on table",
+        "person rubbing hands nervously"
       ]
     },
     {
@@ -67,8 +67,8 @@
       "role": "body",
       "vo": "That's not it going wrong — that's what real looks like. The guys who panic are the ones expecting a performance.",
       "visual": {
-        "type": "solid",
-        "color": "bg"
+        "type": "clip",
+        "asset": "clips/pixabay-293332.mp4"
       },
       "visual_intent": "Ordinary real life, unpolished: an empty city street at dusk.",
       "search_queries": [
@@ -113,9 +113,8 @@
       },
       "visual_intent": "Silhouette walking away, backlit, anonymous.",
       "search_queries": [
-        "silhouette walking sunset",
-        "backlit silhouette street",
-        "person silhouette walking"
+        "distant figure walking beach upper frame",
+        "small silhouette wide horizon"
       ]
     }
   ],

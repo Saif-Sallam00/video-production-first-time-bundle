@@ -1,10 +1,12 @@
-import type { Candidate, StockProvider } from './provider.ts';
+import type { Candidate, Kind, StockProvider } from './provider.ts';
 
 // The tunable rules for what counts as an acceptable candidate (documented in SPEC section 11).
 export const RULES = {
   /** A candidate file must be at least this big; the canvas is 1080x1920 and stills push in up to 1.08x. */
   minWidth: 1080,
   minHeight: 1920,
+  /** Extra resolution requested beyond 1080x1920 so an 8% push-in (motion.still_zoom) still isn't an upscale. */
+  pushHeadroom: 1.1,
   /** height / width must be at least this (9:16 is 1.78, 2:3 is 1.5). */
   minAspect: 1.4,
   /** A clip shorter than this loops so often it reads as a glitch. */
@@ -37,10 +39,17 @@ export function mentionsCloseUpFace(tags: string[]): boolean {
   return words.some((w) => FACE.has(w)) || /close[\s-]?up|looking at camera/.test(joined);
 }
 
+/** Why a file of this pixel size is unusable, or null. Used on what a provider *claims* and again on the real downloaded file. */
+export function sizeReject(width: number, height: number): string | null {
+  if (width < RULES.minWidth || height < RULES.minHeight) return `too small (${width}x${height})`;
+  if (height / width < RULES.minAspect) return 'not portrait';
+  return null;
+}
+
 /** Why a candidate is unacceptable, or null if it is fine. */
 export function rejectReason(c: Candidate): string | null {
-  if (c.width < RULES.minWidth || c.height < RULES.minHeight) return `too small (${c.width}x${c.height})`;
-  if (c.height / c.width < RULES.minAspect) return 'not portrait';
+  const size = sizeReject(c.width, c.height);
+  if (size) return size;
   if (c.kind === 'video' && (c.durationSec ?? 0) < RULES.minVideoSec) return 'clip too short';
   if (mentionsCloseUpFace(c.tags)) return 'close-up face tags';
   return null;
@@ -80,17 +89,21 @@ export interface Found {
 }
 
 /**
- * Runs every query against the providers in priority order. A later provider is only queried when the
- * ones before it left fewer than `RULES.weakBelow` acceptable candidates. Returns every acceptable
- * candidate, earlier providers first (the caller downloads the first `RULES.perBeat` that succeed). A
- * provider that errors is skipped with a warning.
+ * Runs every query against the providers in priority order, per kind of media. A provider is only asked
+ * when it supplies a kind for which earlier providers left fewer than `RULES.weakBelow` acceptable
+ * candidates, and only that kind's results are kept from it. So Unsplash can be the photo source and
+ * Pixabay the video source, and Pexels (if enabled) backs up whichever is short. Returns every acceptable
+ * candidate with photos and videos alternating (photo first), so a beat's first few downloads mix both
+ * kinds when both exist; the caller downloads the first `RULES.perBeat` that succeed. A provider that
+ * errors is skipped with a warning.
  */
 export async function findCandidates(queries: string[], providers: StockProvider[]): Promise<Found> {
-  const acceptable: Candidate[] = [];
+  const acceptable: Record<Kind, Candidate[]> = { photo: [], video: [] };
   const queried: string[] = [];
   const warnings: string[] = [];
   for (const provider of providers) {
-    if (acceptable.length >= RULES.weakBelow) break;
+    const wanted = (['photo', 'video'] as Kind[]).filter((k) => provider.kinds.includes(k) && acceptable[k].length < RULES.weakBelow);
+    if (!wanted.length) continue;
     queried.push(provider.name);
     const perQuery: Candidate[][] = [];
     for (const q of queries) {
@@ -101,9 +114,14 @@ export async function findCandidates(queries: string[], providers: StockProvider
         perQuery.push([]);
       }
     }
-    for (const c of interleave(perQuery)) if (!rejectReason(c)) acceptable.push(c);
+    for (const c of interleave(perQuery)) if (wanted.includes(c.kind) && !rejectReason(c)) acceptable[c.kind].push(c);
   }
-  return { candidates: acceptable, queried, warnings };
+  const candidates: Candidate[] = [];
+  for (let i = 0; i < Math.max(acceptable.photo.length, acceptable.video.length); i++) {
+    if (acceptable.photo[i]) candidates.push(acceptable.photo[i]);
+    if (acceptable.video[i]) candidates.push(acceptable.video[i]);
+  }
+  return { candidates, queried, warnings };
 }
 
 const words = (q: string) => new Set(q.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean));

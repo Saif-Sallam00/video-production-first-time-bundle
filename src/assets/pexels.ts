@@ -11,6 +11,7 @@ export function pexels(apiKey: string, fetchFn: FetchFn = fetch): StockProvider 
     `query=${encodeURIComponent(query)}&orientation=portrait&per_page=${PER_PAGE}${extra}`;
   return {
     name: 'pexels',
+    kinds: ['photo', 'video'],
     async search(query) {
       const [photos, videos] = await Promise.all([
         getJson(fetchFn, `${API}/v1/search?${q(query, '&size=large')}`, init, 'pexels'),

@@ -6,8 +6,8 @@ import { join } from 'node:path';
 import { before, describe, it } from 'node:test';
 import { pexels } from '../src/assets/pexels.ts';
 import { pixabay } from '../src/assets/pixabay.ts';
-import { unsplash } from '../src/assets/unsplash.ts';
-import type { Candidate, StockProvider } from '../src/assets/provider.ts';
+import { unsplash, wantedWidth } from '../src/assets/unsplash.ts';
+import type { Candidate, Kind, StockProvider } from '../src/assets/provider.ts';
 import { appendLibrary, readLibrary, type LibraryEntry } from '../src/assets/library.ts';
 import { needsAsset, pickAssets, searchAssets } from '../src/assets/run.ts';
 import { buildCandidateSheet } from '../src/assets/sheet.ts';
@@ -21,8 +21,9 @@ const cand = (o: Partial<Candidate> = {}): Candidate => ({
   width: 1080, height: 1920, creator: 'A', license: 'L', tags: ['window', 'night'], query: 'q', ...o,
 });
 /** A provider whose answer per query is fixed. */
-const fake = (name: string, hits: Candidate[], calls: string[] = []): StockProvider => ({
+const fake = (name: string, hits: Candidate[], calls: string[] = [], kinds: Kind[] = ['photo']): StockProvider => ({
   name,
+  kinds,
   async search(q) {
     calls.push(`${name}:${q}`);
     return hits.map((h) => ({ ...h, provider: name, query: q }));
@@ -61,7 +62,7 @@ describe('providers (mocked APIs)', () => {
     assert.deepEqual(video.tags, ['hands', 'on', 'table']);
   });
 
-  it('pixabay: reports the capped 1280px photo size, carries tags, prefers a video size that meets the minimum', async () => {
+  it('pixabay: reports the REAL size of the capped download (longest side 1280), carries tags, prefers a video size that meets the minimum', async () => {
     const fetchFn = (async (url: string) =>
       Response.json(
         url.includes('/videos/')
@@ -71,10 +72,25 @@ describe('providers (mocked APIs)', () => {
       )) as typeof fetch;
     const out = await pixabay('K', fetchFn).search('street');
     const photo = out.find((c) => c.kind === 'photo')!;
-    assert.deepEqual([photo.width, photo.height], [1280, 1920]);
+    assert.deepEqual([photo.width, photo.height], [853, 1280]); // 4000x6000 original, but largeImageURL caps the LONGEST side at 1280
     assert.deepEqual(photo.tags, ['street', 'night']);
     assert.equal(photo.creatorUrl, 'https://pixabay.com/users/Ann-8/');
     assert.equal(out.find((c) => c.kind === 'video')!.downloadUrl, 'https://v/med.mp4');
+  });
+
+  it('pixabay photos can never satisfy the 1080x1920 rule, and kinds=[video] skips the photo request entirely', async () => {
+    const urls: string[] = [];
+    const fetchFn = (async (url: string) => {
+      urls.push(url);
+      return Response.json(url.includes('/videos/') ? { hits: [] } : { hits: [{ id: 4, pageURL: 'p', tags: 'street', largeImageURL: 'https://img/4.jpg', imageWidth: 6000, imageHeight: 9000, user: 'a', user_id: 1 }] });
+    }) as typeof fetch;
+    const photos = await pixabay('K', fetchFn).search('street');
+    assert.match(rejectReason(photos[0])!, /too small \(853x1280\)/);
+    urls.length = 0;
+    const p = pixabay('K', fetchFn, ['video']);
+    assert.deepEqual(p.kinds, ['video']);
+    assert.deepEqual(await p.search('street'), []);
+    assert.ok(urls.every((u) => u.includes('/videos/')), 'no photo API call');
   });
 
   it('unsplash: portrait search with Client-ID auth, photos only, download size and tags normalized', async () => {
@@ -83,7 +99,7 @@ describe('providers (mocked APIs)', () => {
       seen = { url, auth: (init?.headers as Record<string, string>).Authorization };
       return Response.json({ results: [
         { id: 'abc', width: 4000, height: 6000, slug: 'lone-figure-on-street', alt_description: 'A silhouette walking away', description: null,
-          urls: { raw: 'https://images.unsplash.com/photo-1?ixid=XYZ' }, links: { html: 'https://unsplash.com/photos/abc' },
+          urls: { raw: 'https://images.unsplash.com/photo-1?ixid=XYZ' }, links: { html: 'https://unsplash.com/photos/abc', download_location: 'https://api.unsplash.com/photos/abc/download?ixid=XYZ' },
           user: { name: 'Uma', links: { html: 'https://unsplash.com/@uma' } }, tags: [{ title: 'Street' }, { title: 'night life' }] },
         { id: 'small', width: 800, height: 1200, urls: { raw: 'https://images.unsplash.com/photo-2?ixid=Q' }, links: { html: 'h' }, user: { name: 'S' }, tags: [] },
         { id: 'nourl', width: 4000, height: 6000, urls: {} },
@@ -96,10 +112,31 @@ describe('providers (mocked APIs)', () => {
     const a = out[0];
     assert.deepEqual([a.kind, a.provider, a.license, a.creator, a.creatorUrl, a.pageUrl], ['photo', 'unsplash', 'Unsplash License', 'Uma', 'https://unsplash.com/@uma', 'https://unsplash.com/photos/abc']);
     const dl = new URL(a.downloadUrl);
-    assert.deepEqual([dl.searchParams.get('ixid'), dl.searchParams.get('w'), dl.searchParams.get('fit'), dl.searchParams.get('fm')], ['XYZ', '2160', 'max', 'jpg']);
-    assert.deepEqual([a.width, a.height], [2160, 3240]); // size of the download, not the 4000x6000 original
-    assert.deepEqual(out[1].width, 800); // never claims more than the original has
+    assert.deepEqual([dl.searchParams.get('ixid'), dl.searchParams.get('w'), dl.searchParams.get('fit'), dl.searchParams.get('fm')], ['XYZ', '1408', 'max', 'jpg']);
+    assert.deepEqual([a.width, a.height], [1408, 2112]); // 1920/1.5*1.1 wide: covers 1080x1920 with push headroom, not the 4000x6000 original
+    assert.equal(out[1].width, 800); // never claims more than the original has
     for (const t of ['street', 'night', 'life', 'silhouette', 'walking', 'lone-figure-on-street']) assert.ok(a.tags.includes(t), t);
+    assert.equal(a.trackUrl, 'https://api.unsplash.com/photos/abc/download?ixid=XYZ');
+  });
+
+  it('unsplash wantedWidth: covers 1080x1920 with headroom, keeps the aspect, never upscales', () => {
+    assert.equal(wantedWidth(4000, 6000), 1408); // 2:3 needs 1280 wide for 1920 tall, x1.1
+    assert.ok(Math.abs(wantedWidth(4000, 7111) - 1080 * RULES.pushHeadroom) <= 1); // ~9:16: already 1080 wide, plus headroom
+    assert.equal(wantedWidth(900, 1600), 900); // original smaller than wanted: return it, size rule rejects it
+    for (const [w, h] of [[4000, 6000], [3000, 5000], [6000, 8000]]) {
+      const width = wantedWidth(w, h);
+      assert.ok(width >= 1080 && Math.round((width * h) / w) >= 1920, `${w}x${h} -> ${width}`);
+    }
+  });
+
+  it('unsplash trackDownload pings the download_location with the key', async () => {
+    const seen: { url: string; auth: string }[] = [];
+    const fetchFn = (async (url: string, init?: RequestInit) => {
+      seen.push({ url, auth: (init?.headers as Record<string, string>).Authorization });
+      return Response.json({ url: 'https://images.unsplash.com/x' });
+    }) as typeof fetch;
+    await unsplash('ACCESS', fetchFn).trackDownload!('https://api.unsplash.com/photos/abc/download?ixid=XYZ');
+    assert.deepEqual(seen, [{ url: 'https://api.unsplash.com/photos/abc/download?ixid=XYZ', auth: 'Client-ID ACCESS' }]);
   });
 
   it('unsplash results go through the same acceptance rules (size, portrait, close-up-face tags)', async () => {
@@ -138,26 +175,44 @@ describe('acceptability filters', () => {
   });
 });
 
-describe('findCandidates (fallback)', () => {
-  it('does not query the fallback when the first provider leaves enough acceptable candidates', async () => {
+describe('findCandidates (per-kind provider chain)', () => {
+  const vid = (n: number, prefix: string) => many(n, prefix, { kind: 'video', durationSec: 8, ext: 'mp4' });
+
+  it('does not query a fallback for a kind the first provider already covers', async () => {
     const calls: string[] = [];
-    const r = await findCandidates(['a', 'b'], [fake('pexels', many(RULES.weakBelow, 'p'), calls), fake('pixabay', many(5, 'x'), calls)]);
-    assert.deepEqual(r.queried, ['pexels']);
-    assert.ok(calls.every((c) => c.startsWith('pexels')));
+    const r = await findCandidates(['a', 'b'], [fake('unsplash', many(RULES.weakBelow, 'p'), calls), fake('pexels', many(5, 'x'), calls)]);
+    assert.deepEqual(r.queried, ['unsplash']);
+    assert.ok(calls.every((c) => c.startsWith('unsplash')));
   });
 
   it('falls back to the next provider when the first is weak, keeping first-provider results ahead', async () => {
     const weak = [...many(RULES.weakBelow - 1, 'p'), ...many(6, 'bad', { tags: ['portrait'] }), cand({ id: 'small', width: 500, height: 900 })];
-    const r = await findCandidates(['a'], [fake('pexels', weak), fake('pixabay', many(3, 'x'))]);
-    assert.deepEqual(r.queried, ['pexels', 'pixabay']); // rejects don't count toward "enough"
-    assert.deepEqual(r.candidates.map((c) => c.provider), ['pexels', 'pexels', 'pixabay', 'pixabay', 'pixabay']);
+    const r = await findCandidates(['a'], [fake('unsplash', weak), fake('pexels', many(3, 'x'))]);
+    assert.deepEqual(r.queried, ['unsplash', 'pexels']); // rejects don't count toward "enough"
+    assert.deepEqual(r.candidates.map((c) => c.provider), ['unsplash', 'unsplash', 'pexels', 'pexels', 'pexels']);
+  });
+
+  it('photo source + video source: each is asked only for its own kind, and results alternate photo/video', async () => {
+    const calls: string[] = [];
+    const photos = fake('unsplash', [...many(5, 'p'), ...vid(2, 'ignored')], calls, ['photo']); // returns junk videos: must be ignored
+    const videos = fake('pixabay', [...vid(5, 'v'), ...many(3, 'ignoredphoto')], calls, ['video']);
+    const r = await findCandidates(['a'], [photos, videos]);
+    assert.deepEqual(r.queried, ['unsplash', 'pixabay']); // enough photos did NOT starve the video provider
+    assert.deepEqual(r.candidates.slice(0, 4).map((c) => `${c.provider}:${c.kind}`), ['unsplash:photo', 'pixabay:video', 'unsplash:photo', 'pixabay:video']);
+    assert.ok(r.candidates.every((c) => (c.provider === 'unsplash') === (c.kind === 'photo')));
+  });
+
+  it('back-fills with the other kind when one source has nothing', async () => {
+    const r = await findCandidates(['a'], [fake('unsplash', many(5, 'p'), [], ['photo']), fake('pixabay', [], [], ['video'])]);
+    assert.equal(r.candidates.length, 5);
+    assert.ok(r.candidates.every((c) => c.kind === 'photo'));
   });
 
   it('runs every query, dedupes across them, and skips a provider that errors', async () => {
     const calls: string[] = [];
-    const broken: StockProvider = { name: 'pexels', async search() { throw new Error('pexels: HTTP 401'); } };
-    const r = await findCandidates(['a', 'b'], [broken, fake('pixabay', many(2, 'x'), calls)]);
-    assert.deepEqual(calls, ['pixabay:a', 'pixabay:b']);
+    const broken: StockProvider = { name: 'unsplash', kinds: ['photo'], async search() { throw new Error('unsplash: HTTP 401'); } };
+    const r = await findCandidates(['a', 'b'], [broken, fake('pexels', many(2, 'x'), calls)]);
+    assert.deepEqual(calls, ['pexels:a', 'pexels:b']);
     assert.equal(r.warnings.length, 2);
     assert.deepEqual(r.candidates.map((c) => c.id), ['x0', 'x1']); // same hits from both queries appear once
   });
@@ -192,12 +247,19 @@ describe('un-sourced beats refuse to render', () => {
     assert.ok(!needsAsset(beat({ type: 'solid' }, [])));
   });
 
-  it('`studio render` on examples/w2-p6-stock.json fails loudly, naming the beats, without rendering', () => {
-    const r = run('examples/w2-p6-stock.json');
+  it('`studio render` fails loudly on a spec with un-sourced beats, naming them, without rendering', () => {
+    // Its own spec (not examples/w2-p6-stock.json, which changes as assets get picked).
+    const spec = JSON.parse(readFileSync(join(PROJECT_ROOT, 'examples/w2-p6-media.json'), 'utf8')) as VideoSpec;
+    spec.id = 'guard-test';
+    const wanted = ['hook', 'point', 'reframe', 'payoff', 'tease'];
+    for (const b of spec.beats) if (wanted.includes(b.id)) { b.visual = { type: 'solid', color: 'bg' }; b.search_queries = ['q']; }
+    const file = join(mkdtempSync(join(tmpdir(), 'ttyng-guard-')), 'guard-test.json');
+    writeFileSync(file, JSON.stringify(spec));
+    const r = run(file);
     assert.equal(r.status, 1);
     assert.match(r.stderr, /5 beats still need a still\/clip/);
-    for (const id of ['hook', 'point', 'reframe', 'payoff', 'tease']) assert.match(r.stderr, new RegExp(id));
-    assert.match(r.stderr, /studio assets examples\/w2-p6-stock\.json/);
+    for (const id of wanted) assert.match(r.stderr, new RegExp(id));
+    assert.match(r.stderr, /studio assets /);
     assert.ok(!/Render complete|rendered in/.test(r.stdout + r.stderr));
   });
 
@@ -212,8 +274,8 @@ describe('studio assets / --pick (end to end, mocked network)', () => {
   let mp4: Buffer;
   before(() => {
     const d = mkdtempSync(join(tmpdir(), 'ttyng-bytes-'));
-    execFileSync('ffmpeg', ['-v', 'error', '-y', '-f', 'lavfi', '-i', 'color=c=0x336699:s=108x192:d=1', '-frames:v', '1', join(d, 'a.png')]);
-    execFileSync('ffmpeg', ['-v', 'error', '-y', '-f', 'lavfi', '-i', 'color=c=0x996633:s=108x192:d=1:r=30', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', join(d, 'a.mp4')]);
+    execFileSync('ffmpeg', ['-v', 'error', '-y', '-f', 'lavfi', '-i', 'color=c=0x336699:s=1080x1920:d=1', '-frames:v', '1', join(d, 'a.png')]);
+    execFileSync('ffmpeg', ['-v', 'error', '-y', '-f', 'lavfi', '-i', 'color=c=0x996633:s=1080x1920:d=1:r=30', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', join(d, 'a.mp4')]);
     png = readFileSync(join(d, 'a.png'));
     mp4 = readFileSync(join(d, 'a.mp4'));
   });
@@ -227,8 +289,13 @@ describe('studio assets / --pick (end to end, mocked network)', () => {
     const root = mkdtempSync(join(tmpdir(), 'ttyng-assets-'));
     cpSync(join(PROJECT_ROOT, 'brand'), join(root, 'brand'), { recursive: true });
     mkdirSync(join(root, 'assets', 'stills'), { recursive: true });
-    const spec = JSON.parse(readFileSync(join(PROJECT_ROOT, 'examples/w2-p6-stock.json'), 'utf8')) as VideoSpec;
+    // Built from the committed media fixture, not examples/w2-p6-stock.json (which changes as assets get picked).
+    const spec = JSON.parse(readFileSync(join(PROJECT_ROOT, 'examples/w2-p6-media.json'), 'utf8')) as VideoSpec;
     spec.id = 'pickme';
+    for (const b of spec.beats) {
+      if (b.id === 'hook') { b.visual = { type: 'solid', color: 'bg' }; b.search_queries = ['bedroom window night', 'dark room curtains']; }
+      if (b.id === 'point') { b.visual = { type: 'solid', color: 'bg' }; b.search_queries = ['hands fidgeting']; }
+    }
     spec.beats = spec.beats.filter((b) => ['hook', 'point', 'series_intro'].includes(b.id));
     spec.beats.find((b) => b.id === 'series_intro')!.search_queries = ['countdown six']; // typography beat: literal reading, also needs an asset
     spec.beats.find((b) => b.id === 'point')!.visual = { type: 'still', asset: 'stills/already.jpg', motion: 'pan_left' }; // has an asset -> skipped
@@ -241,7 +308,7 @@ describe('studio assets / --pick (end to end, mocked network)', () => {
   it('downloads up to 4 per beat, labels a sheet, skips beats that have assets, and NEVER picks', async () => {
     const { root, spec, specFile } = setup();
     const specBefore = readFileSync(specFile, 'utf8');
-    const providers = [fake('pexels', [...photoHits('p', 6), clipHit('v1')])];
+    const providers = [fake('pexels', [...photoHits('p', 6), clipHit('v1')], [], ['photo', 'video'])];
     const r = await searchAssets(JSON.parse(specBefore), deps(root, providers));
 
     assert.deepEqual(r.beats.map((b) => b.beat_id), ['hook', 'series_intro']);
@@ -261,6 +328,23 @@ describe('studio assets / --pick (end to end, mocked network)', () => {
     assert.ok(!existsSync(join(root, 'assets', 'clips')));
     assert.ok(!existsSync(join(root, 'assets', 'index.json')));
     assert.equal(spec.beats[0].visual.type, 'solid');
+  });
+
+  it('--beat (only) searches just that beat, leaves other beats\' candidates alone, and writes its own sheet', async () => {
+    const { root, spec } = setup();
+    const full = await searchAssets(spec, deps(root, [fake('pexels', photoHits('p', 6))]));
+    const otherFiles = readdirSync(join(root, 'assets/candidates/hook')).sort();
+    const otherSheetSize = statSync(full.sheet!).size;
+
+    const calls: string[] = [];
+    const r = await searchAssets(spec, { ...deps(root, [fake('pexels', photoHits('q', 6), calls)]), only: ['series_intro'] });
+    assert.deepEqual(r.beats.map((b) => b.beat_id), ['series_intro']);
+    assert.ok(calls.every((c) => c.includes('countdown')), 'only that beat\'s queries ran');
+    assert.deepEqual(readdirSync(join(root, 'assets/candidates/hook')).sort(), otherFiles);
+    assert.equal(r.sheet, join(root, 'out', 'pickme', 'asset-candidates-series_intro.jpg'));
+    assert.equal(statSync(full.sheet!).size, otherSheetSize, 'the whole-spec sheet is not overwritten');
+    await assert.rejects(searchAssets(spec, { ...deps(root, []), only: ['nope'] }), /no beat with id/);
+    await assert.rejects(searchAssets(spec, { ...deps(root, []), only: ['point'] }), /already has a still\/clip/);
   });
 
   it('falls back to the second provider for a weak beat and says so', async () => {
@@ -288,13 +372,13 @@ describe('studio assets / --pick (end to end, mocked network)', () => {
   it('--pick moves the file, rewrites the beat, and appends a full index entry (and keeps old entries)', async () => {
     const { root, spec, specFile } = setup();
     appendLibrary(root, 'stills/keep.jpg', { provider: 'x', source_url: 'u', creator: 'c', license: 'l', search_queries: ['zzz'], picked_at: 't0' });
-    const providers = [fake('pexels', [...photoHits('p', 2), clipHit('v1')])];
+    const providers = [fake('pexels', [...photoHits('p', 2), clipHit('v1')], [], ['photo', 'video'])];
     await searchAssets(spec, deps(root, providers));
 
     // hook: candidate 1 (a photo); series_intro: the clip candidate
     const meta = JSON.parse(readFileSync(join(root, 'assets/candidates/series_intro/candidates.json'), 'utf8'));
     const clipN = meta.candidates.find((c: { kind: string }) => c.kind === 'video').n;
-    const res = pickAssets(root, specFile, { hook: 1, series_intro: clipN }, () => '2026-01-01T00:00:00.000Z');
+    const res = await pickAssets(root, specFile, { hook: 1, series_intro: clipN }, { now: () => '2026-01-01T00:00:00.000Z' });
 
     assert.deepEqual(res.map((r) => r.asset), ['stills/pexels-p0.jpg', 'clips/pexels-v1.mp4']);
     assert.ok(existsSync(join(root, 'assets/stills/pexels-p0.jpg')) && existsSync(join(root, 'assets/clips/pexels-v1.mp4')));
@@ -321,11 +405,11 @@ describe('studio assets / --pick (end to end, mocked network)', () => {
     const before = readFileSync(specFile, 'utf8');
     const libBefore = readFileSync(join(root, 'assets/index.json'), 'utf8');
 
-    assert.throws(() => pickAssets(root, specFile, { hook: 1, series_intro: 99 }), /no candidate #99/);
-    assert.throws(() => pickAssets(root, specFile, { nope: 1 }), /no beat with id/);
+    await assert.rejects(pickAssets(root, specFile, { hook: 1, series_intro: 99 }), /no candidate #99/);
+    await assert.rejects(pickAssets(root, specFile, { nope: 1 }), /no beat with id/);
     assert.equal(readFileSync(specFile, 'utf8'), before, 'a failed pick must not change the spec');
 
-    const res = pickAssets(root, specFile, { hook: 1 });
+    const res = await pickAssets(root, specFile, { hook: 1 });
     assert.deepEqual(res, [{ beat_id: 'hook', asset: 'stills/old.jpg', moved: false }]);
     assert.equal(readFileSync(join(root, 'assets/index.json'), 'utf8'), libBefore);
     assert.equal((JSON.parse(readFileSync(specFile, 'utf8')) as VideoSpec).beats[0].visual.type, 'still');
@@ -349,6 +433,62 @@ describe('studio assets / --pick (end to end, mocked network)', () => {
       return raw[0] + raw[1] + raw[2];
     };
     for (const tile of [0, 1, 2]) assert.ok(mean(tile * 270 + 100) > 60, `tile ${tile} is black`);
+  });
+
+  it('drops a download whose REAL size is below the minimum even if the provider claimed otherwise', async () => {
+    const { root, spec } = setup();
+    const liar: StockProvider = { name: 'liar', kinds: ['photo'], async search(q) { return [cand({ id: 'x', provider: 'liar', query: q })]; } };
+    // the mock serves a 1080x1920 png for .jpg urls; make it tiny for this provider
+    const tiny = mkdtempSync(join(tmpdir(), 'ttyng-tiny-'));
+    execFileSync('ffmpeg', ['-v', 'error', '-y', '-f', 'lavfi', '-i', 'color=c=red:s=108x192:d=1', '-frames:v', '1', join(tiny, 't.png')]);
+    const tinyBytes = readFileSync(join(tiny, 't.png'));
+    const r = await searchAssets(spec, { ...deps(root, [liar]), fetchFn: (async () => new Response(new Uint8Array(tinyBytes))) as typeof fetch });
+    const hook = r.beats.find((b) => b.beat_id === 'hook')!;
+    assert.equal(hook.candidates.length, 0);
+    assert.ok(hook.warnings.some((w) => /real file is 108x192/.test(w)), hook.warnings.join('|'));
+    assert.deepEqual(readdirSync(join(root, 'assets/candidates/hook')), ['candidates.json']); // the bad file is gone
+  });
+
+  it('does not offer an under-resolution library asset for reuse (old picks are re-sourced)', async () => {
+    const { root, spec } = setup();
+    const tiny = mkdtempSync(join(tmpdir(), 'ttyng-tiny-'));
+    execFileSync('ffmpeg', ['-v', 'error', '-y', '-f', 'lavfi', '-i', 'color=c=red:s=853x1280:d=1', '-frames:v', '1', join(root, 'assets/stills/old-lowres.jpg')]);
+    appendLibrary(root, 'stills/old-lowres.jpg', { provider: 'pixabay', source_url: 'u', creator: 'c', license: 'l', search_queries: ['bedroom window night'], picked_at: 't' });
+    void tiny;
+    const r = await searchAssets(spec, deps(root, [fake('unsplash', photoHits('p', 4))]));
+    assert.ok(!r.beats.find((b) => b.beat_id === 'hook')!.candidates.some((c) => c.existing));
+    assert.ok(r.skipped.some((x) => /old-lowres\.jpg not offered again \(too small \(853x1280\)\)/.test(x)), r.skipped.join('|'));
+  });
+
+  it('--pick pings the provider\'s download tracker for a fresh pick, and only then; a failed ping warns but keeps the pick', async () => {
+    const { root, spec, specFile } = setup();
+    const pings: string[] = [];
+    const tracked = (fail = false): StockProvider => ({
+      ...fake('unsplash', [cand({ id: 'u1', trackUrl: 'https://api.unsplash.com/photos/u1/download' })], [], ['photo']),
+      async trackDownload(url) { pings.push(url); if (fail) throw new Error('unsplash: HTTP 500'); },
+    });
+    const p = tracked();
+    await searchAssets(spec, deps(root, [p]));
+    const meta = JSON.parse(readFileSync(join(root, 'assets/candidates/hook/candidates.json'), 'utf8'));
+    assert.equal(meta.candidates[0].track_url, 'https://api.unsplash.com/photos/u1/download');
+
+    const res = await pickAssets(root, specFile, { hook: 1 }, { providers: [p] });
+    assert.deepEqual(pings, ['https://api.unsplash.com/photos/u1/download']);
+    assert.equal(res[0].tracked, true);
+
+    // A failed ping: the pick still stands (file moved, index written), with a warning.
+    const { root: root2, spec: spec2, specFile: specFile2 } = setup();
+    await searchAssets(spec2, deps(root2, [tracked(true)]));
+    const res2 = await pickAssets(root2, specFile2, { hook: 1 }, { providers: [tracked(true)] });
+    assert.equal(res2[0].tracked, false);
+    assert.match(res2[0].warning!, /download tracking for unsplash failed/);
+    assert.ok('stills/unsplash-u1.jpg' in readLibrary(root2));
+
+    // No provider configured for it: warns, doesn't crash.
+    const { root: root3, spec: spec3, specFile: specFile3 } = setup();
+    await searchAssets(spec3, deps(root3, [tracked()]));
+    const res3 = await pickAssets(root3, specFile3, { hook: 1 });
+    assert.match(res3[0].warning!, /no unsplash provider is configured/);
   });
 
   it('appendLibrary refuses to overwrite an existing key', () => {
