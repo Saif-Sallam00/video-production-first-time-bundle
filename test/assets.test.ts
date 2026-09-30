@@ -9,9 +9,9 @@ import { pixabay } from '../src/assets/pixabay.ts';
 import { unsplash, wantedWidth } from '../src/assets/unsplash.ts';
 import type { Candidate, Kind, StockProvider } from '../src/assets/provider.ts';
 import { appendLibrary, readLibrary, type LibraryEntry } from '../src/assets/library.ts';
-import { needsAsset, pickAssets, searchAssets } from '../src/assets/run.ts';
+import { beatSecondsFor, needsAsset, pickAssets, searchAssets } from '../src/assets/run.ts';
 import { buildCandidateSheet } from '../src/assets/sheet.ts';
-import { findCandidates, mentionsCloseUpFace, queryOverlap, rejectReason, reuseMatches, RULES } from '../src/assets/select.ts';
+import { findCandidates, maxVideoDuration, mentionsCloseUpFace, queryOverlap, rejectReason, reuseMatches, RULES } from '../src/assets/select.ts';
 import type { VideoSpec } from '../src/types.ts';
 import { PROJECT_ROOT } from '../src/validate.ts';
 import { project } from './helpers.ts';
@@ -215,6 +215,76 @@ describe('findCandidates (per-kind provider chain)', () => {
     assert.deepEqual(calls, ['pexels:a', 'pexels:b']);
     assert.equal(r.warnings.length, 2);
     assert.deepEqual(r.candidates.map((c) => c.id), ['x0', 'x1']); // same hits from both queries appear once
+  });
+});
+
+describe('video size/duration cap', () => {
+  const video = (o: Partial<Candidate> = {}) => cand({ kind: 'video', ext: 'mp4', durationSec: 6, sizeBytes: 5_000_000, ...o });
+  const MB = 1_000_000;
+
+  it('pixabay picks the qualifying variant with the FEWEST BYTES, not the first that clears 1080x1920', async () => {
+    const hit = (videos: object) => ({ hits: [{ id: 1, pageURL: 'p', tags: 'x', duration: 8, user: 'u', user_id: 1, videos }] });
+    const search = (videos: object) =>
+      pixabay('K', (async (url: string) => Response.json(url.includes('/videos/') ? hit(videos) : { hits: [] })) as typeof fetch, ['video']).search('q');
+    // large is 90 MB, medium meets the same resolution in 12 MB, small doesn't qualify
+    let [c] = await search({
+      large: { url: 'https://v/large.mp4', width: 1080, height: 1920, size: 90 * MB },
+      medium: { url: 'https://v/medium.mp4', width: 1080, height: 1920, size: 12 * MB },
+      small: { url: 'https://v/small.mp4', width: 720, height: 1280, size: 3 * MB },
+    });
+    assert.deepEqual([c.downloadUrl, c.sizeBytes], ['https://v/medium.mp4', 12 * MB]);
+    // a variant that reports no size sorts last
+    [c] = await search({
+      large: { url: 'https://v/nosize.mp4', width: 2160, height: 3840, size: 0 },
+      medium: { url: 'https://v/sized.mp4', width: 1080, height: 1920, size: 20 * MB },
+    });
+    assert.equal(c.downloadUrl, 'https://v/sized.mp4');
+    // nothing qualifies: still returned (select.ts rejects it on size), never crashes
+    [c] = await search({ small: { url: 'https://v/s.mp4', width: 720, height: 1280, size: 3 * MB } });
+    assert.match(rejectReason(c)!, /too small/);
+  });
+
+  it('maxVideoDuration: beat length + slack, never above 10 s, never below the 3 s minimum', () => {
+    assert.equal(maxVideoDuration(undefined), 10);
+    assert.equal(maxVideoDuration(4), 4 + RULES.videoSlackSec);
+    assert.equal(maxVideoDuration(2.45), 2.45 + RULES.videoSlackSec);
+    assert.equal(maxVideoDuration(8), 10);
+    assert.equal(maxVideoDuration(0.2), 0.2 + RULES.videoSlackSec); // the slack keeps even a very short beat above the 3 s minimum clip
+  });
+
+  it('rejects a video over 15 MB or over the beat-relative duration cap, and passes one within both', () => {
+    assert.match(rejectReason(video({ sizeBytes: 16 * MB }))!, /^video too large \(16\.0 MB > 15 MB\)/);
+    assert.equal(rejectReason(video({ sizeBytes: 15 * MB })), null); // the limit itself is fine
+    assert.equal(rejectReason(video({ sizeBytes: undefined })), null); // unknown: checked again at download time
+    assert.equal(rejectReason(video({ durationSec: 8 }), 4), null); // 8 s <= 4 + 4
+    assert.match(rejectReason(video({ durationSec: 20 }), 4)!, /^video too long \(20 s > 8\.0 s for a 4\.0 s beat\)/);
+    assert.match(rejectReason(video({ durationSec: 12 }))!, /^video too long \(12 s > 10\.0 s\)/); // no beat known: absolute cap
+    assert.equal(rejectReason(video({ durationSec: 10 })), null);
+    assert.equal(rejectReason(cand({ width: 1080, height: 1920 }), 4), null); // photos are never capped
+  });
+
+  it('findCandidates leaves capped videos out and warns once, naming them', async () => {
+    const provider = fake('pixabay', [
+      video({ id: 'ok' }),
+      video({ id: 'huge', sizeBytes: 143 * MB }),
+      video({ id: 'long', durationSec: 20 }),
+    ], [], ['video']);
+    const r = await findCandidates(['q'], [provider], 4);
+    assert.deepEqual(r.candidates.map((c) => c.id), ['ok']);
+    assert.equal(r.warnings.length, 1);
+    assert.match(r.warnings[0], /skipped 2 videos over the size\/duration cap/);
+    assert.match(r.warnings[0], /pixabay huge: video too large \(143\.0 MB/);
+    assert.match(r.warnings[0], /pixabay long: video too long \(20 s > 8\.0 s for a 4\.0 s beat\)/);
+  });
+
+  it('beatSecondsFor prefers the real timeline over the character estimate', () => {
+    const root = mkdtempSync(join(tmpdir(), 'ttyng-beatsec-'));
+    const spec = { id: 'bs', voice: {}, beats: [{ id: 'a', vo: 'x'.repeat(157) }, { id: 'b', vo: 'y'.repeat(31) }] } as unknown as VideoSpec;
+    const est = beatSecondsFor(root, spec); // no timeline yet: ~15.7 chars/s -> ~10 s and ~2 s
+    assert.ok(Math.abs(est.a - 10) < 0.1 && Math.abs(est.b - 2) < 0.1, JSON.stringify(est));
+    mkdirSync(join(root, 'out', 'bs'), { recursive: true });
+    writeFileSync(join(root, 'out', 'bs', 'timeline.json'), JSON.stringify({ beats: [{ id: 'a', start: 0, end: 3.5 }, { id: 'b', start: 3.5, end: 9 }] }));
+    assert.deepEqual(beatSecondsFor(root, spec), { a: 3.5, b: 5.5 });
   });
 });
 
@@ -489,6 +559,36 @@ describe('studio assets / --pick (end to end, mocked network)', () => {
     await searchAssets(spec3, deps(root3, [tracked()]));
     const res3 = await pickAssets(root3, specFile3, { hook: 1 });
     assert.match(res3[0].warning!, /no unsplash provider is configured/);
+  });
+
+  it('searchAssets: a video longer than the beat needs is skipped and warned about, never downloaded', async () => {
+    const { root, spec } = setup();
+    const downloaded: string[] = [];
+    const fetchFn = (async (url: string) => { downloaded.push(url); return new Response(new Uint8Array(url.endsWith('.mp4') ? mp4 : png)); }) as typeof fetch;
+    const long = cand({ id: 'long9', kind: 'video', durationSec: 9, sizeBytes: 5_000_000, downloadUrl: 'https://cdn/long9.mp4', ext: 'mp4' });
+    const fits = cand({ id: 'fits5', kind: 'video', durationSec: 5, sizeBytes: 5_000_000, downloadUrl: 'https://cdn/fits5.mp4', ext: 'mp4' });
+    const r = await searchAssets(spec, { ...deps(root, [fake('pixabay', [long, fits], [], ['video'])]), fetchFn, beatSeconds: { hook: 2, series_intro: 30 } });
+    const hook = r.beats.find((b) => b.beat_id === 'hook')!; // 2 s beat -> 6 s cap: 5 s fits, 9 s doesn't
+    assert.deepEqual(hook.candidates.map((c) => c.id), ['fits5']);
+    assert.ok(hook.warnings.some((w) => /skipped 1 video over the size\/duration cap.*long9/.test(w)), hook.warnings.join('|'));
+    const intro = r.beats.find((b) => b.beat_id === 'series_intro')!; // long beat: both fit under the 10 s ceiling
+    assert.deepEqual(intro.candidates.map((c) => c.id).sort(), ['fits5', 'long9']);
+    assert.equal(downloaded.filter((u) => u.includes('long9')).length, 1, 'long9 downloaded only for the beat that can use it');
+  });
+
+  it('download refuses an oversize video by Content-Length (without reading it) and by received size, and saves nothing', async () => {
+    const { root, spec } = setup();
+    const video = (id: string) => cand({ id, kind: 'video', durationSec: 6, downloadUrl: `https://cdn/${id}.mp4`, ext: 'mp4' }); // no sizeBytes: provider didn't say
+    const fetchFn = (async (url: string) => {
+      if (url.includes('declared')) return new Response(new Uint8Array(10), { headers: { 'content-length': String(20_000_000) } });
+      if (url.includes('silent')) return new Response(new Uint8Array(RULES.maxVideoBytes + 1)); // no Content-Length header
+      return new Response(new Uint8Array(mp4));
+    }) as typeof fetch;
+    const r = await searchAssets(spec, { ...deps(root, [fake('pixabay', [video('declared'), video('silent'), video('fine')], [], ['video'])]), fetchFn });
+    const hook = r.beats.find((b) => b.beat_id === 'hook')!;
+    assert.deepEqual(hook.candidates.map((c) => c.id), ['fine']);
+    assert.equal(hook.warnings.filter((w) => /too large/.test(w)).length, 2);
+    assert.deepEqual(readdirSync(join(root, 'assets/candidates/hook')).sort(), ['1-pixabay-fine.mp4', 'candidates.json']);
   });
 
   it('appendLibrary refuses to overwrite an existing key', () => {

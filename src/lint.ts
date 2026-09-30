@@ -24,7 +24,7 @@ const CTA_DEFAULT_DURATION_SEC = 2.5; // schema default for cta_pop.duration_sec
 const VO_LONG_CHARS = 1100;
 // Section 9: ~1,100 characters is roughly 70 s. Places beats and the CTA in time until real TTS
 // timings exist (they come from the timeline step).
-const EST_CHARS_PER_SEC = VO_LONG_CHARS / 70;
+export const EST_CHARS_PER_SEC = VO_LONG_CHARS / 70;
 const BATCH_REPEAT_LIMIT = 3;
 const CAPTIONS_HIDDEN_OVERLAP_MIN = 0.5;
 

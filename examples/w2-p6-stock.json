@@ -17,8 +17,8 @@
       "role": "hook",
       "vo": "Your first time will not look like what you've seen on a screen — and that's good news.",
       "visual": {
-        "type": "solid",
-        "color": "bg"
+        "type": "still",
+        "asset": "stills/unsplash-F2SrBdv9swk.jpg"
       },
       "overlay": {
         "text": "Your first time won't look like what you've seen on a screen.",
@@ -47,8 +47,8 @@
       "role": "body",
       "vo": "Six: there'll be pauses. Something will be awkward. Somebody might laugh.",
       "visual": {
-        "type": "solid",
-        "color": "bg"
+        "type": "still",
+        "asset": "stills/unsplash-2-612OQxktw.jpg"
       },
       "overlay": {
         "text": "Pauses. Awkwardness. A laugh.",
@@ -82,8 +82,8 @@
       "role": "payoff",
       "vo": "So walk in expecting real, not a highlight reel.",
       "visual": {
-        "type": "solid",
-        "color": "bg"
+        "type": "still",
+        "asset": "stills/unsplash-mBWjDIHnVA4.jpg"
       },
       "visual_intent": "Walking into something calmly: an open doorway with warm light.",
       "search_queries": [
@@ -108,8 +108,8 @@
       "role": "tease",
       "vo": "Number five next — it's the one that takes all the pressure off you.",
       "visual": {
-        "type": "solid",
-        "color": "bg"
+        "type": "still",
+        "asset": "stills/unsplash-Qmbp26bep6k.jpg"
       },
       "visual_intent": "Silhouette walking away, backlit, anonymous.",
       "search_queries": [

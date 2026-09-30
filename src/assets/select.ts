@@ -11,6 +11,12 @@ export const RULES = {
   minAspect: 1.4,
   /** A clip shorter than this loops so often it reads as a glitch. */
   minVideoSec: 3,
+  /** Skip (and warn about) any video larger than this before downloading it: a picked clip lands in the repo. */
+  maxVideoBytes: 15_000_000,
+  /** Absolute ceiling on a video's length. */
+  maxVideoSec: 10,
+  /** ...and it is also capped at the beat's own length plus this, so a 4 s beat never pulls a 20 s clip. */
+  videoSlackSec: 4,
   /** If a provider leaves fewer than this many acceptable candidates for a beat, the next provider is queried too. */
   weakBelow: 3,
   /** New candidates downloaded per beat. */
@@ -46,12 +52,30 @@ export function sizeReject(width: number, height: number): string | null {
   return null;
 }
 
-/** Why a candidate is unacceptable, or null if it is fine. */
-export function rejectReason(c: Candidate): string | null {
+/** The longest video worth downloading for a beat of `beatSec` seconds (unknown: just the absolute ceiling). */
+export function maxVideoDuration(beatSec?: number): number {
+  if (beatSec === undefined) return RULES.maxVideoSec;
+  return Math.min(RULES.maxVideoSec, Math.max(RULES.minVideoSec, beatSec + RULES.videoSlackSec));
+}
+
+/** Reasons that mean "fine in principle, but too heavy to bother downloading"; these are warned about, not silently dropped. */
+export const CAP_REASON = /^video too (large|long)/;
+
+/** Why a candidate is unacceptable, or null if it is fine. `beatSec` is the length of the beat it is for, when known. */
+export function rejectReason(c: Candidate, beatSec?: number): string | null {
   const size = sizeReject(c.width, c.height);
   if (size) return size;
   if (c.kind === 'video' && (c.durationSec ?? 0) < RULES.minVideoSec) return 'clip too short';
   if (mentionsCloseUpFace(c.tags)) return 'close-up face tags';
+  if (c.kind === 'video') {
+    if (c.sizeBytes !== undefined && c.sizeBytes > RULES.maxVideoBytes) {
+      return `video too large (${(c.sizeBytes / 1e6).toFixed(1)} MB > ${RULES.maxVideoBytes / 1e6} MB)`;
+    }
+    const maxSec = maxVideoDuration(beatSec);
+    if ((c.durationSec ?? 0) > maxSec) {
+      return `video too long (${c.durationSec} s > ${maxSec.toFixed(1)} s${beatSec !== undefined ? ` for a ${beatSec.toFixed(1)} s beat` : ''})`;
+    }
+  }
   return null;
 }
 
@@ -97,10 +121,11 @@ export interface Found {
  * kinds when both exist; the caller downloads the first `RULES.perBeat` that succeed. A provider that
  * errors is skipped with a warning.
  */
-export async function findCandidates(queries: string[], providers: StockProvider[]): Promise<Found> {
+export async function findCandidates(queries: string[], providers: StockProvider[], beatSec?: number): Promise<Found> {
   const acceptable: Record<Kind, Candidate[]> = { photo: [], video: [] };
   const queried: string[] = [];
   const warnings: string[] = [];
+  const capped: string[] = [];
   for (const provider of providers) {
     const wanted = (['photo', 'video'] as Kind[]).filter((k) => provider.kinds.includes(k) && acceptable[k].length < RULES.weakBelow);
     if (!wanted.length) continue;
@@ -114,7 +139,16 @@ export async function findCandidates(queries: string[], providers: StockProvider
         perQuery.push([]);
       }
     }
-    for (const c of interleave(perQuery)) if (wanted.includes(c.kind) && !rejectReason(c)) acceptable[c.kind].push(c);
+    for (const c of interleave(perQuery)) {
+      if (!wanted.includes(c.kind)) continue;
+      const why = rejectReason(c, beatSec);
+      if (!why) acceptable[c.kind].push(c);
+      else if (CAP_REASON.test(why)) capped.push(`${c.provider} ${c.id}: ${why}`);
+    }
+  }
+  if (capped.length) {
+    const shown = capped.slice(0, 4).join('; ');
+    warnings.push(`skipped ${capped.length} video${capped.length === 1 ? '' : 's'} over the size/duration cap (${shown}${capped.length > 4 ? `; +${capped.length - 4} more` : ''})`);
   }
   const candidates: Candidate[] = [];
   for (let i = 0; i < Math.max(acceptable.photo.length, acceptable.video.length); i++) {

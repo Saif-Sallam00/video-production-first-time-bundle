@@ -5,7 +5,9 @@ import type { Beat, Tokens, VideoSpec } from '../types.ts';
 import { appendLibrary, readLibrary, type LibraryEntry } from './library.ts';
 import type { Candidate, FetchFn, StockProvider } from './provider.ts';
 import { buildCandidateSheet, type SheetTile } from './sheet.ts';
+import { EST_CHARS_PER_SEC } from '../lint.ts';
 import { findCandidates, reuseMatches, RULES, sizeReject } from './select.ts';
+import type { Timeline } from '../timeline.ts';
 
 /** What `assets/candidates/<beat_id>/candidates.json` holds for each numbered candidate; `--pick` reads it back. */
 export interface StoredCandidate {
@@ -37,6 +39,8 @@ export interface SearchDeps {
   tokens: Tokens;
   providers: StockProvider[];
   fetchFn?: FetchFn;
+  /** Seconds each beat lasts, by id (caps the length of video worth downloading). Default: `beatSecondsFor`. */
+  beatSeconds?: Record<string, number>;
   /** Search only these beat ids (an unknown id throws). The other beats' candidates are left as they are. */
   only?: string[];
 }
@@ -54,11 +58,34 @@ export function probeSize(file: string): { width: number; height: number } {
   return { width, height };
 }
 
-async function download(fetchFn: FetchFn, url: string, dest: string): Promise<void> {
+/**
+ * Seconds each beat lasts. The real figure from `out/<id>/timeline.json` when a timeline has been built
+ * (so the cap follows the actual voiceover); otherwise the same characters-per-second estimate the lint uses.
+ */
+export function beatSecondsFor(root: string, spec: VideoSpec): Record<string, number> {
+  const file = join(root, 'out', spec.id, 'timeline.json');
+  if (existsSync(file)) {
+    const tl = JSON.parse(readFileSync(file, 'utf8')) as Timeline;
+    return Object.fromEntries(tl.beats.map((b) => [b.id, b.end - b.start]));
+  }
+  const cps = EST_CHARS_PER_SEC * (spec.voice?.speed ?? 1);
+  return Object.fromEntries(spec.beats.map((b) => [b.id, b.vo.length / cps]));
+}
+
+/** Downloads `url` to `dest`. With `maxBytes`, refuses a body larger than that: by Content-Length before reading it, else by the size actually received. */
+async function download(fetchFn: FetchFn, url: string, dest: string, maxBytes?: number): Promise<void> {
   const res = await fetchFn(url);
   if (!res.ok) throw new Error(`download failed: HTTP ${res.status} for ${url}`);
+  const tooBig = (n: number) => `too large (${(n / 1e6).toFixed(1)} MB > ${(maxBytes! / 1e6).toFixed(0)} MB); not saved`;
+  const declared = Number(res.headers.get('content-length'));
+  if (maxBytes !== undefined && declared > maxBytes) {
+    await res.body?.cancel();
+    throw new Error(`${url}: ${tooBig(declared)}`);
+  }
+  const body = Buffer.from(await res.arrayBuffer());
+  if (maxBytes !== undefined && body.length > maxBytes) throw new Error(`${url}: ${tooBig(body.length)}`);
   mkdirSync(dirname(dest), { recursive: true });
-  writeFileSync(dest, Buffer.from(await res.arrayBuffer()));
+  writeFileSync(dest, body);
 }
 
 /**
@@ -70,6 +97,7 @@ export async function searchAssets(spec: VideoSpec, deps: SearchDeps): Promise<{
   const { root, tokens, providers } = deps;
   const fetchFn = deps.fetchFn ?? fetch;
   const library = readLibrary(root);
+  const beatSeconds = deps.beatSeconds ?? beatSecondsFor(root, spec);
   const beats: BeatResult[] = [];
   const skipped: string[] = [];
   for (const id of deps.only ?? []) {
@@ -105,7 +133,7 @@ export async function searchAssets(spec: VideoSpec, deps: SearchDeps): Promise<{
       });
     }
 
-    const found = await findCandidates(queries, providers);
+    const found = await findCandidates(queries, providers, beatSeconds[beat.id]);
     const dir = candidatesDir(root, beat.id);
     rmSync(dir, { recursive: true, force: true }); // candidates are disposable; a re-run starts clean
     const warnings = [...found.warnings];
@@ -115,7 +143,7 @@ export async function searchAssets(spec: VideoSpec, deps: SearchDeps): Promise<{
       const n = stored.length + 1;
       const file = `candidates/${beat.id}/${n}-${c.provider}-${c.id}.${c.ext}`;
       try {
-        await download(fetchFn, c.downloadUrl, join(root, 'assets', file));
+        await download(fetchFn, c.downloadUrl, join(root, 'assets', file), c.kind === 'video' ? RULES.maxVideoBytes : undefined);
       } catch (e) {
         warnings.push((e as Error).message);
         continue;

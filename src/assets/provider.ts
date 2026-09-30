@@ -18,6 +18,8 @@ export interface Candidate {
   width: number;
   height: number;
   durationSec?: number;
+  /** Size in bytes of the file we would download, when the provider tells us (used to skip huge videos before downloading). */
+  sizeBytes?: number;
   creator: string;
   creatorUrl?: string;
   license: string;

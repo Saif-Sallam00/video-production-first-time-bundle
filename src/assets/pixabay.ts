@@ -38,13 +38,19 @@ export function pixabay(apiKey: string, fetchFn: FetchFn = fetch, kinds: Kind[] 
         });
       }
       for (const h of videos.hits ?? []) {
+        // Of the variants that meet 1080x1920, take the one with the fewest BYTES (Pixabay's `large` can be
+        // 100+ MB for the same picture a `medium` delivers in a fifth of that); resolution only breaks ties.
+        // A variant that reports no size sorts last. If none qualifies, the first is returned and rejected by select.ts.
         const sizes = ['large', 'medium', 'small'].map((k) => h.videos?.[k]).filter((s: any) => s?.url);
-        const big = sizes.filter((s: any) => s.width >= 1080 && s.height >= 1920).sort((a: any, b: any) => a.width * a.height - b.width * b.height);
+        const bytes = (s: any) => (s.size > 0 ? s.size : Number.POSITIVE_INFINITY);
+        const big = sizes
+          .filter((s: any) => s.width >= 1080 && s.height >= 1920)
+          .sort((a: any, b: any) => bytes(a) - bytes(b) || a.width * a.height - b.width * b.height);
         const file = big[0] ?? sizes[0];
         if (!file) continue;
         out.push({
           provider: 'pixabay', id: String(h.id), kind: 'video', pageUrl: h.pageURL, downloadUrl: file.url, ext: 'mp4',
-          width: file.width, height: file.height, durationSec: h.duration, creator: h.user, creatorUrl: creatorUrl(h),
+          width: file.width, height: file.height, durationSec: h.duration, ...(file.size > 0 ? { sizeBytes: file.size } : {}), creator: h.user, creatorUrl: creatorUrl(h),
           license: LICENSE, tags: tagList(h.tags), query,
         });
       }
