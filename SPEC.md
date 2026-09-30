@@ -107,8 +107,8 @@ Kokoro runs as a Python subprocess rather than kokoro-js. kokoro-js returns audi
 | `studio render <spec>` | Renders the HyperFrames composition from `timeline.json` to `out/<id>/<id>.mp4`. `--preview` opens the live preview with the safe-zone overlay visible. |
 | `studio qa <spec>` | Currently just gate 7 (section 10): extracts frames from the rendered `<id>.mp4` and writes `out/<id>/contact-sheet.jpg`. The rest of the QA gates and `qa.json` are still M6 future work. |
 | `studio make <spec\|dir>` | validate → voice → timeline → render → qa. For a dir, processes every spec and runs the batch lint. |
-| `studio assets <spec>` | M5b (spec only, not yet built). For each beat with `search_queries` and no asset, queries Pexels (Pixabay fallback) for portrait video/images, downloads up to 4 candidates into `assets/candidates/<beat_id>/`, builds a labeled contact sheet. Never auto-picks. |
-| `studio assets --pick <spec> <beat_id>=<n> ...` | M5b (spec only, not yet built). Moves the chosen candidate `<n>` for each `<beat_id>` into the asset library and writes its path into the spec. |
+| `studio assets <spec>` | M5b. For each beat with `search_queries` and no still/clip yet, offers matching library assets plus up to 4 new candidates from Pexels (Pixabay fallback) into `assets/candidates/<beat_id>/`, and builds `out/<id>/asset-candidates.jpg`. Never picks. |
+| `studio assets --pick <spec> <beat_id>=<n> ...` | M5b. Moves the chosen candidate `<n>` for each `<beat_id>` into the asset library, writes its path into the spec and appends `assets/index.json`. |
 
 ## 5. Timing model
 
@@ -264,7 +264,7 @@ Each milestone ends with a command that works on `examples/w2-p6.json`.
 M3 and M4 run back to back: the goal is the first real rendered MP4 of the fixture, not a milestone-by-milestone pause. After that:
 
 5. **M5 Media**: `still` (all motions) and `clip` backgrounds, grade layer, optional music with ducking. **Done.** Second fixture `examples/w2-p6-media.json` (same script as w2-p6, so it shares its TTS cache) exercises every still motion but `static`, a looping clip and a music bed, using generated placeholder assets under `assets/`.
-6. **M5b Studio assets** (spec only below — do not build yet).
+6. **M5b Studio assets**: **Done** (see below). Needs `PEXELS_API_KEY` / `PIXABAY_API_KEY` in `.env` to search; everything else is tested against mocked APIs.
 
 M6 and M7 are deferred until after the first video has actually shipped:
 
@@ -273,14 +273,29 @@ M6 and M7 are deferred until after the first video has actually shipped:
 
 Acceptance for v1: `studio make examples/w2-p6.json` produces an MP4 that passes every QA gate, and changing one value in `brand/tokens.json` changes the render without touching any template file.
 
-### M5b: `studio assets` spec
+### M5b: `studio assets`
 
 Fills in `still`/`clip` visuals for beats that named `search_queries` but have no asset yet. Never auto-picks — a person always chooses.
 
-- `studio assets <spec>`: for each beat with `search_queries` and no `visual.asset`, query Pexels (Pixabay as fallback) for portrait video/images. Download up to 4 candidates per beat into `assets/candidates/<beat_id>/`. Build one contact sheet per run, each candidate labeled with its beat id and candidate number.
-- `studio assets --pick <spec> <beat_id>=<n> [<beat_id>=<n> ...]`: moves candidate `<n>` for each named beat from `assets/candidates/<beat_id>/` into the asset library (`assets/stills/` or `assets/clips/`) and writes the resulting path into that beat's `visual.asset` in the spec file.
-- `assets/index.json` records the source URL and license for every asset that has been picked, keyed by its path under `assets/`.
-- Keys come from `.env`: `PEXELS_API_KEY`, `PIXABAY_API_KEY` (Pixabay only used when Pexels has no result for a query).
+**Which beats.** Any beat with `search_queries` whose `visual` is not yet a `still`/`clip` (the schema requires `asset` on those, so an un-sourced beat carries a placeholder `solid`, or whatever visual it had, plus `visual_intent`/`search_queries`). Beats that already have an asset are reported as skipped. `examples/w2-p6-stock.json` is such a spec.
+
+**Providers.** Everything goes through one interface (`StockProvider` in `src/assets/provider.ts`: `search(query)` returns normalized `Candidate`s); Pexels (`pexels.ts`) and Pixabay (`pixabay.ts`) implement it, and the selection code (`select.ts`) never names either, so a third source is one new file plus one line in the provider list. Pexels is queried with `orientation=portrait`; Pixabay photos with `orientation=vertical` and videos filtered by size (its video API has no orientation filter).
+
+**Unsplash (built, not wired in).** `src/assets/unsplash.ts` implements `StockProvider` for Unsplash photos (no video; `orientation=portrait`, `Authorization: Client-ID $UNSPLASH_ACCESS_KEY`), with the same acceptance rules. `studio assets` does not use it yet: adding it to the provider list in `cli.ts` (and the key to `.env`) is the only step left. Still to settle when wiring it in: Unsplash asks that each real download ping the photo's `links.download_location`, and demo-tier apps are limited to 50 requests/hour.
+
+**Acceptable candidate** (`RULES` in `src/assets/select.ts`): at least 1080×1920 (of the file we would actually download: Pixabay photos are capped at 1280 px wide), height/width ≥ 1.4, videos ≥ 3 s, and no close-up-face tags (below). Videos are downloaded as the smallest mp4 that meets the size.
+
+**Search order.** All of a beat's queries run against the first provider (Pexels); their results are interleaved query by query, photos and videos alternating, deduped. If fewer than **3 acceptable** candidates remain (rejects don't count), the next provider (Pixabay) is queried too and its results are appended. A provider that errors (bad key, rate limit) is skipped with a warning. Up to **4 new** candidates per beat are downloaded into `assets/candidates/<beat_id>/<n>-<provider>-<id>.<ext>`, with a `candidates.json` beside them holding what `--pick` needs. `assets/candidates/` is gitignored, and re-running replaces a beat's candidates.
+
+**Reuse.** Before searching, `assets/index.json` is scanned for assets whose recorded `search_queries` overlap the beat's: the best pairwise word-set overlap (Jaccard) between any two queries must be ≥ 0.5. Up to 2 matches (whose files still exist) are offered first as candidates labeled `existing`; they don't count against the 4 new ones. Picking one just points the beat at the library file: nothing is moved or re-indexed.
+
+**Contact sheet.** One per run, `out/<id>/asset-candidates.jpg`: a row per beat, a tile per candidate labeled `<beat_id> #<n> <provider> <photo|video>` (or `existing`), videos shown by a frame at 0.5 s. A beat with no acceptable candidate gets a `none found` tile.
+
+**Face guardrail (best-effort).** The series wants silhouettes, hands and places, not headshots. A candidate is dropped when its provider tags, alt text or URL slug contain any of `CLOSE_UP_FACE_WORDS` (portrait, headshot, face, selfie, close-up, smile/smiling, eyes, beard, lips, makeup, model, posing, handsome, attractive, looking at camera). This is keyword matching on the text a provider happens to supply, **not** a guarantee: untagged faces get through and harmless hits get dropped. A person reviews every candidate anyway.
+
+**`--pick`.** `studio assets --pick <spec> <beat_id>=<n> ...` validates every pick first (a bad one changes nothing), then for each: moves the file to `assets/stills/` (photo) or `assets/clips/` (video) as `<provider>-<id>.<ext>`, sets the beat's `visual` to `{type: still|clip, asset}` (a previous still's `motion` is kept), and appends an `assets/index.json` entry keyed by the path under `assets/`. The index is append-only (an existing key is never replaced; the write is atomic). Other candidates for the beat are left in `assets/candidates/`.
+
+`assets/index.json` entry: `{ provider, source_url, creator, creator_url?, license, search_queries, picked_at }`. Licenses recorded: `Pexels License`, `Pixabay Content License`. Keys come from `.env`: `PEXELS_API_KEY`, `PIXABAY_API_KEY`; with only one set, only that provider is used.
 
 ## 12. Out of scope for v1
 

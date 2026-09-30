@@ -5,3 +5,6 @@ out/
 
 # Python env for Kokoro (created by uv from tts/uv.lock)
 tts/.venv/
+
+# M5b: downloaded stock candidates are unpicked (and unlicensed-until-picked); only picks enter the library
+assets/candidates/
