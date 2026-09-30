@@ -1,7 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { copyFileSync, cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import puppeteer from 'puppeteer-core';
 import {
   captionBox,
@@ -11,10 +11,12 @@ import {
   overlayStyle,
   plainStyle,
   safeRect,
+  scrimBands,
   textBlock,
   type Box,
   type LayoutSpec,
 } from './layout.ts';
+import { bandLuma, buildMediaHtml, darkenAlpha, sampleRowLuma, stillMotion, type StillPose } from './media.ts';
 import type { TextMeasure } from './text.ts';
 import type { Timeline } from './timeline.ts';
 import type { Tokens } from './types.ts';
@@ -41,6 +43,10 @@ export interface RenderLayout {
   captions: Box | null;
   /** Predicted pixel width of every caption line, indexed like `timeline.caption_pages[i].lines[j]` — the render-time DOM-width guard compares these to what the browser actually lays out (see `validateCaptionLineWidths`). */
   captionLineWidths: number[][];
+  /** Per still/clip beat id: the bands to darken behind its series label, overlay and captions (see `scrimBands`), each with the alpha its picture calls for (see `darkenAlpha`). */
+  scrims: Record<string, { y: number; h: number; alpha: number }[]>;
+  /** Per still beat id: the start and end pose of its (linear, full-beat) move. */
+  stills: Record<string, { from: StillPose; to: StillPose }>;
   cta: TextBox | null;
   end_card: TextBox | null;
 }
@@ -49,7 +55,13 @@ export interface RenderLayout {
  * Every text box the composition needs, computed once in Node (where `measure` reads the real font
  * files) so the lint, the render and the QA gates all agree on where text sits (SPEC section 6).
  */
-export function computeLayout(timeline: Timeline, tokens: Tokens, measure: TextMeasure): RenderLayout {
+export function computeLayout(
+  timeline: Timeline,
+  tokens: Tokens,
+  measure: TextMeasure,
+  /** Per still/clip beat id: mean luma of each row of its background (`sampleRowLuma`). Absent = treated as dark. */
+  rowLuma: Record<string, number[]> = {},
+): RenderLayout {
   const shim: LayoutSpec = {
     series: timeline.label ? { label: timeline.label } : undefined,
     captions: { enabled: timeline.caption_style !== null },
@@ -100,7 +112,29 @@ export function computeLayout(timeline: Timeline, tokens: Tokens, measure: TextM
       })()
     : null;
 
-  return { safe, label, overlays, typography, captions, captionLineWidths, cta, end_card };
+  // Grade layer (SPEC section 6): extra darkening only where text sits on a still/clip. The series label
+  // is on screen for the whole video; captions count for a beat only if some caption page is on screen
+  // during it (captions_hidden beats have none). Each band's strength follows the average luma of the
+  // picture behind it.
+  const scrims: Record<string, { y: number; h: number; alpha: number }[]> = {};
+  for (const beat of timeline.beats) {
+    if (beat.visual.type !== 'still' && beat.visual.type !== 'clip') continue;
+    const boxes: Box[] = [];
+    if (label) boxes.push(label.box);
+    if (overlays[beat.id]) boxes.push(overlays[beat.id].box);
+    if (captions && timeline.caption_pages.some((p) => p.start < beat.end && p.end > beat.start)) boxes.push(captions);
+    if (!boxes.length) continue;
+    const rows = rowLuma[beat.id];
+    scrims[beat.id] = scrimBands(boxes, tokens.grade.darken_feather_px, tokens.canvas.height).map((band) => ({
+      ...band,
+      alpha: darkenAlpha(rows ? bandLuma(rows, band, tokens.canvas.height) : 0, tokens),
+    }));
+  }
+
+  const stills: Record<string, { from: StillPose; to: StillPose }> = {};
+  for (const beat of timeline.beats) if (beat.visual.type === 'still') stills[beat.id] = stillMotion(beat.visual.motion, tokens);
+
+  return { safe, label, overlays, typography, captions, captionLineWidths, scrims, stills, cta, end_card };
 }
 
 /**
@@ -154,6 +188,42 @@ async function validateCaptionLineWidths(indexFile: string, variables: object, p
   }
 }
 
+/** Every still/clip asset and the music file the timeline references, as paths relative to `assets/`. */
+function referencedAssets(timeline: Timeline): string[] {
+  const files = new Set<string>();
+  for (const beat of timeline.beats) if (beat.visual.type === 'still' || beat.visual.type === 'clip') files.add(beat.visual.asset);
+  if (timeline.audio.music) files.add(timeline.audio.music.file.replace(/^assets\//, ''));
+  return [...files];
+}
+
+/**
+ * Builds the per-render working copy of `templates/` that HyperFrames renders: the root and audio
+ * elements' data-duration are resolved statically from the source text before any script runs, so
+ * the real duration has to be templated in rather than set from JS. The VO audio (in cache/tts/) and
+ * every referenced asset also have to be physically inside the composition's project root to be
+ * servable, so they are copied in too. The caller owns (and must delete) `work`.
+ */
+export function prepareWork(root: string, timeline: Timeline, tokens: Tokens, measure: TextMeasure) {
+  const layout = computeLayout(timeline, tokens, measure, sampleRowLuma(join(root, 'assets'), timeline, tokens));
+  const variables = { timeline, tokens, layout, voAudioSrc: 'render-audio.wav' };
+  const work = mkdtempSync(join(tmpdir(), 'ttyng-render-'));
+  cpSync(join(root, 'templates'), work, { recursive: true });
+  const indexFile = join(work, 'index.html');
+  const html = readFileSync(indexFile, 'utf8')
+    .replaceAll('{{DURATION_SEC}}', String(timeline.duration_sec))
+    .replace('{{MEDIA_ELEMENTS}}', () => buildMediaHtml(timeline, tokens, join(root, 'assets')));
+  writeFileSync(indexFile, html);
+  copyFileSync(join(root, timeline.audio.vo), join(work, 'render-audio.wav'));
+  for (const file of referencedAssets(timeline)) {
+    const dest = join(work, 'assets', file);
+    mkdirSync(dirname(dest), { recursive: true });
+    copyFileSync(join(root, 'assets', file), dest);
+  }
+  const varsFile = join(work, 'render-vars.json');
+  writeFileSync(varsFile, JSON.stringify(variables));
+  return { work, indexFile, varsFile, variables, layout };
+}
+
 /**
  * SPEC `studio render`: renders `templates/` (the one HyperFrames composition) against `timeline.json`
  * + `tokens.json` + the computed layout, to `out/<id>/<id>.mp4`.
@@ -162,23 +232,8 @@ export async function render(root: string, timeline: Timeline, tokens: Tokens, m
   const outDir = join(root, 'out', timeline.id);
   mkdirSync(outDir, { recursive: true });
 
-  const layout = computeLayout(timeline, tokens, measure);
-  const variables = { timeline, tokens, layout, voAudioSrc: 'render-audio.wav' };
-
-  // The root and audio elements' data-duration are resolved statically from the source text before
-  // any script runs, so the real duration has to be templated into a working copy of templates/
-  // rather than set from JS. The VO audio (in cache/tts/) also has to be physically inside the
-  // composition's project root to be servable, so it's copied into the same working copy.
-  const work = mkdtempSync(join(tmpdir(), 'ttyng-render-'));
+  const { work, indexFile, varsFile, variables, layout } = prepareWork(root, timeline, tokens, measure);
   try {
-    cpSync(join(root, 'templates'), work, { recursive: true });
-    const indexFile = join(work, 'index.html');
-    const html = readFileSync(indexFile, 'utf8').replaceAll('{{DURATION_SEC}}', String(timeline.duration_sec));
-    writeFileSync(indexFile, html);
-    copyFileSync(join(root, timeline.audio.vo), join(work, 'render-audio.wav'));
-    const varsFile = join(work, 'render-vars.json');
-    writeFileSync(varsFile, JSON.stringify(variables));
-
     await validateCaptionLineWidths(indexFile, variables, layout.captionLineWidths);
 
     const output = join(outDir, `${timeline.id}.mp4`);

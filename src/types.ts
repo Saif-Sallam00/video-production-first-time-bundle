@@ -84,8 +84,26 @@ export interface Tokens {
     overlay_in_ms: number;
     cta_in_ms: number;
   };
-  grade: { vignette: number; darken_behind_text: number };
-  audio: { target_lufs: number; true_peak_db: number; tail_sec: number };
+  grade: {
+    vignette: number;
+    /** Text-darkening alpha over an already-dark background (the floor). */
+    darken_behind_text: number;
+    /** Text-darkening alpha over a bright background (the ceiling). */
+    darken_behind_text_max: number;
+    /** Average luma (0-1) at or above which the ceiling applies; the alpha ramps linearly from the floor at 0. */
+    darken_bright_luma: number;
+    /** How far a text-darkening band fades out above and below the text it sits behind. */
+    darken_feather_px: number;
+  };
+  audio: {
+    target_lufs: number;
+    true_peak_db: number;
+    tail_sec: number;
+    /** How far the music bed drops below its `gain_db` while the VO speaks (negative dB). */
+    music_duck_db: number;
+    music_duck_attack_sec: number;
+    music_duck_release_sec: number;
+  };
 }
 
 export interface Issue {

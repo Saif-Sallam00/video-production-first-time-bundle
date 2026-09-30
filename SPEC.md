@@ -128,7 +128,7 @@ Kokoro runs as a Python subprocess rather than kokoro-js. kokoro-js returns audi
 {
   "id": "w2-p6",
   "duration_sec": 34.2,
-  "audio": { "vo": "cache/tts/<hash>/audio.wav", "music": null },
+  "audio": { "vo": "cache/tts/<hash>/audio.wav", "music": { "file": "assets/music/bed-01.mp3", "gain_db": -22, "duck_under_vo": true } },
   "label": "Nobody tells you this · 6 of 7",
   "beats": [
     { "id": "hook", "start": 0.0, "end": 4.1, "visual": {}, "overlay": {} }
@@ -147,7 +147,7 @@ Layers, bottom to top:
 | Z | Layer | Source | Notes |
 |---|---|---|---|
 | 0 | Background | `beat.visual` | Hard cut at beat boundaries |
-| 1 | Grade | tokens `grade` | Vignette always; extra darkening behind text when an overlay or captions sit on a still/clip |
+| 1 | Grade | tokens `grade` | Vignette always (whole video). On a still/clip beat, extra darkening: a full-width band behind each of the series label, the overlay box and the caption block (only if a caption page is on screen during the beat), feathered `darken_feather_px` above and below; bands whose feathers touch merge so they never double-darken (`scrimBands`). Each band's alpha follows the mean luma of the picture behind it, sampled from the real pixels at render time: `darken_behind_text` over black, ramping linearly to `darken_behind_text_max` at `darken_bright_luma` and above (`darkenAlpha`). The ramp saturates before white so the muted label reaches 4.5:1 on bright frames; it cannot above ~0.93 luma even at the ceiling. Solid/typography beats get no bands |
 | 2 | Series label | `series.label` | Top of safe zone, small, muted, persistent for the full video. Hidden if absent |
 | 3 | Overlay | `beat.overlay` | Spans its beat |
 | 4 | Captions | `timeline.caption_pages` | Word-synced |
@@ -179,8 +179,8 @@ A beat may also carry `captions_hidden` (boolean, default false): when true, no 
 
 - **solid**: full-frame color from a token name.
 - **typography**: full-frame text on `bg`. `statement` = display font, `typography_statement` size, max 3 lines. `number` = one huge numeral (`typography_number`, one line), used for countdown beats.
-- **still**: image from `assets/`, cover-fit to 1080×1920, motion over the beat's duration: `push_in`/`pull_out` use `motion.still_zoom`, pans use `motion.still_pan_px`. Linear easing.
-- **clip**: video from `assets/`, muted, cover-fit, starts at `trim_start_sec`, loops if shorter than the beat.
+- **still**: image from `assets/`, cover-fit to 1080×1920 (`object-fit: cover`, centered), motion over the beat's duration: `push_in`/`pull_out` sweep `motion.still_zoom` (pull_out is the reverse), pans travel `motion.still_pan_px` **in total**, centered on the frame, at a fixed scale of `(width + still_pan_px) / width` so the image still covers the frame at both extremes. `pan_left` moves the picture leftward across the frame (`pan_right` the reverse). Linear easing over the full beat. The poses come from `stillMotion` in `src/media.ts`; the template only tweens between them on a non-timed wrapper.
+- **clip**: video from `assets/`, muted, cover-fit, starts at `trim_start_sec`, loops if shorter than the beat. A loop is back-to-back `<video>` elements, each restarting at `trim_start_sec` (one media element per range is HyperFrames' own model), the last cut off at the beat end (`clipSegments`). Each pass lasts `(source length − trim_start_sec) / playback_rate`; a pass under 0.25 s fails the render.
 
 ### Overlays (`beat.overlay.style`)
 
@@ -212,7 +212,7 @@ Typography statements, overlays and the end card also wrap with the same optimal
 - Every asset path in a spec (`visual.asset`, `music.file`) is relative to `assets/`, e.g. `stills/window-night-01.jpg`, `music/bed-01.mp3`.
 - All text boxes (label, overlays, captions, CTA, end card) must sit inside the `safe_zone` insets. The inset values are defaults; confirm them once by rendering the preview with `brand/safezone-overlay.png` on top.
 - Loudness: normalize the final mix to `audio.target_lufs` integrated, true peak ≤ `audio.true_peak_db` (FFmpeg `loudnorm`, two-pass).
-- Music (optional) sits at `gain_db` and ducks under VO when `duck_under_vo` is true. A music file without `license_note` is a schema error.
+- Music (optional) sits at `gain_db` and ducks under VO when `duck_under_vo` is true. A music file without `license_note` is a schema error. Ducking is a volume envelope derived from the word timings (`musicLane` in `src/media.ts`), not audio analysis: while the VO speaks the bed sits at `gain_db + audio.music_duck_db`; in pauses it returns to `gain_db`, ramping down over `music_duck_attack_sec` and up over `music_duck_release_sec`. Words closer together than attack + release count as one spoken stretch, so it doesn't pump between words. The bed always fades to silence over the last `audio.tail_sec`. The file must be at least as long as the video (the render fails otherwise). Final loudness normalization is still M6.
 - **Render-time guard**: `studio render` loads the composition in a real (headless) browser before invoking HyperFrames and compares every caption line's actual DOM width to what `layout.ts`/`breaker.ts` predicted from the real font. A line that drifts by more than 3% fails the render — this catches any future divergence between the measured layout and what the browser actually renders (e.g. a CSS change that reintroduces flex `gap` instead of real space characters between word spans).
 
 ## 9. Lint rules (beyond the schema)
@@ -263,7 +263,7 @@ Each milestone ends with a command that works on `examples/w2-p6.json`.
 
 M3 and M4 run back to back: the goal is the first real rendered MP4 of the fixture, not a milestone-by-milestone pause. After that:
 
-5. **M5 Media**: `still` (all motions) and `clip` backgrounds, grade layer, optional music with ducking.
+5. **M5 Media**: `still` (all motions) and `clip` backgrounds, grade layer, optional music with ducking. **Done.** Second fixture `examples/w2-p6-media.json` (same script as w2-p6, so it shares its TTS cache) exercises every still motion but `static`, a looping clip and a music bed, using generated placeholder assets under `assets/`.
 6. **M5b Studio assets** (spec only below — do not build yet).
 
 M6 and M7 are deferred until after the first video has actually shipped:

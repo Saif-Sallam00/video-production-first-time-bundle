@@ -154,3 +154,22 @@ export function ctaOverlayConflicts(
       : [],
   );
 }
+
+/**
+ * Full-width horizontal bands to darken behind text boxes on a still/clip background (SPEC section 6,
+ * grade layer). Each band is a box grown by `feather` above and below (the gradient fades to nothing
+ * over that margin); boxes whose grown extents touch are merged into one band so overlapping fades
+ * never double-darken. Clamped to the canvas.
+ */
+export function scrimBands(boxes: Box[], feather: number, canvasHeight: number): { y: number; h: number }[] {
+  const spans = boxes
+    .map((b) => [Math.max(0, b.y - feather), Math.min(canvasHeight, b.y + b.h + feather)] as [number, number])
+    .sort((a, b) => a[0] - b[0]);
+  const merged: [number, number][] = [];
+  for (const span of spans) {
+    const last = merged.at(-1);
+    if (last && span[0] <= last[1]) last[1] = Math.max(last[1], span[1]);
+    else merged.push([...span]);
+  }
+  return merged.map(([top, bottom]) => ({ y: top, h: bottom - top }));
+}

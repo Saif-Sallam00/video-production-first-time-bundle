@@ -9,6 +9,7 @@ import type { Issue, Overlay, Tokens, VideoSpec, Visual } from './types.ts';
 const CTA_LATE_SEC = 5.0;
 const CTA_DEFAULT_DURATION_SEC = 2.5; // schema default for cta_pop.duration_sec
 const END_CARD_DEFAULT_DURATION_SEC = 1.5; // schema default for end_card.duration_sec
+const MUSIC_DEFAULT_GAIN_DB = -22; // schema default for music.gain_db
 
 /** One spoken word of the full VO, original spelling (SPEC section 5). */
 export interface TimelineWord {
@@ -44,7 +45,11 @@ export interface TimelineCta {
 export interface Timeline {
   id: string;
   duration_sec: number;
-  audio: { vo: string; music: string | null };
+  audio: {
+    vo: string;
+    /** `file` is relative to the repo root (`assets/...`); schema defaults are already resolved. */
+    music: { file: string; gain_db: number; duck_under_vo: boolean } | null;
+  };
   label: string | null;
   beats: TimelineBeat[];
   words: TimelineWord[];
@@ -149,7 +154,12 @@ export function buildTimeline(
   const timeline: Timeline = {
     id: spec.id,
     duration_sec: endCard ? voEnd + endCard.duration_sec : voEnd,
-    audio: { vo: audioVoPath, music: spec.music ? `assets/${spec.music.file}` : null },
+    audio: {
+      vo: audioVoPath,
+      music: spec.music
+        ? { file: `assets/${spec.music.file}`, gain_db: spec.music.gain_db ?? MUSIC_DEFAULT_GAIN_DB, duck_under_vo: spec.music.duck_under_vo ?? true }
+        : null,
+    },
     label: spec.series?.label ?? null,
     beats,
     words,
