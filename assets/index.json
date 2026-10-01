@@ -180,5 +180,109 @@
     "license": "Generated for this project",
     "search_queries": [],
     "picked_at": "2026-10-01T04:43:37.090Z"
+  },
+  "stills/unsplash-7FdGXKejOE0.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/a-couple-of-white-mugs-sitting-on-top-of-a-table-7FdGXKejOE0",
+    "creator": "sareh Askarzadeh",
+    "creator_url": "https://unsplash.com/@sareh102",
+    "license": "Unsplash License",
+    "search_queries": [
+      "two coffee cups table",
+      "two mugs morning light",
+      "cafe table two cups"
+    ],
+    "picked_at": "2026-10-01T17:00:02.453Z"
+  },
+  "stills/unsplash-YhezVj6sUl4.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/silver-and-white-round-gauge-YhezVj6sUl4",
+    "creator": "Justus Menke",
+    "creator_url": "https://unsplash.com/@justusmenke",
+    "license": "Unsplash License",
+    "search_queries": [
+      "pressure gauge close up",
+      "gauge needle dial",
+      "pressure meter macro"
+    ],
+    "picked_at": "2026-10-01T17:03:55.172Z"
+  },
+  "clips/pixabay-343706.mp4": {
+    "provider": "pixabay",
+    "source_url": "https://pixabay.com/videos/id-343706/",
+    "creator": "MoonpetalMedia",
+    "creator_url": "https://pixabay.com/users/MoonpetalMedia-54307928/",
+    "license": "Pixabay Content License",
+    "search_queries": [
+      "rain window night",
+      "city lights window night",
+      "calm night window"
+    ],
+    "picked_at": "2026-10-01T17:03:55.841Z"
+  },
+  "stills/unsplash-50comlI_39U.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/someone-is-writing-in-a-notebook-with-checkboxes-50comlI_39U",
+    "creator": "Jakub Żerdzicki",
+    "creator_url": "https://unsplash.com/@jakubzerdzicki",
+    "license": "Unsplash License",
+    "search_queries": [
+      "pencil checklist close up",
+      "ticking checkbox pencil",
+      "checklist writing dark"
+    ],
+    "picked_at": "2026-10-01T17:07:47.826Z"
+  },
+  "stills/unsplash-e5k6P69D0J8.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/alarm-clock-casting-a-shadow-on-a-dark-surface-e5k6P69D0J8",
+    "creator": "Suhas Hanjar",
+    "creator_url": "https://unsplash.com/@suhashanjar",
+    "license": "Unsplash License",
+    "search_queries": [
+      "stopwatch close up dark",
+      "stopwatch ticking macro",
+      "timer close up"
+    ],
+    "picked_at": "2026-10-01T17:07:48.656Z"
+  },
+  "stills/unsplash-aPa843frIzI.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/two-people-holding-hands-on-table-in-comfort-aPa843frIzI",
+    "creator": "Priscilla Du Preez 🇨🇦",
+    "creator_url": "https://unsplash.com/@priscilladupreez",
+    "license": "Unsplash License",
+    "search_queries": [
+      "holding hands close up warm light",
+      "hands together soft light",
+      "hands holding close up"
+    ],
+    "picked_at": "2026-10-01T17:07:48.861Z"
+  },
+  "stills/unsplash-PSqT-lQAt7A.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/brown-ceramic-cup-with-white-smoke-PSqT-lQAt7A",
+    "creator": "tabitha turner",
+    "creator_url": "https://unsplash.com/@tabithaturnervisuals",
+    "license": "Unsplash License",
+    "search_queries": [
+      "steam mug close up",
+      "coffee steam dark",
+      "hot drink steam"
+    ],
+    "picked_at": "2026-10-01T17:07:49.128Z"
+  },
+  "stills/unsplash-VzMdT1m8yHE.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/a-living-room-with-a-chair-and-a-window-VzMdT1m8yHE",
+    "creator": "Jace & Afsoon",
+    "creator_url": "https://unsplash.com/@jacegrandinetti",
+    "license": "Unsplash License",
+    "search_queries": [
+      "morning light room calm",
+      "sunlight curtain room",
+      "quiet bedroom window light"
+    ],
+    "picked_at": "2026-10-01T17:07:49.434Z"
   }
 }

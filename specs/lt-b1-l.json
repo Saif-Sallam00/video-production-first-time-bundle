@@ -1,0 +1,125 @@
+{
+  "id": "lt-b1-l",
+  "version": 1,
+  "motion_preset": "punch",
+  "title": "Stop grading yourself",
+  "voice": {
+    "preset": "james-default"
+  },
+  "beats": [
+    {
+      "id": "hook",
+      "role": "hook",
+      "vo": "That \"am I doing this right?\" voice is what's pulling you out of the moment.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-50comlI_39U.jpg"
+      },
+      "overlay": {
+        "text": "\"Am I doing this right?\"",
+        "style": "hook_slam",
+        "position": "center"
+      },
+      "visual_intent": "Pencil ticking boxes on a checklist, close-up, dim light, no people.",
+      "search_queries": [
+        "pencil checklist close up",
+        "ticking checkbox pencil",
+        "checklist writing dark"
+      ]
+    },
+    {
+      "id": "why",
+      "role": "body",
+      "vo": "Nerves turn your first time into something you're watching and grading, instead of something you're actually in. And the more you grade yourself, the more anxious you get.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-e5k6P69D0J8.jpg"
+      },
+      "visual_intent": "Stopwatch close-up, dark background.",
+      "search_queries": [
+        "stopwatch close up dark",
+        "stopwatch ticking macro",
+        "timer close up"
+      ]
+    },
+    {
+      "id": "action",
+      "role": "body",
+      "vo": "When you catch that voice, switch to one thing you can physically feel right now.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-aPa843frIzI.jpg"
+      },
+      "overlay": {
+        "text": "Switch to one thing you can feel.",
+        "style": "card",
+        "position": "upper"
+      },
+      "visual_intent": "Two hands loosely holding, warm light, no faces.",
+      "search_queries": [
+        "holding hands close up warm light",
+        "hands together soft light",
+        "hands holding close up"
+      ]
+    },
+    {
+      "id": "examples",
+      "role": "body",
+      "vo": "Her hand in yours. Your own breathing. How warm the room is.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-PSqT-lQAt7A.jpg"
+      },
+      "visual_intent": "Steam rising from a mug, warm light.",
+      "search_queries": [
+        "steam mug close up",
+        "coffee steam dark",
+        "hot drink steam"
+      ]
+    },
+    {
+      "id": "close",
+      "role": "payoff",
+      "vo": "Grading keeps you in your head. Feeling keeps you in the room.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-VzMdT1m8yHE.jpg"
+      },
+      "visual_intent": "Calm room, soft morning light, no people.",
+      "search_queries": [
+        "morning light room calm",
+        "sunlight curtain room",
+        "quiet bedroom window light"
+      ]
+    }
+  ],
+  "cta_pop": {
+    "text": "Follow — new one every day",
+    "start": {
+      "at_sec": 4
+    },
+    "duration_sec": 2.5,
+    "style": "pill"
+  },
+  "captions": {
+    "enabled": true,
+    "style": "word_highlight"
+  },
+  "end_card": {
+    "enabled": false
+  },
+  "disclosure": {
+    "ai_generated_label": true
+  },
+  "meta": {
+    "purpose": "Length test B1 Long per scripts/day-01.md. Target 28-33 s. Locked for B1 Short (Day 4): hook VO+overlay+pick, action VO+overlay, caption, CTA text and timing.",
+    "caption": "Stop grading yourself. What to know before your first time.",
+    "hashtags": "#datingadviceformen #relationshipadvice #confidence #datingtips"
+  },
+  "music": {
+    "file": "music/bed-01.mp3",
+    "gain_db": -22,
+    "duck_under_vo": true,
+    "license_note": "Generated locally with ffmpeg sine synthesis (placeholder fixture); no third-party rights."
+  }
+}

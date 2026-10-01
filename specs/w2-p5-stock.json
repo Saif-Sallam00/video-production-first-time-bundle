@@ -1,6 +1,7 @@
 {
   "id": "w2-p5-stock",
   "version": 1,
+  "motion_preset": "punch",
   "title": "Attention beats technique",
   "series": {
     "name": "7 things nobody tells you before your first time",
@@ -15,13 +16,13 @@
     {
       "id": "hook",
       "role": "hook",
-      "vo": "You don't need technique for your first time. You need one thing.",
+      "vo": "You don't need to know what you're doing your first time.",
       "visual": {
         "type": "still",
         "asset": "stills/unsplash-bm-Ml4UYvkI.jpg"
       },
       "overlay": {
-        "text": "You don't need technique.",
+        "text": "You don't need to know what you're doing.",
         "style": "hook_slam",
         "position": "center"
       },
@@ -33,25 +34,15 @@
       ]
     },
     {
-      "id": "series_intro",
-      "role": "context",
-      "vo": "This is number five of the seven things nobody tells you; follow for all of them, number one changes everything.",
-      "visual": {
-        "type": "typography",
-        "text": "5",
-        "style": "number"
-      }
-    },
-    {
       "id": "point",
       "role": "body",
-      "vo": "Five: the only real skill is paying attention. Watch her, notice what she responds to, do more of that.",
+      "vo": "You need to pay attention to her. If she seems into it, stay with what's working.",
       "visual": {
         "type": "still",
         "asset": "stills/unsplash-Qb9nNfy9mPI.jpg"
       },
       "overlay": {
-        "text": "Notice what she responds to.",
+        "text": "Pay attention to her.",
         "style": "card",
         "position": "upper"
       },
@@ -63,9 +54,29 @@
       ]
     },
     {
+      "id": "checkin",
+      "role": "body",
+      "vo": "If she goes quiet, still, pulls away, or seems unsure, slow down and check in. Body language gives you information. It doesn't replace asking.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-7FdGXKejOE0.jpg"
+      },
+      "overlay": {
+        "text": "Body language is information. Not a yes.",
+        "style": "card",
+        "position": "upper"
+      },
+      "visual_intent": "Two coffee cups on a table, soft light, no people.",
+      "search_queries": [
+        "two coffee cups table",
+        "two mugs morning light",
+        "cafe table two cups"
+      ]
+    },
+    {
       "id": "reframe",
       "role": "body",
-      "vo": "That's the whole thing. Guys waste the entire time stuck in their own head, worrying about their performance.",
+      "vo": "When your nerves drag you into your own head, bring your attention back to her.",
       "visual": {
         "type": "still",
         "asset": "stills/unsplash-56zXu3g8RJE.jpg"
@@ -78,51 +89,20 @@
       ]
     },
     {
-      "id": "payoff",
-      "role": "payoff",
-      "vo": "Get out of your head and put your attention on her instead.",
-      "visual": {
-        "type": "still",
-        "asset": "stills/unsplash-CrGLasofdQY.jpg"
-      },
-      "visual_intent": "Calm focus on one thing: a single candle flame in a dim room. No people.",
-      "search_queries": [
-        "candle flame dark room",
-        "single candle close up",
-        "candlelight dim room"
-      ]
-    },
-    {
-      "id": "payoff_statement",
-      "role": "payoff",
-      "vo": "Save this one.",
-      "visual": {
-        "type": "typography",
-        "text": "Attention beats technique.",
-        "style": "statement"
-      }
-    },
-    {
       "id": "tease",
       "role": "tease",
-      "vo": "Number four is the one nobody thinks about — and it prevents most of the disasters.",
+      "vo": "Number four is next: how to check in without killing the mood.",
       "visual": {
-        "type": "still",
-        "asset": "stills/unsplash-CRjlQai0xEU.jpg"
-      },
-      "visual_intent": "Two mugs on a table in warm lamp light, set up for a conversation. No people.",
-      "search_queries": [
-        "two mugs table lamp light",
-        "two cups warm light night",
-        "two coffee cups table evening"
-      ]
+        "type": "typography",
+        "text": "4 →",
+        "style": "number"
+      }
     }
   ],
   "cta_pop": {
     "text": "Follow for all 7",
     "start": {
-      "beat_id": "hook",
-      "phrase": "You need one thing"
+      "at_sec": 4
     },
     "duration_sec": 2.5,
     "style": "pill"
@@ -138,8 +118,9 @@
     "ai_generated_label": true
   },
   "meta": {
-    "purpose": "Week 2 Part 5 working spec: un-sourced beats (solid + visual_intent + search_queries) for `studio assets` to fill. `--pick` rewrites them in place.",
-    "caption": "#5 of 7. The whole skill, in one line. Follow for #1."
+    "purpose": "Week 2 Part 5, version 2 per scripts/day-01.md. Target ~28 s.",
+    "caption": "#5 of 7. The only skill that matters. What to know before your first time.",
+    "hashtags": "#datingadviceformen #relationshipadvice #confidence #datingtips"
   },
   "music": {
     "file": "music/bed-01.mp3",

@@ -1,0 +1,95 @@
+{
+  "id": "lt-a1-s",
+  "version": 1,
+  "motion_preset": "punch",
+  "title": "Trying harder makes it worse",
+  "voice": {
+    "preset": "james-default"
+  },
+  "beats": [
+    {
+      "id": "hook",
+      "role": "hook",
+      "vo": "If your body won't cooperate your first time, trying harder makes it worse.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-YhezVj6sUl4.jpg"
+      },
+      "overlay": {
+        "text": "Trying harder makes it worse.",
+        "style": "hook_slam",
+        "position": "center"
+      },
+      "visual_intent": "Pressure gauge close-up, needle dropping, high contrast, no people.",
+      "search_queries": [
+        "pressure gauge close up",
+        "gauge needle dial",
+        "pressure meter macro"
+      ]
+    },
+    {
+      "id": "why",
+      "role": "body",
+      "vo": "Your body responds when you feel relaxed, not when you force it. Stress pushes it the other way.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-bm-Ml4UYvkI.jpg"
+      },
+      "visual_intent": "Dim room, one soft light, calm, no people.",
+      "search_queries": [
+        "dim room soft light",
+        "quiet room lamp night",
+        "soft light dark interior"
+      ]
+    },
+    {
+      "id": "action",
+      "role": "body",
+      "vo": "So take the pressure off the night. It doesn't have to go any particular way.",
+      "visual": {
+        "type": "clip",
+        "asset": "clips/pixabay-343706.mp4"
+      },
+      "overlay": {
+        "text": "Take the pressure off the night.",
+        "style": "card",
+        "position": "upper"
+      },
+      "visual_intent": "Calm night window, rain or distant city lights, no people.",
+      "search_queries": [
+        "rain window night",
+        "city lights window night",
+        "calm night window"
+      ]
+    }
+  ],
+  "cta_pop": {
+    "text": "Follow — new one every day",
+    "start": {
+      "at_sec": 4
+    },
+    "duration_sec": 2.5,
+    "style": "pill"
+  },
+  "captions": {
+    "enabled": true,
+    "style": "word_highlight"
+  },
+  "end_card": {
+    "enabled": false
+  },
+  "disclosure": {
+    "ai_generated_label": true
+  },
+  "meta": {
+    "purpose": "Length test A1 Short per scripts/day-01.md. Target 12-18 s. Locked for A1 Long (Day 4): hook VO+overlay+pick, action VO+overlay, caption, CTA text and timing.",
+    "caption": "Trying harder works against you. What to know before your first time.",
+    "hashtags": "#datingadviceformen #relationshipadvice #confidence #datingtips"
+  },
+  "music": {
+    "file": "music/bed-01.mp3",
+    "gain_db": -22,
+    "duck_under_vo": true,
+    "license_note": "Generated locally with ffmpeg sine synthesis (placeholder fixture); no third-party rights."
+  }
+}
