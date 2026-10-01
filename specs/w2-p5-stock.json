@@ -1,0 +1,145 @@
+{
+  "id": "w2-p5-stock",
+  "version": 1,
+  "title": "Attention beats technique",
+  "series": {
+    "name": "7 things nobody tells you before your first time",
+    "part": 5,
+    "total": 7,
+    "label": "Nobody tells you this · 5 of 7"
+  },
+  "voice": {
+    "preset": "james-default"
+  },
+  "beats": [
+    {
+      "id": "hook",
+      "role": "hook",
+      "vo": "You don't need technique for your first time. You need one thing.",
+      "visual": {
+        "type": "solid"
+      },
+      "overlay": {
+        "text": "You don't need technique.",
+        "style": "hook_slam",
+        "position": "center"
+      },
+      "visual_intent": "One lamp glowing in a dark room. Single subject, high contrast. No people.",
+      "search_queries": [
+        "lamp dark room night",
+        "bedside lamp dark",
+        "single light dark room"
+      ]
+    },
+    {
+      "id": "series_intro",
+      "role": "context",
+      "vo": "This is number five of the seven things nobody tells you; follow for all of them, number one changes everything.",
+      "visual": {
+        "type": "typography",
+        "text": "5",
+        "style": "number"
+      }
+    },
+    {
+      "id": "point",
+      "role": "body",
+      "vo": "Five: the only real skill is paying attention. Watch her, notice what she responds to, do more of that.",
+      "visual": {
+        "type": "solid"
+      },
+      "overlay": {
+        "text": "Notice what she responds to.",
+        "style": "card",
+        "position": "upper"
+      },
+      "visual_intent": "Tuning in, listening closely: a record player needle on vinyl, close up. No people.",
+      "search_queries": [
+        "record player needle close up",
+        "vinyl turntable close",
+        "dial knob close up"
+      ]
+    },
+    {
+      "id": "reframe",
+      "role": "body",
+      "vo": "That's the whole thing. Guys waste the entire time stuck in their own head, worrying about their performance.",
+      "visual": {
+        "type": "solid"
+      },
+      "visual_intent": "A busy, spinning mind: night traffic light trails or city lights blurring past. Motion, no people.",
+      "search_queries": [
+        "night traffic light trails",
+        "city lights blur night",
+        "car lights timelapse night"
+      ]
+    },
+    {
+      "id": "payoff",
+      "role": "payoff",
+      "vo": "Get out of your head and put your attention on her instead.",
+      "visual": {
+        "type": "solid"
+      },
+      "visual_intent": "Calm focus on one thing: a single candle flame in a dim room. No people.",
+      "search_queries": [
+        "candle flame dark room",
+        "single candle close up",
+        "candlelight dim room"
+      ]
+    },
+    {
+      "id": "payoff_statement",
+      "role": "payoff",
+      "vo": "Save this one.",
+      "visual": {
+        "type": "typography",
+        "text": "Attention beats technique.",
+        "style": "statement"
+      }
+    },
+    {
+      "id": "tease",
+      "role": "tease",
+      "vo": "Number four is the one nobody thinks about — and it prevents most of the disasters.",
+      "visual": {
+        "type": "solid"
+      },
+      "visual_intent": "Two mugs on a table in warm lamp light, set up for a conversation. No people.",
+      "search_queries": [
+        "two mugs table lamp light",
+        "two cups warm light night",
+        "two coffee cups table evening"
+      ]
+    }
+  ],
+  "cta_pop": {
+    "text": "Follow for all 7",
+    "start": {
+      "beat_id": "hook",
+      "phrase": "You need one thing"
+    },
+    "duration_sec": 2.5,
+    "style": "pill"
+  },
+  "captions": {
+    "enabled": true,
+    "style": "word_highlight"
+  },
+  "end_card": {
+    "enabled": false
+  },
+  "disclosure": {
+    "ai_generated_label": true
+  },
+  "meta": {
+    "purpose": "Week 2 Part 5 working spec: un-sourced beats (solid + visual_intent + search_queries) for `studio assets` to fill. `--pick` rewrites them in place.",
+    "caption": "#5 of 7. The whole skill, in one line. Follow for #1."
+  },
+  "music": {
+    "file": "music/bed-01.mp3",
+    "gain_db": -22,
+    "duck_under_vo": true,
+    "license_note": "Generated locally with ffmpeg sine synthesis (placeholder fixture); no third-party rights."
+  }
+}
