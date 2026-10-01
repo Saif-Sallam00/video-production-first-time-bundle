@@ -414,5 +414,57 @@
       "dawn light room"
     ],
     "picked_at": "2026-10-01T18:01:00.630Z"
+  },
+  "stills/unsplash-2_l3lUpn4vE.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/june-calendar-2_l3lUpn4vE",
+    "creator": "Behnam Norouzi",
+    "creator_url": "https://unsplash.com/@behy_studio",
+    "license": "Unsplash License",
+    "search_queries": [
+      "calendar date circled",
+      "wall calendar close up",
+      "calendar pen circle"
+    ],
+    "picked_at": "2026-10-01T21:58:57.616Z"
+  },
+  "stills/unsplash-bZyUfgVRY10.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/a-person-holding-a-cell-phone-in-their-hand-bZyUfgVRY10",
+    "creator": "lonely blue",
+    "creator_url": "https://unsplash.com/@lonelyblue",
+    "license": "Unsplash License",
+    "search_queries": [
+      "hand typing phone dark",
+      "texting phone close up night",
+      "phone in hand warm light"
+    ],
+    "picked_at": "2026-10-01T21:58:58.363Z"
+  },
+  "stills/unsplash-akR7Rnq-TGQ.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/silver-steel-door-handle-bar-akR7Rnq-TGQ",
+    "creator": "Calvin Hanson",
+    "creator_url": "https://unsplash.com/@calvinhanson",
+    "license": "Unsplash License",
+    "search_queries": [
+      "keys wallet table",
+      "keys on table evening",
+      "keys by door"
+    ],
+    "picked_at": "2026-10-01T21:58:58.571Z"
+  },
+  "stills/unsplash-Jmh3tZL53jk.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/a-light-that-is-on-in-the-dark-Jmh3tZL53jk",
+    "creator": "In Review",
+    "creator_url": "https://unsplash.com/@rosenfeldasjpg",
+    "license": "Unsplash License",
+    "search_queries": [
+      "light switch close up dark",
+      "light switch wall night",
+      "switch toggle close up"
+    ],
+    "picked_at": "2026-10-01T22:01:39.843Z"
   }
 }

@@ -13,7 +13,8 @@
       "role": "hook",
       "vo": "If your body switches off for a minute, it's not over.",
       "visual": {
-        "type": "solid"
+        "type": "still",
+        "asset": "stills/unsplash-Jmh3tZL53jk.jpg"
       },
       "overlay": {
         "text": "It's not over.",

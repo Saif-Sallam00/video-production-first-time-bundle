@@ -13,7 +13,8 @@
       "role": "hook",
       "vo": "If she's coming over this weekend, sort out condoms before, not in the moment.",
       "visual": {
-        "type": "solid"
+        "type": "still",
+        "asset": "stills/unsplash-2_l3lUpn4vE.jpg"
       },
       "overlay": {
         "text": "Sort it out before, not in the moment.",
@@ -32,7 +33,8 @@
       "role": "body",
       "vo": "Just ask ahead: \"Do you have condoms, or should I bring some?\"",
       "visual": {
-        "type": "solid"
+        "type": "still",
+        "asset": "stills/unsplash-bZyUfgVRY10.jpg"
       },
       "overlay": {
         "text": "Ask ahead.",
@@ -51,7 +53,8 @@
       "role": "payoff",
       "vo": "It takes ten seconds over text. Then that's one less thing to fumble with when you're already nervous.",
       "visual": {
-        "type": "solid"
+        "type": "still",
+        "asset": "stills/unsplash-akR7Rnq-TGQ.jpg"
       },
       "visual_intent": "Keys and wallet on a table by the door, evening light.",
       "search_queries": [
