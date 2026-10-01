@@ -62,5 +62,83 @@
       "small silhouette wide horizon"
     ],
     "picked_at": "2026-09-30T03:31:06.622Z"
+  },
+  "stills/unsplash-bm-Ml4UYvkI.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/a-lamp-that-is-sitting-on-a-table-bm-Ml4UYvkI",
+    "creator": "Richard Stachmann",
+    "creator_url": "https://unsplash.com/@stachmann",
+    "license": "Unsplash License",
+    "search_queries": [
+      "lamp dark room night",
+      "bedside lamp dark",
+      "single light dark room"
+    ],
+    "picked_at": "2026-10-01T03:06:57.273Z"
+  },
+  "stills/unsplash-Qb9nNfy9mPI.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/black-and-orange-toy-car-Qb9nNfy9mPI",
+    "creator": "Jakob Rosen",
+    "creator_url": "https://unsplash.com/@jakobnoahrosen",
+    "license": "Unsplash License",
+    "search_queries": [
+      "record player needle close up",
+      "vinyl turntable close",
+      "dial knob close up"
+    ],
+    "picked_at": "2026-10-01T03:06:58.388Z"
+  },
+  "stills/unsplash-56zXu3g8RJE.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/time-lapse-photography-of-cars-on-road-during-night-time-56zXu3g8RJE",
+    "creator": "Jan Valečka",
+    "creator_url": "https://unsplash.com/@janvalecka",
+    "license": "Unsplash License",
+    "search_queries": [
+      "night traffic light trails",
+      "city lights blur night",
+      "car lights timelapse night"
+    ],
+    "picked_at": "2026-10-01T03:06:58.769Z"
+  },
+  "stills/unsplash-53qNsETuYB8.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/a-lit-candle-in-the-middle-of-a-dark-room-53qNsETuYB8",
+    "creator": "Kabir Tamang",
+    "creator_url": "https://unsplash.com/@kabirtmng",
+    "license": "Unsplash License",
+    "search_queries": [
+      "candle flame dark room",
+      "single candle close up",
+      "candlelight dim room"
+    ],
+    "picked_at": "2026-10-01T03:06:59.429Z"
+  },
+  "stills/unsplash-CRjlQai0xEU.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/a-cup-of-coffee-sitting-on-top-of-a-table-CRjlQai0xEU",
+    "creator": "Fatemeh Rz",
+    "creator_url": "https://unsplash.com/@dino_trexx",
+    "license": "Unsplash License",
+    "search_queries": [
+      "two mugs table lamp light",
+      "two cups warm light night",
+      "two coffee cups table evening"
+    ],
+    "picked_at": "2026-10-01T03:06:59.831Z"
+  },
+  "stills/unsplash-CrGLasofdQY.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/white-candle-lit-on-brass-candle-holder-CrGLasofdQY",
+    "creator": "Rajat Verma",
+    "creator_url": "https://unsplash.com/@lifewithrajat",
+    "license": "Unsplash License",
+    "search_queries": [
+      "candle flame dark room",
+      "single candle close up",
+      "candlelight dim room"
+    ],
+    "picked_at": "2026-10-01T03:20:22.216Z"
   }
 }
