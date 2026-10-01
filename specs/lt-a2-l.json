@@ -1,0 +1,141 @@
+{
+  "id": "lt-a2-l",
+  "version": 1,
+  "motion_preset": "punch",
+  "title": "It's a pause, not a verdict",
+  "output_dir": "week2/day4/slot3-lengthtest-a2-long-body-switches-off",
+  "voice": {
+    "preset": "james-default"
+  },
+  "beats": [
+    {
+      "id": "hook",
+      "role": "hook",
+      "vo": "If your body switches off for a minute, it's not over.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-ICa1LhnfjRI.jpg"
+      },
+      "overlay": {
+        "text": "It's not over.",
+        "style": "hook_slam",
+        "position": "center"
+      },
+      "visual_intent": "Light switch on a dark wall, close-up.",
+      "search_queries": [
+        "light switch close up dark",
+        "light switch wall night",
+        "switch toggle close up"
+      ]
+    },
+    {
+      "id": "why",
+      "role": "body",
+      "vo": "Nerves can make your body's response come and go, especially the first time with someone new. That's your body reacting to pressure, not failing you.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-53qNsETuYB8.jpg"
+      },
+      "visual_intent": "Candle flame flickering in the dark, close-up.",
+      "search_queries": [
+        "candle flame dark",
+        "candle flicker close up",
+        "single candle night"
+      ]
+    },
+    {
+      "id": "panic",
+      "role": "body",
+      "vo": "The problem starts when you panic about it, because panicking keeps you stuck in your head and makes it harder to settle back into the moment.",
+      "visual": {
+        "type": "clip",
+        "asset": "clips/pixabay-340378.mp4"
+      },
+      "visual_intent": "Rough sea waves at dusk, dark tones, no people.",
+      "search_queries": [
+        "stormy sea dusk",
+        "rough waves dark",
+        "ocean waves evening"
+      ]
+    },
+    {
+      "id": "action",
+      "role": "body",
+      "vo": "Don't stop and apologize. Slow down, stay close, and keep your attention on her.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-Wtgfn5grR3M.jpg"
+      },
+      "overlay": {
+        "text": "Slow down. Stay close.",
+        "style": "card",
+        "position": "upper"
+      },
+      "visual_intent": "Calm lake at dusk, still water, no people.",
+      "search_queries": [
+        "lake mist morning",
+        "calm water surface",
+        "mountain lake reflection"
+      ]
+    },
+    {
+      "id": "examples",
+      "role": "body",
+      "vo": "Kiss her, talk to her, take your time. Nobody's keeping score.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-VOoo-QFL7Uo.jpg"
+      },
+      "visual_intent": "Warm string lights softly out of focus, dark room.",
+      "search_queries": [
+        "candle bokeh dark",
+        "warm lights blur night",
+        "golden bokeh background"
+      ]
+    },
+    {
+      "id": "close",
+      "role": "payoff",
+      "vo": "Treat it like a pause, not a verdict. Most guys never hear that this happens, so the first time it does, it feels like a disaster. It isn't.",
+      "visual": {
+        "type": "clip",
+        "asset": "clips/pixabay-343705.mp4"
+      },
+      "visual_intent": "Sunrise through a window, soft warm light, no people.",
+      "search_queries": [
+        "sunrise window light",
+        "morning sun window",
+        "dawn light room"
+      ]
+    }
+  ],
+  "cta_pop": {
+    "text": "Follow — new one every day",
+    "start": {
+      "at_sec": 4
+    },
+    "duration_sec": 2.5,
+    "style": "pill"
+  },
+  "captions": {
+    "enabled": true,
+    "style": "word_highlight"
+  },
+  "end_card": {
+    "enabled": false
+  },
+  "disclosure": {
+    "ai_generated_label": true
+  },
+  "meta": {
+    "purpose": "Length test A2 Long per scripts/day-02.md. Target 28-33 s. Locked for A2 Short: hook VO+overlay+pick, action VO+overlay+pick, caption, CTA.",
+    "caption": "It's a pause, not a verdict. What to know before your first time.",
+    "hashtags": "#datingadviceformen #relationshipadvice #confidence #datingtips"
+  },
+  "music": {
+    "file": "music/bed-01.mp3",
+    "gain_db": -22,
+    "duck_under_vo": true,
+    "license_note": "Generated locally with ffmpeg sine synthesis (placeholder fixture); no third-party rights."
+  }
+}

@@ -323,5 +323,96 @@
       "quiet bedroom window light"
     ],
     "picked_at": "2026-10-01T17:29:48.815Z"
+  },
+  "stills/unsplash-UM5NAXHo9Mc.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/a-view-of-a-city-from-a-window-UM5NAXHo9Mc",
+    "creator": "Shipikk",
+    "creator_url": "https://unsplash.com/@shipikk",
+    "license": "Unsplash License",
+    "search_queries": [
+      "city night window warm",
+      "skyline from window night",
+      "apartment window city lights"
+    ],
+    "picked_at": "2026-10-01T17:55:11.310Z"
+  },
+  "stills/unsplash-ICa1LhnfjRI.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/a-dark-room-with-a-lamp-and-a-table-ICa1LhnfjRI",
+    "creator": "Khanh Do",
+    "creator_url": "https://unsplash.com/@donguyenkhanhs",
+    "license": "Unsplash License",
+    "search_queries": [
+      "lamp light wall shadow",
+      "warm light wall night",
+      "soft lamp glow wall"
+    ],
+    "picked_at": "2026-10-01T17:55:11.937Z"
+  },
+  "stills/unsplash-1YHXFeOYpN0.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/water-droplets-on-clear-glass-1YHXFeOYpN0",
+    "creator": "Max Bender",
+    "creator_url": "https://unsplash.com/@maxwbender",
+    "license": "Unsplash License",
+    "search_queries": [
+      "rain window night",
+      "raindrops glass night",
+      "rainy window dark"
+    ],
+    "picked_at": "2026-10-01T17:55:12.382Z"
+  },
+  "clips/pixabay-340378.mp4": {
+    "provider": "pixabay",
+    "source_url": "https://pixabay.com/videos/id-340378/",
+    "creator": "Reels4k",
+    "creator_url": "https://pixabay.com/users/Reels4k-52870202/",
+    "license": "Pixabay Content License",
+    "search_queries": [
+      "stormy sea dusk",
+      "rough waves dark",
+      "ocean waves evening"
+    ],
+    "picked_at": "2026-10-01T18:00:59.342Z"
+  },
+  "stills/unsplash-Wtgfn5grR3M.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/white-clouds-over-the-lake-Wtgfn5grR3M",
+    "creator": "Sami Matias Breilin",
+    "creator_url": "https://unsplash.com/@samimatias",
+    "license": "Unsplash License",
+    "search_queries": [
+      "lake mist morning",
+      "calm water surface",
+      "mountain lake reflection"
+    ],
+    "picked_at": "2026-10-01T18:00:59.343Z"
+  },
+  "stills/unsplash-VOoo-QFL7Uo.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/golden-bokeh-lights-festive-VOoo-QFL7Uo",
+    "creator": "Karine Germain",
+    "creator_url": "https://unsplash.com/@lillooette",
+    "license": "Unsplash License",
+    "search_queries": [
+      "candle bokeh dark",
+      "warm lights blur night",
+      "golden bokeh background"
+    ],
+    "picked_at": "2026-10-01T18:01:00.289Z"
+  },
+  "clips/pixabay-343705.mp4": {
+    "provider": "pixabay",
+    "source_url": "https://pixabay.com/videos/id-343705/",
+    "creator": "MoonpetalMedia",
+    "creator_url": "https://pixabay.com/users/MoonpetalMedia-54307928/",
+    "license": "Pixabay Content License",
+    "search_queries": [
+      "sunrise window light",
+      "morning sun window",
+      "dawn light room"
+    ],
+    "picked_at": "2026-10-01T18:01:00.630Z"
   }
 }

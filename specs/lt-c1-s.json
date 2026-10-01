@@ -1,0 +1,96 @@
+{
+  "id": "lt-c1-s",
+  "version": 1,
+  "motion_preset": "punch",
+  "title": "Sort it out before",
+  "output_dir": "week2/day4/slot2-lengthtest-c1-short-condoms-before-the-weekend",
+  "voice": {
+    "preset": "james-default"
+  },
+  "beats": [
+    {
+      "id": "hook",
+      "role": "hook",
+      "vo": "If she's coming over this weekend, sort out condoms before, not in the moment.",
+      "visual": {
+        "type": "solid"
+      },
+      "overlay": {
+        "text": "Sort it out before, not in the moment.",
+        "style": "hook_slam",
+        "position": "center"
+      },
+      "visual_intent": "Wall calendar close-up, one date circled in pen, warm light.",
+      "search_queries": [
+        "calendar date circled",
+        "desk calendar pen",
+        "planner page dates",
+        "calendar month grid"
+      ]
+    },
+    {
+      "id": "action",
+      "role": "body",
+      "vo": "Just ask ahead: \"Do you have condoms, or should I bring some?\"",
+      "visual": {
+        "type": "solid"
+      },
+      "overlay": {
+        "text": "Ask ahead.",
+        "style": "card",
+        "position": "upper"
+      },
+      "visual_intent": "Hand typing on a phone, warm low light, no face, screen not readable.",
+      "search_queries": [
+        "hand typing phone dark",
+        "smartphone typing hands",
+        "person using smartphone close",
+        "messaging app phone hand"
+      ]
+    },
+    {
+      "id": "close",
+      "role": "payoff",
+      "vo": "It takes ten seconds over text. Then that's one less thing to fumble with when you're already nervous.",
+      "visual": {
+        "type": "solid"
+      },
+      "visual_intent": "Keys and wallet on a table by the door, evening light.",
+      "search_queries": [
+        "keys wallet table",
+        "house keys wallet",
+        "keys and wallet flat lay",
+        "entryway table keys"
+      ]
+    }
+  ],
+  "cta_pop": {
+    "text": "Follow — new one every day",
+    "start": {
+      "at_sec": 4
+    },
+    "duration_sec": 2.5,
+    "style": "pill"
+  },
+  "captions": {
+    "enabled": true,
+    "style": "word_highlight"
+  },
+  "end_card": {
+    "enabled": false
+  },
+  "disclosure": {
+    "ai_generated_label": true
+  },
+  "meta": {
+    "purpose": "Length test C1 Short per scripts/day-02.md. Target 12-18 s. Locked for C1 Long: hook VO+overlay+pick, action VO+overlay+pick, caption, CTA.",
+    "caption": "Handle it before the weekend. What to know before your first time.",
+    "hashtags": "#datingadviceformen #relationshipadvice #confidence #datingtips"
+  },
+  "music": {
+    "file": "music/bed-01.mp3",
+    "gain_db": -22,
+    "duck_under_vo": true,
+    "license_note": "Generated locally with ffmpeg sine synthesis (placeholder fixture); no third-party rights."
+  }
+}
