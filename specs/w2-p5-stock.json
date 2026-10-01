@@ -67,8 +67,7 @@
         "text": "Body language is information. Not a yes.",
         "style": "card",
         "position": "upper"
-      },
-      "visual_intent": "Two empty chairs facing each other, warm low light, no people."
+      }
     },
     {
       "id": "reframe",
