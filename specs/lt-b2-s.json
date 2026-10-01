@@ -1,0 +1,96 @@
+{
+  "id": "lt-b2-s",
+  "version": 1,
+  "motion_preset": "punch",
+  "title": "Don't drink your nerves",
+  "output_dir": "week2/day5/slot2-lengthtest-b2-short-dont-drink-your-nerves",
+  "voice": {
+    "preset": "james-default"
+  },
+  "beats": [
+    {
+      "id": "hook",
+      "role": "hook",
+      "vo": "Drinking to calm your nerves before your first time backfires.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-XSejM_arf6w.jpg"
+      },
+      "overlay": {
+        "text": "It backfires.",
+        "style": "hook_slam",
+        "position": "center"
+      },
+      "visual_intent": "Ice melting in an empty glass, dark background.",
+      "search_queries": [
+        "ice melting glass dark",
+        "ice cubes empty glass",
+        "melting ice glass close up"
+      ]
+    },
+    {
+      "id": "why",
+      "role": "body",
+      "vo": "It can dull what you feel, affect your body's response, and make it harder to read each other and talk clearly.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-u7PJMJoDYdg.jpg"
+      },
+      "visual_intent": "Blurry out-of-focus street lights at night.",
+      "search_queries": [
+        "blurry lights night",
+        "out of focus city lights",
+        "bokeh street lights"
+      ]
+    },
+    {
+      "id": "action",
+      "role": "payoff",
+      "vo": "So don't use alcohol as your strategy for nerves. Show up clear-headed. That's what actually helps.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-rCzy18K9hq0.jpg"
+      },
+      "overlay": {
+        "text": "Show up clear-headed.",
+        "style": "card",
+        "position": "upper"
+      },
+      "visual_intent": "Glass of water on a table, clean bright light.",
+      "search_queries": [
+        "glass of water table",
+        "water glass sunlight",
+        "clear glass water close up"
+      ]
+    }
+  ],
+  "cta_pop": {
+    "text": "Follow — new one every day",
+    "start": {
+      "at_sec": 4
+    },
+    "duration_sec": 2.5,
+    "style": "pill"
+  },
+  "captions": {
+    "enabled": true,
+    "style": "word_highlight"
+  },
+  "end_card": {
+    "enabled": false
+  },
+  "disclosure": {
+    "ai_generated_label": true
+  },
+  "meta": {
+    "purpose": "Length test B2 Short per scripts/day-03.md. Target 12-18 s. Locked for B2 Long: hook VO+overlay+pick, action VO+overlay+pick, caption, CTA.",
+    "caption": "Don't drink your way through nerves. What to know before your first time.",
+    "hashtags": "#datingadviceformen #relationshipadvice #confidence #datingtips"
+  },
+  "music": {
+    "file": "music/bed-01.mp3",
+    "gain_db": -22,
+    "duck_under_vo": true,
+    "license_note": "Generated locally with ffmpeg sine synthesis (placeholder fixture); no third-party rights."
+  }
+}

@@ -466,5 +466,135 @@
       "switch toggle close up"
     ],
     "picked_at": "2026-10-01T22:01:39.843Z"
+  },
+  "stills/unsplash-5Hl5reICevY.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/clear-hour-glass-5Hl5reICevY",
+    "creator": "Nathan Dumlao",
+    "creator_url": "https://unsplash.com/@nate_dumlao",
+    "license": "Unsplash License",
+    "search_queries": [
+      "hourglass close up dark",
+      "sand timer dark",
+      "hourglass macro"
+    ],
+    "picked_at": "2026-10-01T23:24:58.236Z"
+  },
+  "stills/unsplash-Hve5GpgS_xg.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/crumpled-paper-Hve5GpgS_xg",
+    "creator": "Forest S",
+    "creator_url": "https://unsplash.com/@forest_ms",
+    "license": "Unsplash License",
+    "search_queries": [
+      "crumpled paper desk",
+      "crumpled paper dark",
+      "paper balls desk"
+    ],
+    "picked_at": "2026-10-01T23:24:58.993Z"
+  },
+  "stills/unsplash-FDBaVI5Ev-k.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/burning-wood-in-fire-pit-FDBaVI5Ev-k",
+    "creator": "Benjamin DeYoung",
+    "creator_url": "https://unsplash.com/@benjamin_deyoung",
+    "license": "Unsplash License",
+    "search_queries": [
+      "fireplace close up",
+      "fireplace flames warm",
+      "fire burning fireplace"
+    ],
+    "picked_at": "2026-10-01T23:24:59.273Z"
+  },
+  "stills/unsplash-r0Du7XI687A.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/a-city-at-night-with-skyscrapers-lit-up-r0Du7XI687A",
+    "creator": "Tsuyoshi Kozu",
+    "creator_url": "https://unsplash.com/@tsuyoshikozu",
+    "license": "Unsplash License",
+    "search_queries": [
+      "apartment windows night",
+      "building windows lit night",
+      "city apartments at night"
+    ],
+    "picked_at": "2026-10-01T23:24:59.597Z"
+  },
+  "stills/unsplash-XSejM_arf6w.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/grayscale-photo-of-ice-cubes-near-the-vase-XSejM_arf6w",
+    "creator": "Kelvin Lutan",
+    "creator_url": "https://unsplash.com/@kelvinlutan",
+    "license": "Unsplash License",
+    "search_queries": [
+      "ice melting glass dark",
+      "ice cubes empty glass",
+      "melting ice glass close up"
+    ],
+    "picked_at": "2026-10-01T23:28:01.975Z"
+  },
+  "stills/unsplash-u7PJMJoDYdg.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/a-blurry-photo-of-a-city-street-at-night-u7PJMJoDYdg",
+    "creator": "Nadine E",
+    "creator_url": "https://unsplash.com/@nadineshaabana",
+    "license": "Unsplash License",
+    "search_queries": [
+      "blurry lights night",
+      "out of focus city lights",
+      "bokeh street lights"
+    ],
+    "picked_at": "2026-10-01T23:28:02.597Z"
+  },
+  "stills/unsplash-rCzy18K9hq0.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/clear-drinking-glass-on-white-table-rCzy18K9hq0",
+    "creator": "Giorgio Trovato",
+    "creator_url": "https://unsplash.com/@giorgiotrovato",
+    "license": "Unsplash License",
+    "search_queries": [
+      "glass of water table",
+      "water glass sunlight",
+      "clear glass water close up"
+    ],
+    "picked_at": "2026-10-01T23:28:02.913Z"
+  },
+  "stills/unsplash-l3abtqeY38E.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/black-and-silver-microphone-on-stand-l3abtqeY38E",
+    "creator": "Matthew Jungling",
+    "creator_url": "https://unsplash.com/@matthewjungling",
+    "license": "Unsplash License",
+    "search_queries": [
+      "empty stage spotlight",
+      "spotlight dark stage",
+      "theater stage empty"
+    ],
+    "picked_at": "2026-10-01T23:30:53.105Z"
+  },
+  "stills/unsplash-5hjNbGPhnro.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/a-long-hallway-with-light-coming-through-the-windows-5hjNbGPhnro",
+    "creator": "Momo Kim",
+    "creator_url": "https://unsplash.com/@de_momo",
+    "license": "Unsplash License",
+    "search_queries": [
+      "hallway evening light",
+      "corridor soft light",
+      "hallway shadows"
+    ],
+    "picked_at": "2026-10-01T23:30:53.940Z"
+  },
+  "clips/pixabay-345618.mp4": {
+    "provider": "pixabay",
+    "source_url": "https://pixabay.com/videos/id-345618/",
+    "creator": "MoonpetalMedia",
+    "creator_url": "https://pixabay.com/users/MoonpetalMedia-54307928/",
+    "license": "Pixabay Content License",
+    "search_queries": [
+      "city street dusk",
+      "street shop lights evening",
+      "dusk street warm lights"
+    ],
+    "picked_at": "2026-10-01T23:30:54.147Z"
   }
 }

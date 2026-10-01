@@ -1,0 +1,132 @@
+{
+  "id": "w2-p3-stock",
+  "version": 1,
+  "motion_preset": "punch",
+  "title": "What to say if your body doesn't cooperate",
+  "output_dir": "week2/day5/slot1-part3-what-to-say-if-your-body-doesnt-cooperate",
+  "series": {
+    "name": "7 things nobody tells you before your first time",
+    "part": 3,
+    "total": 7,
+    "label": "Nobody tells you this · 3 of 7"
+  },
+  "voice": {
+    "preset": "james-default"
+  },
+  "beats": [
+    {
+      "id": "hook",
+      "role": "hook",
+      "vo": "If your body stops cooperating your first time, you only need one sentence.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-5Hl5reICevY.jpg"
+      },
+      "overlay": {
+        "text": "You only need one sentence.",
+        "style": "hook_slam",
+        "position": "center"
+      },
+      "visual_intent": "Hourglass close-up, dark background.",
+      "search_queries": [
+        "hourglass close up dark",
+        "sand timer dark",
+        "hourglass macro"
+      ]
+    },
+    {
+      "id": "line",
+      "role": "body",
+      "vo": "\"My body's not cooperating right now.\" That's it.",
+      "visual": {
+        "type": "typography",
+        "text": "My body's not cooperating right now.",
+        "style": "statement"
+      }
+    },
+    {
+      "id": "apologies",
+      "role": "body",
+      "vo": "Don't apologize five times. Repeated apologies make it more awkward than the thing itself.",
+      "visual": {
+        "type": "typography",
+        "text": "Say it once.",
+        "style": "statement"
+      }
+    },
+    {
+      "id": "stay",
+      "role": "body",
+      "vo": "Stay close, put your attention on her, and take your time.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-FDBaVI5Ev-k.jpg"
+      },
+      "overlay": {
+        "text": "Stay close.",
+        "style": "card",
+        "position": "upper"
+      },
+      "visual_intent": "Fireplace close-up, warm glow, no people.",
+      "search_queries": [
+        "fireplace close up",
+        "fireplace flames warm",
+        "fire burning fireplace"
+      ]
+    },
+    {
+      "id": "normal",
+      "role": "body",
+      "vo": "This happens to way more guys than you'd think.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-r0Du7XI687A.jpg"
+      },
+      "visual_intent": "Apartment building windows lit at night, many windows.",
+      "search_queries": [
+        "apartment windows night",
+        "building windows lit night",
+        "city apartments at night"
+      ]
+    },
+    {
+      "id": "tease",
+      "role": "tease",
+      "vo": "Number two is next: why going slow is the most underrated move you've got.",
+      "visual": {
+        "type": "typography",
+        "text": "2 →",
+        "style": "number"
+      }
+    }
+  ],
+  "cta_pop": {
+    "text": "Follow for all 7",
+    "start": {
+      "at_sec": 4
+    },
+    "duration_sec": 2.5,
+    "style": "pill"
+  },
+  "captions": {
+    "enabled": true,
+    "style": "word_highlight"
+  },
+  "end_card": {
+    "enabled": false
+  },
+  "disclosure": {
+    "ai_generated_label": true
+  },
+  "meta": {
+    "purpose": "Week 2 Part 3 per scripts/day-03.md. Series follow pop at 4 s.",
+    "caption": "#3 of 7. What to say if your body doesn't cooperate. What to know before your first time.",
+    "hashtags": "#datingadviceformen #relationshipadvice #confidence #datingtips"
+  },
+  "music": {
+    "file": "music/bed-01.mp3",
+    "gain_db": -22,
+    "duck_under_vo": true,
+    "license_note": "Generated locally with ffmpeg sine synthesis (placeholder fixture); no third-party rights."
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "id": "lt-c2-l",
+  "version": 1,
+  "motion_preset": "punch",
+  "title": "You can just tell her",
+  "output_dir": "week2/day5/slot3-lengthtest-c2-long-you-can-just-tell-her",
+  "voice": {
+    "preset": "james-default"
+  },
+  "beats": [
+    {
+      "id": "hook",
+      "role": "hook",
+      "vo": "Seeing her this weekend and worried she'll realize you're inexperienced? You can just tell her.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-mBWjDIHnVA4.jpg"
+      },
+      "overlay": {
+        "text": "You can just tell her.",
+        "style": "hook_slam",
+        "position": "center"
+      },
+      "visual_intent": "Apartment front door from inside, warm hallway light, no people.",
+      "search_queries": [
+        "apartment door inside",
+        "front door hallway light",
+        "door entrance evening"
+      ]
+    },
+    {
+      "id": "why",
+      "role": "body",
+      "vo": "You don't owe anyone your history. It's your call. But hiding it means spending the whole night acting like you know what you're doing, and that's the most stressful way to do this.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-l3abtqeY38E.jpg"
+      },
+      "visual_intent": "Spotlight on an empty stage, dark theater.",
+      "search_queries": [
+        "empty stage spotlight",
+        "spotlight dark stage",
+        "theater stage empty"
+      ]
+    },
+    {
+      "id": "action",
+      "role": "body",
+      "vo": "One honest line takes the pressure off: \"I don't have a lot of experience, but I really care about making this good for you.\"",
+      "visual": {
+        "type": "typography",
+        "text": "I really care about making this good for you.",
+        "style": "statement"
+      },
+      "overlay": {
+        "text": "One honest line.",
+        "style": "card",
+        "position": "upper"
+      }
+    },
+    {
+      "id": "when",
+      "role": "body",
+      "vo": "Say it before things start, not in the middle. Keep it short. No apology, no backstory.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-5hjNbGPhnro.jpg"
+      },
+      "overlay": {
+        "text": "Before, not during.",
+        "style": "card",
+        "position": "upper"
+      },
+      "visual_intent": "Hallway in evening light, soft shadows, no people.",
+      "search_queries": [
+        "hallway evening light",
+        "corridor soft light",
+        "hallway shadows"
+      ]
+    },
+    {
+      "id": "close",
+      "role": "payoff",
+      "vo": "It tells her you're paying attention to her, not putting on a show. And it means you get to ask questions instead of guessing.",
+      "visual": {
+        "type": "clip",
+        "asset": "clips/pixabay-345618.mp4"
+      },
+      "visual_intent": "City street at dusk, warm shop lights, no identifiable people.",
+      "search_queries": [
+        "city street dusk",
+        "street shop lights evening",
+        "dusk street warm lights"
+      ]
+    }
+  ],
+  "cta_pop": {
+    "text": "Follow — new one every day",
+    "start": {
+      "at_sec": 4
+    },
+    "duration_sec": 2.5,
+    "style": "pill"
+  },
+  "captions": {
+    "enabled": true,
+    "style": "word_highlight"
+  },
+  "end_card": {
+    "enabled": false
+  },
+  "disclosure": {
+    "ai_generated_label": true
+  },
+  "meta": {
+    "purpose": "Length test C2 Long per scripts/day-03.md. Target 28-33 s. Locked for C2 Short: hook VO+overlay+pick, action VO+overlay+typography card, caption, CTA.",
+    "caption": "You can just tell her. What to know before your first time.",
+    "hashtags": "#datingadviceformen #relationshipadvice #confidence #datingtips"
+  },
+  "music": {
+    "file": "music/bed-01.mp3",
+    "gain_db": -22,
+    "duck_under_vo": true,
+    "license_note": "Generated locally with ffmpeg sine synthesis (placeholder fixture); no third-party rights."
+  }
+}
