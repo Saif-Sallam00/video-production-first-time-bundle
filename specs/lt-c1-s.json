@@ -23,9 +23,8 @@
       "visual_intent": "Wall calendar close-up, one date circled in pen, warm light.",
       "search_queries": [
         "calendar date circled",
-        "desk calendar pen",
-        "planner page dates",
-        "calendar month grid"
+        "wall calendar close up",
+        "calendar pen circle"
       ]
     },
     {
@@ -43,9 +42,8 @@
       "visual_intent": "Hand typing on a phone, warm low light, no face, screen not readable.",
       "search_queries": [
         "hand typing phone dark",
-        "smartphone typing hands",
-        "person using smartphone close",
-        "messaging app phone hand"
+        "texting phone close up night",
+        "phone in hand warm light"
       ]
     },
     {
@@ -58,9 +56,8 @@
       "visual_intent": "Keys and wallet on a table by the door, evening light.",
       "search_queries": [
         "keys wallet table",
-        "house keys wallet",
-        "keys and wallet flat lay",
-        "entryway table keys"
+        "keys on table evening",
+        "keys by door"
       ]
     }
   ],

@@ -29,12 +29,14 @@ If `prompts` fails because `brand/image-style.md` has no style block, report tha
 1. **Validate.** `npm run studio -- validate <spec>`. If it fails, fix the spec only if the fix is obvious and mechanical, and say what you changed. Otherwise stop and report.
 
 2. **Search.** `npm run studio -- assets <spec>`. Duration/size-cap warnings on Pixabay clips are normal; ignore them.
+   **Unsplash 403 = rate-limited** (demo mode: 50 requests/hour; `assets` prints `unsplash X-Ratelimit-Remaining` after each run). It is NOT "no candidates". If any Unsplash request returns 403, do NOT rewrite `search_queries`, do not retry, and do not pick around it. Stop this spec and report exactly: "rate-limited, retry after the hour resets".
 
 3. **Pick.** View `<out>/asset-candidates.jpg`. For each beat that still needs an asset, choose the candidate that best matches that beat's `visual_intent`.
    - Hard rejects: any visible face or recognizable person, watermark, logo, text in frame, busy or low-contrast shots.
    - Prefer: one clear subject, calm mood, readable in the first second, dark or warm tones.
    - Beats in the same video must not look alike. If two picks look similar, change one.
    - Use the series look from `brand/tokens.json` as context; do not edit it.
+   - (Zero candidates because of an Unsplash 403 is a rate limit, not a failed search; see step 2.)
    - If NO candidate for a beat is acceptable, do not force a pick. Add 3 new `search_queries` to that beat in the spec (different angle, not a reword), re-run `assets` for that beat, and try once more. If it still fails, stop and report the beat.
    - Then run `npm run studio -- assets --pick <spec> <beat_id>=<n> ...` for all beats at once.
 

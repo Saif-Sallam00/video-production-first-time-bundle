@@ -13,8 +13,7 @@
       "role": "hook",
       "vo": "If your body switches off for a minute, it's not over.",
       "visual": {
-        "type": "still",
-        "asset": "stills/unsplash-ICa1LhnfjRI.jpg"
+        "type": "solid"
       },
       "overlay": {
         "text": "It's not over.",
@@ -31,7 +30,7 @@
     {
       "id": "why",
       "role": "body",
-      "vo": "Nerves can make your body's response come and go, especially the first time with someone new. That's your body reacting to pressure, not failing you.",
+      "vo": "Nerves can make your body's response come and go. That's your body reacting to pressure, not failing you.",
       "visual": {
         "type": "still",
         "asset": "stills/unsplash-53qNsETuYB8.jpg"

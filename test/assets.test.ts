@@ -139,6 +139,17 @@ describe('providers (mocked APIs)', () => {
     assert.deepEqual(seen, [{ url: 'https://api.unsplash.com/photos/abc/download?ixid=XYZ', auth: 'Client-ID ACCESS' }]);
   });
 
+  it('unsplash reports the last X-Ratelimit-Remaining it saw, even on a 403', async () => {
+    const p = unsplash('ACCESS', (async () => Response.json({ results: [] }, { headers: { 'X-Ratelimit-Remaining': '37' } })) as typeof fetch);
+    assert.equal(p.rateLimitRemaining!(), null);
+    await p.search('q');
+    assert.equal(p.rateLimitRemaining!(), '37');
+    const denied = unsplash('ACCESS', (async () => new Response('Rate Limit Exceeded', { status: 403, headers: { 'X-Ratelimit-Remaining': '0' } })) as typeof fetch);
+    await assert.rejects(denied.search('q'), /HTTP 403/);
+    assert.equal(denied.rateLimitRemaining!(), '0');
+    assert.equal(unsplash('ACCESS', (async () => Response.json({ results: [] })) as typeof fetch).rateLimitRemaining!(), null);
+  });
+
   it('unsplash results go through the same acceptance rules (size, portrait, close-up-face tags)', async () => {
     const fetchFn = (async () => Response.json({ results: [
       { id: 'ok', width: 4000, height: 6000, urls: { raw: 'https://i/1?x=1' }, links: { html: 'h' }, user: { name: 'a' }, tags: [{ title: 'street' }] },

@@ -25,11 +25,19 @@ export function wantedWidth(origW: number, origH: number): number {
  * `trackDownload` implements Unsplash's API guideline that each real use pings the photo's
  * `links.download_location`; `--pick` calls it. Demo-tier apps are limited to 50 requests/hour.
  */
-export function unsplash(accessKey: string, fetchFn: FetchFn = fetch): StockProvider {
+export function unsplash(accessKey: string, baseFetch: FetchFn = fetch): StockProvider {
+  let remaining: string | null = null;
+  // Remember the last X-Ratelimit-Remaining seen, on failures too (a 403 means the hourly quota is spent).
+  const fetchFn: FetchFn = async (url, init) => {
+    const res = await baseFetch(url, init);
+    remaining = res.headers?.get('x-ratelimit-remaining') ?? remaining;
+    return res;
+  };
   const headers = { Authorization: `Client-ID ${accessKey}`, 'Accept-Version': 'v1' };
   return {
     name: 'unsplash',
     kinds: ['photo'],
+    rateLimitRemaining: () => remaining,
     async search(query) {
       const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&orientation=portrait&per_page=${PER_PAGE}`;
       const json = await getJson(fetchFn, url, { headers }, 'unsplash');

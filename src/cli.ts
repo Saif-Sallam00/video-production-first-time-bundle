@@ -288,6 +288,10 @@ async function assetsCmd(target: string, flags: string[]): Promise<number> {
     console.log(`  ${b.beat_id}: ${b.candidates.length - existing} new + ${existing} existing (queried ${b.queried.join(' then ') || 'nothing'})`);
     for (const w of b.warnings) console.log(`    warning  ${w}`);
   }
+  for (const p of providers) {
+    const left = p.rateLimitRemaining?.();
+    if (left != null) console.log(`  ${p.name} X-Ratelimit-Remaining: ${left}`);
+  }
   if (!r.beats.length) console.log('  nothing to do: no beat has search_queries without a still/clip asset');
   if (r.sheet) {
     console.log(`  wrote ${relative(process.cwd(), r.sheet)}`);

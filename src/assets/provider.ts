@@ -39,6 +39,8 @@ export interface StockProvider {
   search(query: string): Promise<Candidate[]>;
   /** Optional: called once when a candidate from this provider is picked into the library. */
   trackDownload?(trackUrl: string): Promise<void>;
+  /** Optional: the quota the provider last reported (e.g. Unsplash's X-Ratelimit-Remaining), or null if it never sent one. */
+  rateLimitRemaining?(): string | null;
 }
 
 export type FetchFn = typeof fetch;
