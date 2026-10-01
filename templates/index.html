@@ -158,30 +158,125 @@
           cls: 'fill bg',
           style: { backgroundColor: color(beat.visual.color ?? 'bg') },
         });
+        const plan = layout.motion[beat.id];
         if (beat.visual.type === 'still') {
           const inner = make('div', { class: 'still-inner', id: `still-${beat.id}` });
-          inner.appendChild(make('img', { class: 'cover', src: `assets/${encodeURI(beat.visual.asset)}` }));
+          const img = make('img', { class: 'cover', src: `assets/${encodeURI(beat.visual.asset)}` });
+          if (plan?.camera) {
+            // Preset camera (src/motion.ts): the punch-in crop lives on its own wrapper so the push/drift
+            // on #still-<id> keeps running underneath the hard cut.
+            const punch = make('div', { class: 'still-inner', id: `punch-${beat.id}` });
+            punch.appendChild(img);
+            inner.appendChild(punch);
+          } else {
+            inner.appendChild(img);
+          }
           bg.appendChild(inner);
-          // Seek-safe Ken Burns (hyperframes-keyframes): one fromTo on the non-timed wrapper, linear over the
-          // whole beat, registered on the paused main timeline so it scrubs to any frame. Poses come from
-          // src/media.ts stillMotion (tokens.motion), never hardcoded here.
-          const { from, to } = layout.stills[beat.id];
-          tl.fromTo(
-            `#still-${beat.id}`,
-            { scale: from.scale, x: from.x },
-            { scale: to.scale, x: to.x, duration: beat.end - beat.start, ease: 'none' },
-            beat.start,
-          );
+          if (plan?.camera) {
+            const dur = beat.end - beat.start;
+            const cam = plan.camera;
+            // Eased push-in on scale; slow drift as finite yoyo sines on x and y (repeat counts are computed,
+            // never -1, so every frame is reachable by seeking).
+            tl.fromTo(`#still-${beat.id}`, { scale: cam.base }, { scale: cam.end, duration: dur, ease: cam.ease }, beat.start);
+            for (const [prop, d] of [['x', cam.driftX], ['y', cam.driftY]]) {
+              tl.fromTo(
+                `#still-${beat.id}`,
+                { [prop]: -d.sign * d.amp },
+                { [prop]: d.sign * d.amp, duration: d.halfSec, ease: 'sine.inOut', repeat: Math.ceil(dur / d.halfSec) - 1, yoyo: true },
+                beat.start,
+              );
+            }
+            if (plan.punch) tl.set(`#punch-${beat.id}`, { scale: plan.punch.scale }, plan.punch.at);
+            if (plan.glow) {
+              const g = plan.glow;
+              tl.fromTo(
+                `#still-${beat.id}`,
+                { filter: `brightness(${1 - g.amount})` },
+                { filter: `brightness(${1 + g.amount})`, duration: g.halfSec, ease: 'sine.inOut', repeat: Math.ceil(dur / g.halfSec) - 1, yoyo: true },
+                beat.start,
+              );
+            }
+          } else {
+            // Seek-safe Ken Burns (hyperframes-keyframes): one fromTo on the non-timed wrapper, linear over the
+            // whole beat, registered on the paused main timeline so it scrubs to any frame. Poses come from
+            // src/media.ts stillMotion (tokens.motion), never hardcoded here.
+            const { from, to } = layout.stills[beat.id];
+            tl.fromTo(
+              `#still-${beat.id}`,
+              { scale: from.scale, x: from.x },
+              { scale: to.scale, x: to.x, duration: beat.end - beat.start, ease: 'none' },
+              beat.start,
+            );
+          }
         }
         if (beat.visual.type === 'typography') {
           const box = layout.typography[beat.id];
           const role = 'display';
           const px = beat.visual.style === 'number' ? tokens.type_scale.typography_number : tokens.type_scale.typography_statement;
-          const textEl = make('div', { class: 'text-box', style: boxStyle(box.box) });
+          const card = plan?.numberCard;
+          if (card?.prev) {
+            // Number card: the previous beat's picture, dimmed and held at where its camera ended, instead of a plain backdrop.
+            const dimmed = make('div', { class: 'still-inner', id: `dim-${beat.id}`, style: { filter: `brightness(${card.prev.dim})` } });
+            dimmed.appendChild(make('img', { class: 'cover', src: `assets/${encodeURI(card.prev.asset)}` }));
+            bg.appendChild(dimmed);
+            tl.fromTo(`#dim-${beat.id}`, { scale: card.prev.scale }, { scale: card.prev.scale * 1.04, duration: beat.end - beat.start, ease: 'none' }, beat.start);
+          }
+          const textEl = make('div', { class: 'text-box', id: `num-${beat.id}`, style: boxStyle(box.box) });
           renderLines(textEl, box, role, px, { color: color('text'), textAlign: 'center' });
           bg.appendChild(textEl);
+          if (card) {
+            // Slam-in (fast ease-out from oversize), then a soft finite pulse until the beat ends.
+            const dur = beat.end - beat.start;
+            tl.fromTo(`#num-${beat.id}`, { scale: card.slamFrom, opacity: 0 }, { scale: 1, opacity: 1, duration: card.slamSec, ease: 'power4.out' }, beat.start);
+            const left = dur - card.slamSec;
+            if (left > 0) {
+              tl.fromTo(
+                `#num-${beat.id}`,
+                { scale: 1 },
+                { scale: 1 + card.pulse, duration: card.pulseHalfSec, ease: 'sine.inOut', repeat: Math.max(0, Math.ceil(left / card.pulseHalfSec) - 1), yoyo: true },
+                beat.start + card.slamSec,
+              );
+            }
+          }
         }
         root.appendChild(bg);
+      }
+
+      // --- Embers (above the picture, below grade/label/overlays/captions): seeded drifting sparks per beat with a
+      // preset. Screen-blended, and masked down behind text bands so they never sit behind captions at high opacity. ---
+      for (const beat of timeline.beats) {
+        const em = layout.motion[beat.id]?.embers;
+        if (!em) continue;
+        const dur = beat.end - beat.start;
+        const layer = clip('div', {
+          start: beat.start,
+          duration: dur,
+          trackIndex: 1,
+          cls: 'fill',
+          style: { mixBlendMode: 'screen', webkitMaskImage: em.mask, maskImage: em.mask, pointerEvents: 'none' },
+        });
+        em.items.forEach((e, k) => {
+          const id = `ember-${beat.id}-${k}`;
+          layer.appendChild(
+            make('div', {
+              id,
+              style: {
+                position: 'absolute',
+                left: `${e.x - e.size / 2}px`,
+                top: `${e.y0}px`,
+                width: `${e.size}px`,
+                height: `${e.size}px`,
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(255,214,140,1) 0%, rgba(232,165,75,0.55) 45%, rgba(232,165,75,0) 72%)',
+                opacity: String(e.opacity),
+              },
+            }),
+          );
+          tl.fromTo(`#${id}`, { y: 0 }, { y: e.y1 - e.y0, duration: dur, ease: 'none' }, beat.start);
+          tl.fromTo(`#${id}`, { x: -e.sway }, { x: e.sway, duration: e.swaySec, ease: 'sine.inOut', repeat: Math.max(0, Math.ceil(dur / e.swaySec) - 1), yoyo: true }, beat.start);
+          tl.fromTo(`#${id}`, { opacity: e.opacity * 0.3 }, { opacity: e.opacity, duration: e.twinkleSec, ease: 'sine.inOut', repeat: Math.max(0, Math.ceil(dur / e.twinkleSec) - 1), yoyo: true }, beat.start);
+        });
+        root.appendChild(layer);
       }
 
       // --- Grade (z=1): vignette for the whole video; extra darkening bands behind text on still/clip beats. ---

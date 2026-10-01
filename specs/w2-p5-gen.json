@@ -1,0 +1,127 @@
+{
+  "id": "w2-p5-gen",
+  "version": 1,
+  "motion_preset": "punch",
+  "title": "Attention beats technique (generated-image test)",
+  "image_mode": "generated",
+  "series": {
+    "name": "7 things nobody tells you before your first time",
+    "part": 5,
+    "total": 7,
+    "label": "Nobody tells you this · 5 of 7"
+  },
+  "voice": {
+    "preset": "james-default"
+  },
+  "beats": [
+    {
+      "id": "hook",
+      "role": "hook",
+      "vo": "You don't need technique for your first time. You need one thing.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/gen-w2-p5-gen-hook.jpg"
+      },
+      "overlay": {
+        "text": "You don't need technique.",
+        "style": "hook_slam",
+        "position": "center"
+      },
+      "image_prompt": "A single standing wireframe figure in calm profile, facing one bright golden point of light floating at chest height. Minimal, still, nothing else in the frame."
+    },
+    {
+      "id": "series_intro",
+      "role": "context",
+      "vo": "This is number five of the seven things nobody tells you; follow for all of them, number one changes everything.",
+      "visual": {
+        "type": "typography",
+        "text": "5",
+        "style": "number"
+      }
+    },
+    {
+      "id": "point",
+      "role": "body",
+      "vo": "Five: the only real skill is paying attention. Watch her, notice what she responds to, do more of that.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/gen-w2-p5-gen-point.jpg"
+      },
+      "overlay": {
+        "text": "Notice what she responds to.",
+        "style": "card",
+        "position": "upper"
+      },
+      "image_prompt": "A single wireframe human ear in profile, with concentric golden sound ripples flowing in toward it from the edge of the frame. Nothing else."
+    },
+    {
+      "id": "reframe",
+      "role": "body",
+      "vo": "That's the whole thing. Guys waste the entire time stuck in their own head, worrying about their performance.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/gen-w2-p5-gen-reframe.jpg"
+      },
+      "image_prompt": "A single wireframe head in profile with the brain glowing gold, tangled looping golden lines knotted tightly inside it. Nothing else in the frame."
+    },
+    {
+      "id": "payoff",
+      "role": "payoff",
+      "vo": "Get out of your head and put your attention on her instead.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/gen-w2-p5-gen-payoff.jpg"
+      },
+      "image_prompt": "A single open wireframe hand held out palm up, a small softly glowing golden heart hovering just above the palm. Calm, minimal, nothing else."
+    },
+    {
+      "id": "payoff_statement",
+      "role": "payoff",
+      "vo": "Save this one.",
+      "visual": {
+        "type": "typography",
+        "text": "Attention beats technique.",
+        "style": "statement"
+      }
+    },
+    {
+      "id": "tease",
+      "role": "tease",
+      "vo": "Number four is the one nobody thinks about — and it prevents most of the disasters.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/gen-w2-p5-gen-tease.jpg"
+      },
+      "image_prompt": "Two simple empty speech-bubble outlines, slightly overlapping, drawn in glowing amber wireframe line. No text inside the bubbles. Nothing else."
+    }
+  ],
+  "cta_pop": {
+    "text": "Follow for all 7",
+    "start": {
+      "beat_id": "hook",
+      "phrase": "You need one thing"
+    },
+    "duration_sec": 2.5,
+    "style": "pill"
+  },
+  "captions": {
+    "enabled": true,
+    "style": "word_highlight"
+  },
+  "end_card": {
+    "enabled": false
+  },
+  "disclosure": {
+    "ai_generated_label": true
+  },
+  "meta": {
+    "purpose": "Generated-images mode trial: same script as Part 5 (already posted), AI wireframe stills made in ChatGPT. For look comparison only; do not post.",
+    "caption": "#5 of 7. The whole skill, in one line. Follow for #1."
+  },
+  "music": {
+    "file": "music/bed-01.mp3",
+    "gain_db": -22,
+    "duck_under_vo": true,
+    "license_note": "Generated locally with ffmpeg sine synthesis (placeholder fixture); no third-party rights."
+  }
+}

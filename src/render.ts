@@ -16,6 +16,7 @@ import {
   type Box,
   type LayoutSpec,
 } from './layout.ts';
+import { motionPlans, type MotionPlan } from './motion.ts';
 import { bandLuma, buildMediaHtml, darkenAlpha, sampleRowLuma, stillMotion, type StillPose } from './media.ts';
 import type { TextMeasure } from './text.ts';
 import type { Timeline } from './timeline.ts';
@@ -47,6 +48,8 @@ export interface RenderLayout {
   scrims: Record<string, { y: number; h: number; alpha: number }[]>;
   /** Per still beat id: the start and end pose of its (linear, full-beat) move. */
   stills: Record<string, { from: StillPose; to: StillPose }>;
+  /** Per beat id with a motion preset: camera, punch-in, glow, embers, number-card plan (see motion.ts). Absent beats keep plain Ken Burns. */
+  motion: Record<string, MotionPlan>;
   cta: TextBox | null;
   end_card: TextBox | null;
 }
@@ -134,7 +137,13 @@ export function computeLayout(
   const stills: Record<string, { from: StillPose; to: StillPose }> = {};
   for (const beat of timeline.beats) if (beat.visual.type === 'still') stills[beat.id] = stillMotion(beat.visual.motion, tokens);
 
-  return { safe, label, overlays, typography, captions, captionLineWidths, scrims, stills, cta, end_card };
+  const motion = motionPlans(timeline, tokens, {
+    label: label?.box ?? null,
+    captions,
+    overlays: Object.fromEntries(Object.entries(overlays).map(([id, o]) => [id, o.box])),
+  });
+
+  return { safe, label, overlays, typography, captions, captionLineWidths, scrims, stills, motion, cta, end_card };
 }
 
 /**

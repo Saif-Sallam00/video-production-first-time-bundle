@@ -140,5 +140,45 @@
       "candlelight dim room"
     ],
     "picked_at": "2026-10-01T03:20:22.216Z"
+  },
+  "stills/gen-w2-p5-gen-hook.jpg": {
+    "provider": "chatgpt-generated",
+    "source_url": "assets/generated/w2-p5-gen/hook.png",
+    "creator": "ChatGPT image generation",
+    "license": "Generated for this project",
+    "search_queries": [],
+    "picked_at": "2026-10-01T04:43:36.623Z"
+  },
+  "stills/gen-w2-p5-gen-point.jpg": {
+    "provider": "chatgpt-generated",
+    "source_url": "assets/generated/w2-p5-gen/point.png",
+    "creator": "ChatGPT image generation",
+    "license": "Generated for this project",
+    "search_queries": [],
+    "picked_at": "2026-10-01T04:43:36.732Z"
+  },
+  "stills/gen-w2-p5-gen-reframe.jpg": {
+    "provider": "chatgpt-generated",
+    "source_url": "assets/generated/w2-p5-gen/reframe.png",
+    "creator": "ChatGPT image generation",
+    "license": "Generated for this project",
+    "search_queries": [],
+    "picked_at": "2026-10-01T04:43:36.857Z"
+  },
+  "stills/gen-w2-p5-gen-payoff.jpg": {
+    "provider": "chatgpt-generated",
+    "source_url": "assets/generated/w2-p5-gen/payoff.png",
+    "creator": "ChatGPT image generation",
+    "license": "Generated for this project",
+    "search_queries": [],
+    "picked_at": "2026-10-01T04:43:36.979Z"
+  },
+  "stills/gen-w2-p5-gen-tease.jpg": {
+    "provider": "chatgpt-generated",
+    "source_url": "assets/generated/w2-p5-gen/tease.png",
+    "creator": "ChatGPT image generation",
+    "license": "Generated for this project",
+    "search_queries": [],
+    "picked_at": "2026-10-01T04:43:37.090Z"
   }
 }

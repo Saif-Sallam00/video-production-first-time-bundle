@@ -13,6 +13,10 @@
       "description": "Stable slug, e.g. w2-p6. Used for output folder names."
     },
     "version": { "const": 1 },
+    "motion_preset": {
+      "enum": ["calm", "drift", "punch"],
+      "description": "Default motion preset (brand/tokens.json motion_presets) for every beat; a beat's own `motion` overrides it. Absent = plain Ken Burns."
+    },
     "image_mode": {
       "const": "generated",
       "description": "Beat images are generated outside the pipeline (`studio prompts` / `studio ingest`) instead of picked from stock. Every still/clip beat then needs an image_prompt."
@@ -134,6 +138,10 @@
           "type": "string",
           "maxLength": 140,
           "description": "Free-text note on what this beat's visual should show. Ignored by the renderer; input for M5b asset search."
+        },
+        "motion": {
+          "enum": ["calm", "drift", "punch"],
+          "description": "Motion preset for this beat (brand/tokens.json motion_presets). Drives still beats (camera, punch-in, glow, embers) and number cards; embers also play on other non-clip beats."
         },
         "image_prompt": {
           "type": "string",

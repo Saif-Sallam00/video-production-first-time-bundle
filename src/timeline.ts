@@ -4,7 +4,7 @@ import { breakSentence, CLAUSE_END, SENTENCE_END, type Unit } from './breaker.ts
 import { ctaOverlayConflicts, safeRect } from './layout.ts';
 import { findPhrase, type TextMeasure } from './text.ts';
 import { spokenText, type CachedAlignment, type VoiceConfig } from './voice.ts';
-import type { Issue, Overlay, Tokens, VideoSpec, Visual } from './types.ts';
+import type { Issue, MotionPresetName, Overlay, Tokens, VideoSpec, Visual } from './types.ts';
 
 const CTA_LATE_SEC = 5.0;
 const CTA_DEFAULT_DURATION_SEC = 2.5; // schema default for cta_pop.duration_sec
@@ -25,6 +25,8 @@ export interface TimelineBeat {
   end: number;
   visual: Visual;
   overlay?: Overlay;
+  /** Resolved motion preset (the beat's `motion`, else the spec's `motion_preset`); absent = plain Ken Burns. */
+  motion?: MotionPresetName;
 }
 
 export interface CaptionPage {
@@ -100,7 +102,8 @@ export function buildTimeline(
   const beats: TimelineBeat[] = spec.beats.map((beat, i) => {
     const start = i === 0 ? 0 : words[beatFirstWord[i]].start;
     const end = i < spec.beats.length - 1 ? words[beatFirstWord[i + 1]].start : words.at(-1)!.end + tokens.audio.tail_sec;
-    return { id: beat.id, start, end, visual: beat.visual, ...(beat.overlay ? { overlay: beat.overlay } : {}) };
+    const motion = beat.motion ?? spec.motion_preset;
+    return { id: beat.id, start, end, visual: beat.visual, ...(beat.overlay ? { overlay: beat.overlay } : {}), ...(motion ? { motion } : {}) };
   });
   const voEnd = beats.at(-1)!.end;
 

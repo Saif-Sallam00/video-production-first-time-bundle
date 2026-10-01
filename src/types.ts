@@ -24,6 +24,8 @@ export interface Beat {
   captions_hidden?: boolean;
   /** Free-text note on what this beat's visual should show. Ignored by the renderer; input for M5b asset search. */
   visual_intent?: string;
+  /** Camera/effects preset for this beat (overrides the spec's `motion_preset`). Applies to stills and number cards. */
+  motion?: MotionPresetName;
   /** Stock search terms for M5b `studio assets`. Ignored by the renderer. */
   search_queries?: string[];
   /** Generated-images mode: what the image shows. Input for `studio prompts`; ignored by the renderer. */
@@ -42,6 +44,8 @@ export interface VideoSpec {
   version: 1;
   /** `generated`: images come from `studio prompts` / `studio ingest` instead of stock search. */
   image_mode?: 'generated';
+  /** Default `motion` preset for every beat. Absent = the plain Ken Burns behavior. */
+  motion_preset?: MotionPresetName;
   title?: string;
   series?: { name: string; part: number; total: number; label?: string };
   voice?: { preset?: string; speed?: number };
@@ -59,6 +63,29 @@ export interface FontToken {
   file: string;
   weight?: number;
   license: string;
+}
+
+export type MotionPresetName = 'calm' | 'drift' | 'punch';
+
+export interface MotionPreset {
+  /** Eased push-in over the beat, as a fraction of the starting scale (0.16 = 16%). */
+  push: number;
+  ease: string;
+  drift: { x_px: number; y_px: number; period_sec: number };
+  /** Hard cut to a tighter crop of the same image on a still longer than `min_beat_sec`. */
+  punch_in: { min_beat_sec: number; scale: number } | null;
+  /** Brightness swings +/- `amount` around 1 every `period_sec`. */
+  glow_pulse: { amount: number; period_sec: number } | null;
+  particles: {
+    count: number;
+    /** Peak opacity of one ember. */
+    opacity: number;
+    size_px: [number, number];
+    speed_px_s: [number, number];
+    /** Fraction of the opacity left behind the label, overlay and captions. */
+    caption_opacity: number;
+  } | null;
+  number_card: { slam_from: number; slam_sec: number; pulse: number; pulse_sec: number; dim_prev: number } | null;
 }
 
 export interface Tokens {
@@ -88,6 +115,7 @@ export interface Tokens {
     overlay_in_ms: number;
     cta_in_ms: number;
   };
+  motion_presets: Record<MotionPresetName, MotionPreset>;
   grade: {
     vignette: number;
     /** Text-darkening alpha over an already-dark background (the floor). */
