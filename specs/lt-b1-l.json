@@ -30,7 +30,7 @@
     {
       "id": "why",
       "role": "body",
-      "vo": "Nerves turn your first time into something you're watching and grading, instead of something you're actually in. And the more you grade yourself, the more anxious you get.",
+      "vo": "Nerves turn your first time into something you're watching and grading, instead of something you're actually in. You're checking how you look, how long it's been, whether she can tell you're new. And the more you grade yourself, the more anxious you get.",
       "visual": {
         "type": "still",
         "asset": "stills/unsplash-e5k6P69D0J8.jpg"
@@ -43,19 +43,34 @@
       ]
     },
     {
+      "id": "reassure",
+      "role": "body",
+      "vo": "She isn't grading you the way you are. And arguing with that voice won't shut it up.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-bm-Ml4UYvkI.jpg"
+      },
+      "visual_intent": "Warm lamp-lit room corner, calm, dark tones, no people.",
+      "search_queries": [
+        "lamp corner room warm",
+        "cozy room lamp night",
+        "warm light empty room"
+      ]
+    },
+    {
       "id": "action",
       "role": "body",
       "vo": "When you catch that voice, switch to one thing you can physically feel right now.",
       "visual": {
         "type": "still",
-        "asset": "stills/unsplash-aPa843frIzI.jpg"
+        "asset": "stills/unsplash-yH66cRzpNzQ.jpg"
       },
       "overlay": {
         "text": "Switch to one thing you can feel.",
         "style": "card",
         "position": "upper"
       },
-      "visual_intent": "Two hands loosely holding, warm light, no faces.",
+      "visual_intent": "Two hands loosely holding, warm low light, no faces, no jewelry if possible.",
       "search_queries": [
         "holding hands close up warm light",
         "hands together soft light",
@@ -83,9 +98,9 @@
       "vo": "Grading keeps you in your head. Feeling keeps you in the room.",
       "visual": {
         "type": "still",
-        "asset": "stills/unsplash-VzMdT1m8yHE.jpg"
+        "asset": "stills/unsplash-D_6rzmdpebQ.jpg"
       },
-      "visual_intent": "Calm room, soft morning light, no people.",
+      "visual_intent": "Calm room in warm, dim light, no people.",
       "search_queries": [
         "morning light room calm",
         "sunlight curtain room",

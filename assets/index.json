@@ -284,5 +284,44 @@
       "quiet bedroom window light"
     ],
     "picked_at": "2026-10-01T17:07:49.434Z"
+  },
+  "stills/unsplash-2jHKs2mSong.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/black-and-white-folding-chair-on-green-grass-field-2jHKs2mSong",
+    "creator": "DaYsO",
+    "creator_url": "https://unsplash.com/@dayso",
+    "license": "Unsplash License",
+    "search_queries": [
+      "two chairs facing each other",
+      "empty chairs warm light",
+      "two chairs conversation room"
+    ],
+    "picked_at": "2026-10-01T17:26:16.649Z"
+  },
+  "stills/unsplash-yH66cRzpNzQ.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/grayscale-photo-of-two-person-holding-hands-yH66cRzpNzQ",
+    "creator": "bhuvanesh gupta",
+    "creator_url": "https://unsplash.com/@bhuvii",
+    "license": "Unsplash License",
+    "search_queries": [
+      "holding hands close up warm light",
+      "hands together soft light",
+      "hands holding close up"
+    ],
+    "picked_at": "2026-10-01T17:29:47.994Z"
+  },
+  "stills/unsplash-D_6rzmdpebQ.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/white-bed-linen-near-white-window-blinds-D_6rzmdpebQ",
+    "creator": "Susan Q Yin",
+    "creator_url": "https://unsplash.com/@syinq",
+    "license": "Unsplash License",
+    "search_queries": [
+      "morning light room calm",
+      "sunlight curtain room",
+      "quiet bedroom window light"
+    ],
+    "picked_at": "2026-10-01T17:29:48.815Z"
   }
 }

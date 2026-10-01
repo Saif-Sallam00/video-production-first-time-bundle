@@ -58,20 +58,16 @@
       "role": "body",
       "vo": "If she goes quiet, still, pulls away, or seems unsure, slow down and check in. Body language gives you information. It doesn't replace asking.",
       "visual": {
-        "type": "still",
-        "asset": "stills/unsplash-7FdGXKejOE0.jpg"
+        "type": "typography",
+        "text": "Check in.",
+        "style": "statement"
       },
       "overlay": {
         "text": "Body language is information. Not a yes.",
         "style": "card",
         "position": "upper"
       },
-      "visual_intent": "Two coffee cups on a table, soft light, no people.",
-      "search_queries": [
-        "two coffee cups table",
-        "two mugs morning light",
-        "cafe table two cups"
-      ]
+      "visual_intent": "Two empty chairs facing each other, warm low light, no people."
     },
     {
       "id": "reframe",
