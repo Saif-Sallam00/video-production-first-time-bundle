@@ -16,6 +16,7 @@ import {
   type Box,
   type LayoutSpec,
 } from './layout.ts';
+import { outDirOf, outputName } from './outdir.ts';
 import { motionPlans, type MotionPlan } from './motion.ts';
 import { bandLuma, buildMediaHtml, darkenAlpha, sampleRowLuma, stillMotion, type StillPose } from './media.ts';
 import type { TextMeasure } from './text.ts';
@@ -235,17 +236,17 @@ export function prepareWork(root: string, timeline: Timeline, tokens: Tokens, me
 
 /**
  * SPEC `studio render`: renders `templates/` (the one HyperFrames composition) against `timeline.json`
- * + `tokens.json` + the computed layout, to `out/<id>/<id>.mp4`.
+ * + `tokens.json` + the computed layout, to `<output folder>/<name>.mp4` (out/<id>/<id>.mp4 unless the spec sets `output_dir`).
  */
 export async function render(root: string, timeline: Timeline, tokens: Tokens, measure: TextMeasure): Promise<string> {
-  const outDir = join(root, 'out', timeline.id);
+  const outDir = outDirOf(root, timeline);
   mkdirSync(outDir, { recursive: true });
 
   const { work, indexFile, varsFile, variables, layout } = prepareWork(root, timeline, tokens, measure);
   try {
     await validateCaptionLineWidths(indexFile, variables, layout.captionLineWidths);
 
-    const output = join(outDir, `${timeline.id}.mp4`);
+    const output = join(outDir, `${outputName(timeline)}.mp4`);
     execFileSync(
       'npx',
       [

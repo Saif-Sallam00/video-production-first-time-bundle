@@ -3,6 +3,7 @@
   "version": 1,
   "motion_preset": "punch",
   "title": "Trying harder makes it worse",
+  "output_dir": "week2/day3/slot2-lengthtest-a1-short-body-wont-cooperate",
   "voice": {
     "preset": "james-default"
   },

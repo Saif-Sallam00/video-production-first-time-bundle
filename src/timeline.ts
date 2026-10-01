@@ -3,6 +3,7 @@ import { dirname, join, relative } from 'node:path';
 import { breakSentence, CLAUSE_END, SENTENCE_END, type Unit } from './breaker.ts';
 import { ctaOverlayConflicts, safeRect } from './layout.ts';
 import { findPhrase, type TextMeasure } from './text.ts';
+import { outDirOf } from './outdir.ts';
 import { spokenText, type CachedAlignment, type VoiceConfig } from './voice.ts';
 import type { Issue, MotionPresetName, Overlay, Tokens, VideoSpec, Visual } from './types.ts';
 
@@ -52,6 +53,8 @@ export interface Timeline {
     /** `file` is relative to the repo root (`assets/...`); schema defaults are already resolved. */
     music: { file: string; gain_db: number; duck_under_vo: boolean } | null;
   };
+  /** The spec's `output_dir`, when set (see outdir.ts). */
+  output_dir?: string | null;
   label: string | null;
   beats: TimelineBeat[];
   words: TimelineWord[];
@@ -163,6 +166,7 @@ export function buildTimeline(
         ? { file: `assets/${spec.music.file}`, gain_db: spec.music.gain_db ?? MUSIC_DEFAULT_GAIN_DB, duck_under_vo: spec.music.duck_under_vo ?? true }
         : null,
     },
+    output_dir: spec.output_dir ?? null,
     label: spec.series?.label ?? null,
     beats,
     words,
@@ -275,9 +279,9 @@ function flushPage(pageLines: number[][], words: TimelineWord[]): CaptionPage {
   };
 }
 
-/** SPEC `studio timeline`: writes `out/<id>/timeline.json`. */
+/** SPEC `studio timeline`: writes `timeline.json` into the video's output folder. */
 export function writeTimeline(root: string, timeline: Timeline): string {
-  const file = join(root, 'out', timeline.id, 'timeline.json');
+  const file = join(outDirOf(root, timeline), 'timeline.json');
   mkdirSync(dirname(file), { recursive: true });
   writeFileSync(file, JSON.stringify(timeline, null, 2) + '\n');
   return file;

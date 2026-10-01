@@ -2,6 +2,7 @@
   "id": "w2-p6-stock",
   "version": 1,
   "title": "It won't look like a screen",
+  "output_dir": "week2/day2/slot1-part6-not-like-a-screen",
   "series": {
     "name": "7 things nobody tells you before your first time",
     "part": 6,

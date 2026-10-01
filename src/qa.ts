@@ -2,6 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { outDirOf } from './outdir.ts';
 import type { Timeline } from './timeline.ts';
 import type { Tokens } from './types.ts';
 
@@ -28,7 +29,7 @@ export function contactSheetTimes(timeline: Timeline): number[] {
 /**
  * SPEC `studio qa`, gate 7: extracts a frame at each `contactSheetTimes` timestamp from the already
  * -rendered MP4 (not the DOM, so it shows what actually rendered), tiles them with timestamp labels
- * burned in, and writes `out/<id>/contact-sheet.jpg`.
+ * burned in, and writes `contact-sheet.jpg` into the video's output folder.
  */
 export function buildContactSheet(root: string, mp4Path: string, timeline: Timeline, tokens: Tokens): string {
   const times = contactSheetTimes(timeline);
@@ -56,7 +57,7 @@ export function buildContactSheet(root: string, mp4Path: string, timeline: Timel
       execFileSync('ffmpeg', ['-v', 'error', '-y', '-f', 'lavfi', '-i', `color=c=black:s=${THUMB_WIDTH}x${thumbHeight}`, '-frames:v', '1', '-update', '1', out]);
     }
 
-    const outDir = join(root, 'out', timeline.id);
+    const outDir = outDirOf(root, timeline);
     mkdirSync(outDir, { recursive: true });
     const sheetPath = join(outDir, 'contact-sheet.jpg');
     execFileSync('ffmpeg', [

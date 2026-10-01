@@ -3,6 +3,7 @@ import { join, relative } from 'node:path';
 import { loadVoiceConfig } from './voice.ts';
 import { buildTimeline, writeTimeline, audioVoPath, type Timeline } from './timeline.ts';
 import { render } from './render.ts';
+import { outDirOf, outputName } from './outdir.ts';
 import { buildContactSheet } from './qa.ts';
 import type { CachedAlignment } from './voice.ts';
 import type { Issue } from './types.ts';
@@ -17,6 +18,8 @@ import type { StockProvider } from './assets/provider.ts';
 
 const USAGE = `usage: studio <command> <spec|dir>
 
+<out> is out/<output_dir> when the spec sets output_dir, else out/<id>; <name> is its last folder (or the id).
+
 commands:
   validate <spec|dir>   schema check + lint rules; exit 1 on errors
   voice <spec>          TTS + word timings into cache/tts/<hash>/ (cache hit skips TTS)
@@ -24,16 +27,16 @@ commands:
                         hook beat in every American male Kokoro voice -> out/audition/<voice>.wav
   voice --audition-speed <spec>
                         full VO at 0.8/0.85/0.9/1.0x -> out/audition/speed/<speed>.wav, with wpm
-  timeline <spec>       out/<id>/timeline.json from the spec + real TTS word timings
-  render <spec>         renders templates/ against timeline.json -> out/<id>/<id>.mp4
-  qa <spec>             out/<id>/contact-sheet.jpg from the rendered MP4 (SPEC section 10, gate 7 only)
+  timeline <spec>       <out>/timeline.json from the spec + real TTS word timings
+  render <spec>         renders templates/ against timeline.json -> <out>/<name>.mp4
+  qa <spec>             <out>/contact-sheet.jpg from the rendered MP4 (SPEC section 10, gate 7 only)
   assets <spec> [--beat <id>[,<id>]]
                         stock candidates for beats with search_queries and no still/clip yet
-                        -> assets/candidates/<beat>/ + out/<id>/asset-candidates.jpg (never picks);
+                        -> assets/candidates/<beat>/ + <out>/asset-candidates.jpg (never picks);
                         --beat searches only those beats and writes asset-candidates-<beat>.jpg
   assets --pick <spec> <beat_id>=<n> ...
                         moves candidate n into assets/stills|clips, updates the spec, appends assets/index.json
-  prompts <spec>        image_mode "generated": out/<id>/image-prompts.md (style block + each beat's image_prompt)
+  prompts <spec>        image_mode "generated": <out>/image-prompts.md (style block + each beat's image_prompt)
   ingest <spec>         image_mode "generated": checks assets/generated/<id>/<beat>.png, converts to assets/stills/gen-*.jpg,
                         sets each beat's visual, indexes it; lists anything missing and stops`;
 
@@ -178,7 +181,7 @@ async function renderCmd(target: string): Promise<number> {
     );
     return 1;
   }
-  const timelineFile = join(project.root, 'out', spec.id, 'timeline.json');
+  const timelineFile = join(outDirOf(project.root, spec), 'timeline.json');
   if (!existsSync(timelineFile)) {
     console.error(`studio render: ${relative(process.cwd(), timelineFile)} not found; run \`studio timeline\` first`);
     return 1;
@@ -200,12 +203,12 @@ async function qaCmd(target: string): Promise<number> {
     console.error('studio qa: fix the errors above first (see `studio validate`)');
     return 1;
   }
-  const timelineFile = join(project.root, 'out', spec.id, 'timeline.json');
+  const timelineFile = join(outDirOf(project.root, spec), 'timeline.json');
   if (!existsSync(timelineFile)) {
     console.error(`studio qa: ${relative(process.cwd(), timelineFile)} not found; run \`studio timeline\` first`);
     return 1;
   }
-  const mp4File = join(project.root, 'out', spec.id, `${spec.id}.mp4`);
+  const mp4File = join(outDirOf(project.root, spec), `${outputName(spec)}.mp4`);
   if (!existsSync(mp4File)) {
     console.error(`studio qa: ${relative(process.cwd(), mp4File)} not found; run \`studio render\` first`);
     return 1;

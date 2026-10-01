@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { appendLibrary, readLibrary } from './assets/library.ts';
 import { probeSize } from './assets/run.ts';
+import { outDirOf } from './outdir.ts';
 import type { Beat, VideoSpec } from './types.ts';
 
 const STYLE_START = '<!-- STYLE-BLOCK-START -->';
@@ -46,7 +47,7 @@ export function readBannedWords(root: string): string[] {
   return text.slice(start + BANNED_START.length, end).split(/[\s,]+/).filter(Boolean).map((w) => w.toLowerCase());
 }
 
-/** `studio prompts`: writes out/<id>/image-prompts.md and returns its path. */
+/** `studio prompts`: writes image-prompts.md into the output folder and returns its path. */
 export function writePrompts(root: string, spec: VideoSpec): string {
   if (spec.image_mode !== 'generated') throw new Error(`${spec.id} has no image_mode: "generated"`);
   const beats = generatedBeats(spec);
@@ -55,7 +56,7 @@ export function writePrompts(root: string, spec: VideoSpec): string {
   const sections = beats.map(
     (b) => `## ${b.id}\n\nSave as: \`${generatedPath(spec, b.id)}\`\n\n\`\`\`\n${style}\n${SUBJECT_LINE}\n\n${b.image_prompt}\n\`\`\``,
   );
-  const file = join(root, 'out', spec.id, 'image-prompts.md');
+  const file = join(outDirOf(root, spec), 'image-prompts.md');
   mkdirSync(dirname(file), { recursive: true });
   writeFileSync(file, `# Image prompts: ${spec.id}\n\n${sections.join('\n\n')}\n`);
   return file;

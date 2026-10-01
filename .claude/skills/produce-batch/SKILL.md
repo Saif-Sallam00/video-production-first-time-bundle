@@ -11,6 +11,7 @@ Specs to produce, in this order: `$ARGUMENTS`. If empty, stop and ask me for the
 
 1. **Delegate to a fresh subagent** with this instruction:
    "Follow `.claude/skills/start-production/SKILL.md` exactly for `<spec>`. Return only its final report."
+   Each spec's output folder is `out/<output_dir>/` when the spec has `output_dir`, else `out/<id>/` (the video is `<last folder name>.mp4`, or `<id>.mp4`). Use that folder wherever the report asks for an output path.
    Use a new subagent per spec so one video's contact sheets never sit in context while the next is picked.
 
 2. **Wait for it to finish before starting the next.** Never produce two at once; renders compete for CPU.

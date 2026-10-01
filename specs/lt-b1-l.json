@@ -3,6 +3,7 @@
   "version": 1,
   "motion_preset": "punch",
   "title": "Stop grading yourself",
+  "output_dir": "week2/day3/slot3-lengthtest-b1-long-grading-voice",
   "voice": {
     "preset": "james-default"
   },

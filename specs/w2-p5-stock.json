@@ -3,6 +3,7 @@
   "version": 1,
   "motion_preset": "punch",
   "title": "Attention beats technique",
+  "output_dir": "week2/day3/slot1-part5-attention-not-technique",
   "series": {
     "name": "7 things nobody tells you before your first time",
     "part": 5,

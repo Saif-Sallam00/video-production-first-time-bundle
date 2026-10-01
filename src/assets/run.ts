@@ -7,6 +7,7 @@ import type { Candidate, FetchFn, StockProvider } from './provider.ts';
 import { buildCandidateSheet, type SheetTile } from './sheet.ts';
 import { EST_CHARS_PER_SEC } from '../lint.ts';
 import { findCandidates, reuseMatches, RULES, sizeReject } from './select.ts';
+import { outDirOf } from '../outdir.ts';
 import type { Timeline } from '../timeline.ts';
 
 /** What `assets/candidates/<beat_id>/candidates.json` holds for each numbered candidate; `--pick` reads it back. */
@@ -59,11 +60,11 @@ export function probeSize(file: string): { width: number; height: number } {
 }
 
 /**
- * Seconds each beat lasts. The real figure from `out/<id>/timeline.json` when a timeline has been built
+ * Seconds each beat lasts. The real figure from the output folder's `timeline.json` when a timeline has been built
  * (so the cap follows the actual voiceover); otherwise the same characters-per-second estimate the lint uses.
  */
 export function beatSecondsFor(root: string, spec: VideoSpec): Record<string, number> {
-  const file = join(root, 'out', spec.id, 'timeline.json');
+  const file = join(outDirOf(root, spec), 'timeline.json');
   if (existsSync(file)) {
     const tl = JSON.parse(readFileSync(file, 'utf8')) as Timeline;
     return Object.fromEntries(tl.beats.map((b) => [b.id, b.end - b.start]));
@@ -176,7 +177,7 @@ export async function searchAssets(spec: VideoSpec, deps: SearchDeps): Promise<{
         : [{ file: null, kind: 'photo' as const, label: `${b.beat_id} none found` }],
     );
     // A partial run gets its own sheet so it never overwrites the whole-spec one.
-    sheet = join(root, 'out', spec.id, deps.only ? `asset-candidates-${deps.only.join('+')}.jpg` : 'asset-candidates.jpg');
+    sheet = join(outDirOf(root, spec), deps.only ? `asset-candidates-${deps.only.join('+')}.jpg` : 'asset-candidates.jpg');
     buildCandidateSheet(root, sheet, rows, tokens);
   }
   return { beats, skipped, sheet };

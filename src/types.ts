@@ -47,6 +47,8 @@ export interface VideoSpec {
   /** Default `motion` preset for every beat. Absent = the plain Ken Burns behavior. */
   motion_preset?: MotionPresetName;
   title?: string;
+  /** Output folder relative to out/ (e.g. week2/day3/slot1-name); the final video is named after its last folder. Absent = out/<id>/. */
+  output_dir?: string;
   series?: { name: string; part: number; total: number; label?: string };
   voice?: { preset?: string; speed?: number };
   beats: Beat[];

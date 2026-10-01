@@ -22,6 +22,11 @@
       "description": "Beat images are generated outside the pipeline (`studio prompts` / `studio ingest`) instead of picked from stock. Every still/clip beat then needs an image_prompt."
     },
     "title": { "type": "string", "maxLength": 80 },
+    "output_dir": {
+      "type": "string",
+      "pattern": "^[a-z0-9_-]+(/[a-z0-9_-]+)*$",
+      "description": "Output folder relative to out/, e.g. week2/day3/slot1-part5-name. The final video is named after the last folder. Absent = out/<id>/."
+    },
     "series": {
       "type": "object",
       "additionalProperties": false,
