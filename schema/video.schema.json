@@ -13,6 +13,10 @@
       "description": "Stable slug, e.g. w2-p6. Used for output folder names."
     },
     "version": { "const": 1 },
+    "image_mode": {
+      "const": "generated",
+      "description": "Beat images are generated outside the pipeline (`studio prompts` / `studio ingest`) instead of picked from stock. Every still/clip beat then needs an image_prompt."
+    },
     "title": { "type": "string", "maxLength": 80 },
     "series": {
       "type": "object",
@@ -130,6 +134,12 @@
           "type": "string",
           "maxLength": 140,
           "description": "Free-text note on what this beat's visual should show. Ignored by the renderer; input for M5b asset search."
+        },
+        "image_prompt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 600,
+          "description": "Generated-images mode: what the image shows, appended to brand/image-style.md's style block by `studio prompts`. Ignored by the renderer."
         },
         "search_queries": {
           "type": "array",

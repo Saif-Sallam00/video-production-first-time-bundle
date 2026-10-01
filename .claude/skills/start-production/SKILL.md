@@ -13,6 +13,15 @@ Run all commands as `npm run studio -- <command> ...` from the repo root.
 
 **Node 22 is required** (HyperFrames refuses to render on Node 20, the nvm default). Before any command, run `nvm use 22`, or if nvm isn't loaded in the shell: `export PATH=$HOME/.nvm/versions/node/v22.23.3/bin:$HOME/.local/bin:$PATH` (this also puts `ffmpeg`/`ffprobe` on PATH).
 
+## Generated-images mode
+
+If the spec has `"image_mode": "generated"`, skip steps 2 and 3 (search/pick) and run in two phases:
+
+- **Phase A (first run):** step 1 (validate), then `npm run studio -- prompts <spec>`. Then STOP. Tell me the files I need to create: for each beat with an `image_prompt`, the path `assets/generated/<id>/<beat_id>.png`, and point me at `out/<id>/image-prompts.md`. Do not continue to voice/render.
+- **Phase B (when I re-run):** `npm run studio -- ingest <spec>`. If it lists missing or rejected files, report them and stop. Otherwise continue with steps 4-8 (voice, timeline, render, QA, report). In the report table, the asset source is "chatgpt-generated" and the pick number is "n/a".
+
+If `prompts` fails because `brand/image-style.md` has no style block, report that and stop; do not edit `brand/`.
+
 ## Steps
 
 1. **Validate.** `npm run studio -- validate <spec>`. If it fails, fix the spec only if the fix is obvious and mechanical, and say what you changed. Otherwise stop and report.

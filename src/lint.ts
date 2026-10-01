@@ -17,6 +17,8 @@ export interface LintContext {
   /** Absolute path of the assets/ folder. */
   assetsDir: string;
   measure: TextMeasure;
+  /** Banned image_prompt words (brand/image-style.md); read lazily, only in generated mode. */
+  bannedWords?: () => string[];
 }
 
 const CTA_LATE_SEC = 5.0;
@@ -27,6 +29,11 @@ const VO_LONG_CHARS = 1100;
 export const EST_CHARS_PER_SEC = VO_LONG_CHARS / 70;
 const BATCH_REPEAT_LIMIT = 3;
 const CAPTIONS_HIDDEN_OVERLAP_MIN = 0.5;
+
+/** The banned words found in `prompt`, whole-word and case-insensitive. */
+export function bannedIn(prompt: string, banned: string[]): string[] {
+  return banned.filter((w) => new RegExp(`\\b${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i').test(prompt));
+}
 
 export const fullVo = (spec: VideoSpec) => spec.beats.map((b) => b.vo).join(' ');
 
@@ -99,12 +106,22 @@ export function lintSpec(spec: VideoSpec, ctx: LintContext): Issue[] {
   spec.beats.forEach((b, i) => {
     const v = b.visual;
     if (v.type === 'still' || v.type === 'clip') checkAsset(`/beats/${i}/visual/asset`, v.asset);
+    if (spec.image_mode === 'generated' && (v.type === 'still' || v.type === 'clip') && !b.image_prompt) {
+      error(`/beats/${i}/image_prompt`, `image_mode is "generated" but this ${v.type} beat has no image_prompt`);
+    }
     if ((v.type === 'solid' || v.type === 'typography') && v.color !== undefined) {
       if (!Object.hasOwn(ctx.tokens.colors, v.color)) {
         error(`/beats/${i}/visual/color`, `"${v.color}" is not a color in tokens.colors`);
       }
     }
   });
+  if (spec.image_mode === 'generated' && ctx.bannedWords) {
+    const banned = ctx.bannedWords();
+    spec.beats.forEach((b, i) => {
+      const hits = b.image_prompt ? bannedIn(b.image_prompt, banned) : [];
+      if (hits.length) error(`/beats/${i}/image_prompt`, `contains banned word${hits.length === 1 ? '' : 's'}: ${hits.join(', ')} (list in brand/image-style.md)`);
+    });
+  }
   if (spec.music) checkAsset('/music/file', spec.music.file);
 
   // captions_hidden assumes the beat's own on-screen text already carries the VO's words. Warn when

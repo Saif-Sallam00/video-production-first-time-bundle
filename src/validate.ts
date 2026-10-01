@@ -2,6 +2,7 @@ import { Ajv2020, type ErrorObject } from 'ajv/dist/2020.js';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readBannedWords } from './generated.ts';
 import { lintBatch, lintSpec, type LintContext } from './lint.ts';
 import { loadMeasure } from './text.ts';
 import type { Issue, Tokens, VideoSpec } from './types.ts';
@@ -23,6 +24,7 @@ export function loadProject(root = PROJECT_ROOT): Project {
     tokens,
     assetsDir: join(root, 'assets'),
     measure: loadMeasure(root, tokens),
+    bannedWords: () => readBannedWords(root),
     checkSchema: (data) => (validate(data) ? [] : schemaIssues(validate.errors ?? [])),
   };
 }

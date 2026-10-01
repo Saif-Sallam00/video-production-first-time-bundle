@@ -8,6 +8,7 @@ import type { CachedAlignment } from './voice.ts';
 import type { Issue } from './types.ts';
 import { loadProject, PROJECT_ROOT, validateFile, validateTarget } from './validate.ts';
 import { audition, speedAudition, synthesize } from './voice.ts';
+import { ingestGenerated, writePrompts } from './generated.ts';
 import { needsAsset, pickAssets, searchAssets } from './assets/run.ts';
 import { pexels } from './assets/pexels.ts';
 import { pixabay } from './assets/pixabay.ts';
@@ -31,7 +32,10 @@ commands:
                         -> assets/candidates/<beat>/ + out/<id>/asset-candidates.jpg (never picks);
                         --beat searches only those beats and writes asset-candidates-<beat>.jpg
   assets --pick <spec> <beat_id>=<n> ...
-                        moves candidate n into assets/stills|clips, updates the spec, appends assets/index.json`;
+                        moves candidate n into assets/stills|clips, updates the spec, appends assets/index.json
+  prompts <spec>        image_mode "generated": out/<id>/image-prompts.md (style block + each beat's image_prompt)
+  ingest <spec>         image_mode "generated": checks assets/generated/<id>/<beat>.png, converts to assets/stills/gen-*.jpg,
+                        sets each beat's visual, indexes it; lists anything missing and stops`;
 
 const PLANNED: Record<string, string> = {
   make: 'M7',
@@ -46,6 +50,8 @@ async function main(argv: string[]): Promise<number> {
   if (command === 'timeline' && target) return timeline(target);
   if (command === 'render' && target) return renderCmd(target);
   if (command === 'qa' && target) return qaCmd(target);
+  if (command === 'prompts' && target) return promptsCmd(target);
+  if (command === 'ingest' && target) return ingestCmd(target);
   if (command === 'assets' && target === '--pick' && argv[2] && argv.length > 3) return assetsPickCmd(argv[2], argv.slice(3));
   if (command === 'assets' && target && target !== '--pick') return assetsCmd(target, argv.slice(2));
   if (command && PLANNED[command]) {
@@ -207,6 +213,42 @@ async function qaCmd(target: string): Promise<number> {
   const tl = JSON.parse(readFileSync(timelineFile, 'utf8')) as Timeline;
   const sheet = buildContactSheet(project.root, mp4File, tl, project.tokens);
   console.log(`  wrote ${relative(process.cwd(), sheet)}`);
+  return 0;
+}
+
+function validSpec(command: string, target: string) {
+  if (!existsSync(target)) {
+    console.error(`studio ${command}: ${target} does not exist`);
+    return null;
+  }
+  const project = loadProject();
+  const { spec, issues } = validateFile(target, project);
+  if (!spec || issues.some((i) => i.level === 'error')) {
+    printIssues(issues);
+    console.error(`studio ${command}: fix the errors above first (see \`studio validate\`)`);
+    return null;
+  }
+  return { project, spec };
+}
+
+async function promptsCmd(target: string): Promise<number> {
+  const v = validSpec('prompts', target);
+  if (!v) return 1;
+  console.log(`  wrote ${relative(process.cwd(), writePrompts(v.project.root, v.spec))}`);
+  return 0;
+}
+
+async function ingestCmd(target: string): Promise<number> {
+  const v = validSpec('ingest', target);
+  if (!v) return 1;
+  const r = ingestGenerated(v.project.root, target);
+  for (const m of r.missing) console.log(`  missing   ${m.beat_id}: ${m.file}`);
+  for (const m of r.rejected) console.log(`  rejected  ${m.beat_id}: ${m.file} (${m.reason})`);
+  if (r.missing.length || r.rejected.length) {
+    console.error('studio ingest: fix the files above and re-run; nothing was changed');
+    return 1;
+  }
+  for (const c of r.converted) console.log(`  ${c.beat_id} -> assets/${c.asset}`);
   return 0;
 }
 

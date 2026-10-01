@@ -26,6 +26,8 @@ export interface Beat {
   visual_intent?: string;
   /** Stock search terms for M5b `studio assets`. Ignored by the renderer. */
   search_queries?: string[];
+  /** Generated-images mode: what the image shows. Input for `studio prompts`; ignored by the renderer. */
+  image_prompt?: string;
 }
 
 export interface CtaPop {
@@ -38,6 +40,8 @@ export interface CtaPop {
 export interface VideoSpec {
   id: string;
   version: 1;
+  /** `generated`: images come from `studio prompts` / `studio ingest` instead of stock search. */
+  image_mode?: 'generated';
   title?: string;
   series?: { name: string; part: number; total: number; label?: string };
   voice?: { preset?: string; speed?: number };
