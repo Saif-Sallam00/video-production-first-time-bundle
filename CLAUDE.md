@@ -14,3 +14,4 @@ Faceless TikTok videos rendered from JSON specs.
   candidates". Never rewrite search_queries because of a 403.
 - Visuals: no faces, no recognizable people, no text in frame, no beds.
 - Never commit or post unless I ask. The AI-generated label is always on.
+Renders need Node 22+ (run `nvm use` first).
