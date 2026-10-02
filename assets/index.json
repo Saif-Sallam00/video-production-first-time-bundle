@@ -687,5 +687,71 @@
       "country road evening"
     ],
     "picked_at": "2026-10-02T00:15:52.483Z"
+  },
+  "stills/unsplash-COxZ7GPMQPA.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/black-metal-pole-on-blue-floor-COxZ7GPMQPA",
+    "creator": "Ryan Kwok",
+    "creator_url": "https://unsplash.com/@milkbox",
+    "license": "Unsplash License",
+    "search_queries": [
+      "empty stadium night lights",
+      "stadium floodlights empty",
+      "empty arena night"
+    ],
+    "picked_at": "2026-10-02T02:12:40.991Z"
+  },
+  "stills/unsplash-glMhGidz7eo.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/greyscale-photography-of-parked-bicycle-glMhGidz7eo",
+    "creator": "Oxa Roxa",
+    "creator_url": "https://unsplash.com/@oxaroxa",
+    "license": "Unsplash License",
+    "search_queries": [
+      "two bicycles parked together",
+      "two bikes evening",
+      "bicycles side by side"
+    ],
+    "picked_at": "2026-10-02T02:12:42.223Z"
+  },
+  "stills/unsplash-2e4lbLTqPIo.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/gym-interior-with-squat-racks-2e4lbLTqPIo",
+    "creator": "Samuel Girven",
+    "creator_url": "https://unsplash.com/@samuelgirven",
+    "license": "Unsplash License",
+    "search_queries": [
+      "barbell floor gym dark",
+      "heavy weights gym floor",
+      "barbell close up"
+    ],
+    "picked_at": "2026-10-02T02:12:42.507Z"
+  },
+  "stills/unsplash-xe-ss5Tg2mo.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/cloud-above-ocean-xe-ss5Tg2mo",
+    "creator": "Pawel Nolbert",
+    "creator_url": "https://unsplash.com/@hellocolor",
+    "license": "Unsplash License",
+    "search_queries": [
+      "ocean horizon dawn",
+      "calm sea sunrise",
+      "sea horizon morning"
+    ],
+    "picked_at": "2026-10-02T02:12:42.778Z"
+  },
+  "stills/unsplash-80DgUsAayq4.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/a-piece-of-brown-paper-with-orange-squares-on-it-80DgUsAayq4",
+    "creator": "Kelly Sikkema",
+    "creator_url": "https://unsplash.com/@kellysikkema",
+    "license": "Unsplash License",
+    "search_queries": [
+      "unopened envelope table",
+      "closed envelope wooden table lamp",
+      "letter envelope minimal dark",
+      "mailbox envelope unopened mail"
+    ],
+    "picked_at": "2026-10-02T02:34:40.163Z"
   }
 }

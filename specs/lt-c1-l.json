@@ -1,0 +1,138 @@
+{
+  "id": "lt-c1-l",
+  "version": 1,
+  "motion_preset": "punch",
+  "title": "Sort it out before",
+  "output_dir": "week2/day7/slot2-lengthtest-c1-long-condoms-before-the-weekend",
+  "voice": {
+    "preset": "james-default"
+  },
+  "beats": [
+    {
+      "id": "hook",
+      "role": "hook",
+      "vo": "If she's coming over this weekend, sort out condoms before, not in the moment.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-2_l3lUpn4vE.jpg"
+      },
+      "overlay": {
+        "text": "Sort it out before, not in the moment.",
+        "style": "hook_slam",
+        "position": "center"
+      },
+      "visual_intent": "Wall calendar close-up, one date circled in pen, warm light.",
+      "search_queries": [
+        "calendar date circled",
+        "wall calendar close up",
+        "calendar pen circle"
+      ]
+    },
+    {
+      "id": "putoff",
+      "role": "body",
+      "vo": "Most guys put this off because it feels awkward to bring up. So it ends up happening at the worst possible moment, with no plan, while you're already nervous.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-80DgUsAayq4.jpg"
+      },
+      "visual_intent": "Unopened envelope on a table, dim light.",
+      "search_queries": [
+        "unopened envelope table",
+        "closed envelope wooden table lamp",
+        "letter envelope minimal dark",
+        "mailbox envelope unopened mail"
+      ]
+    },
+    {
+      "id": "asking",
+      "role": "body",
+      "vo": "Asking ahead doesn't kill anything. It's a normal question between adults, and it tells her you're thinking about her, not just about the night.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-mBWjDIHnVA4.jpg"
+      },
+      "visual_intent": "Doorway with warm light spilling into a dark room, no people.",
+      "search_queries": [
+        "doorway warm light dark room",
+        "light through open door",
+        "door light spill"
+      ]
+    },
+    {
+      "id": "fix",
+      "role": "body",
+      "vo": "And if neither of you has any, you find out with time to fix it.",
+      "visual": {
+        "type": "typography",
+        "text": "Time to fix it.",
+        "style": "statement"
+      },
+      "visual_intent": "Convenience store exterior at night, lit up, no people."
+    },
+    {
+      "id": "action",
+      "role": "body",
+      "vo": "Just ask ahead: \"Do you have condoms, or should I bring some?\"",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-bZyUfgVRY10.jpg"
+      },
+      "overlay": {
+        "text": "Ask ahead.",
+        "style": "card",
+        "position": "upper"
+      },
+      "visual_intent": "Hand typing on a phone, warm low light, no face, screen not readable.",
+      "search_queries": [
+        "hand typing phone dark",
+        "texting phone close up night",
+        "phone in hand warm light"
+      ]
+    },
+    {
+      "id": "close",
+      "role": "payoff",
+      "vo": "It takes ten seconds over text. Then that's one less thing to fumble with when you're already nervous.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-akR7Rnq-TGQ.jpg"
+      },
+      "visual_intent": "Keys and wallet on a table by the door, evening light.",
+      "search_queries": [
+        "keys wallet table",
+        "keys on table evening",
+        "keys by door"
+      ]
+    }
+  ],
+  "cta_pop": {
+    "text": "Follow — new one every day",
+    "start": {
+      "at_sec": 4
+    },
+    "duration_sec": 2.5,
+    "style": "pill"
+  },
+  "captions": {
+    "enabled": true,
+    "style": "word_highlight"
+  },
+  "end_card": {
+    "enabled": false
+  },
+  "disclosure": {
+    "ai_generated_label": true
+  },
+  "meta": {
+    "purpose": "Length test C1 Long per scripts/day-05.md. Target 28-33 s. Matched to lt-c1-s: hook, action, close, caption, hashtags, cta_pop copied unchanged.",
+    "caption": "Handle it before the weekend. What to know before your first time.",
+    "hashtags": "#datingadviceformen #relationshipadvice #confidence #datingtips"
+  },
+  "music": {
+    "file": "music/bed-01.mp3",
+    "gain_db": -22,
+    "duck_under_vo": true,
+    "license_note": "Generated locally with ffmpeg sine synthesis (placeholder fixture); no third-party rights."
+  }
+}

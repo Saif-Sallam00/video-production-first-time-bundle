@@ -1,0 +1,127 @@
+{
+  "id": "w2-p1-stock",
+  "version": 1,
+  "motion_preset": "punch",
+  "title": "It's not a test",
+  "output_dir": "week2/day7/slot1-part1-its-not-a-test",
+  "series": {
+    "name": "7 things nobody tells you before your first time",
+    "part": 1,
+    "total": 7,
+    "label": "Nobody tells you this · 1 of 7"
+  },
+  "voice": {
+    "preset": "james-default"
+  },
+  "beats": [
+    {
+      "id": "hook",
+      "role": "hook",
+      "vo": "Your first time is not a test. Nobody's grading you.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-COxZ7GPMQPA.jpg"
+      },
+      "visual_intent": "Empty stadium at night, floodlights on, no people.",
+      "search_queries": [
+        "empty stadium night lights",
+        "stadium floodlights empty",
+        "empty arena night"
+      ],
+      "overlay": {
+        "text": "It's not a test.",
+        "style": "hook_slam",
+        "position": "center"
+      }
+    },
+    {
+      "id": "with",
+      "role": "body",
+      "vo": "She isn't there to see if you pass. She's there to be with you.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-glMhGidz7eo.jpg"
+      },
+      "visual_intent": "Two bicycles parked side by side, evening light.",
+      "search_queries": [
+        "two bicycles parked together",
+        "two bikes evening",
+        "bicycles side by side"
+      ]
+    },
+    {
+      "id": "pressure",
+      "role": "body",
+      "vo": "Most of the pressure you feel is pressure you're putting on yourself.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-2e4lbLTqPIo.jpg"
+      },
+      "visual_intent": "Heavy barbell on a gym floor, dim light, no people.",
+      "search_queries": [
+        "barbell floor gym dark",
+        "heavy weights gym floor",
+        "barbell close up"
+      ]
+    },
+    {
+      "id": "recap",
+      "role": "body",
+      "vo": "And every other thing in this series, the nerves, the checking in, going slow, gets easier the second you stop performing and start paying attention.",
+      "visual": {
+        "type": "typography",
+        "text": "Stop performing. Start paying attention.",
+        "style": "statement"
+      }
+    },
+    {
+      "id": "close",
+      "role": "payoff",
+      "vo": "You don't have to be good at this yet. You just have to be there.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-xe-ss5Tg2mo.jpg"
+      },
+      "visual_intent": "Calm ocean horizon at dawn, no people.",
+      "search_queries": [
+        "ocean horizon dawn",
+        "calm sea sunrise",
+        "sea horizon morning"
+      ],
+      "overlay": {
+        "text": "Just be there.",
+        "style": "card",
+        "position": "upper"
+      }
+    }
+  ],
+  "cta_pop": {
+    "text": "Follow for all 7",
+    "start": {
+      "at_sec": 4
+    },
+    "duration_sec": 2.5,
+    "style": "pill"
+  },
+  "captions": {
+    "enabled": true,
+    "style": "word_highlight"
+  },
+  "end_card": {
+    "enabled": false
+  },
+  "disclosure": {
+    "ai_generated_label": true
+  },
+  "meta": {
+    "purpose": "Week 2 Part 1 per scripts/day-05.md. Final part of the series. Series follow pop at 4 s.",
+    "caption": "#1 of 7. The one thing to remember. What to know before your first time.",
+    "hashtags": "#datingadviceformen #relationshipadvice #confidence #datingtips"
+  },
+  "music": {
+    "file": "music/bed-01.mp3",
+    "gain_db": -22,
+    "duck_under_vo": true,
+    "license_note": "Generated locally with ffmpeg sine synthesis (placeholder fixture); no third-party rights."
+  }
+}

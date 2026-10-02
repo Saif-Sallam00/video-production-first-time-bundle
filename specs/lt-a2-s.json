@@ -1,0 +1,96 @@
+{
+  "id": "lt-a2-s",
+  "version": 1,
+  "motion_preset": "punch",
+  "title": "It's a pause, not a verdict",
+  "output_dir": "week2/day7/slot3-lengthtest-a2-short-body-switches-off",
+  "voice": {
+    "preset": "james-default"
+  },
+  "beats": [
+    {
+      "id": "hook",
+      "role": "hook",
+      "vo": "If your body switches off for a minute, it's not over.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-Jmh3tZL53jk.jpg"
+      },
+      "overlay": {
+        "text": "It's not over.",
+        "style": "hook_slam",
+        "position": "center"
+      },
+      "visual_intent": "Light switch on a dark wall, close-up.",
+      "search_queries": [
+        "light switch close up dark",
+        "light switch wall night",
+        "switch toggle close up"
+      ]
+    },
+    {
+      "id": "why",
+      "role": "body",
+      "vo": "Nerves can make your body's response come and go. That's your body reacting to pressure, not failing you.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-53qNsETuYB8.jpg"
+      },
+      "visual_intent": "Candle flame flickering in the dark, close-up.",
+      "search_queries": [
+        "candle flame dark",
+        "candle flicker close up",
+        "single candle night"
+      ]
+    },
+    {
+      "id": "action",
+      "role": "body",
+      "vo": "Don't stop and apologize. Slow down, stay close, and keep your attention on her.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-Wtgfn5grR3M.jpg"
+      },
+      "overlay": {
+        "text": "Slow down. Stay close.",
+        "style": "card",
+        "position": "upper"
+      },
+      "visual_intent": "Calm lake at dusk, still water, no people.",
+      "search_queries": [
+        "lake mist morning",
+        "calm water surface",
+        "mountain lake reflection"
+      ]
+    }
+  ],
+  "cta_pop": {
+    "text": "Follow — new one every day",
+    "start": {
+      "at_sec": 4
+    },
+    "duration_sec": 2.5,
+    "style": "pill"
+  },
+  "captions": {
+    "enabled": true,
+    "style": "word_highlight"
+  },
+  "end_card": {
+    "enabled": false
+  },
+  "disclosure": {
+    "ai_generated_label": true
+  },
+  "meta": {
+    "purpose": "Length test A2 Short per scripts/day-05.md. Target 12-18 s. Matched to lt-a2-l: hook, why, action, caption, hashtags, cta_pop copied unchanged.",
+    "caption": "It's a pause, not a verdict. What to know before your first time.",
+    "hashtags": "#datingadviceformen #relationshipadvice #confidence #datingtips"
+  },
+  "music": {
+    "file": "music/bed-01.mp3",
+    "gain_db": -22,
+    "duck_under_vo": true,
+    "license_note": "Generated locally with ffmpeg sine synthesis (placeholder fixture); no third-party rights."
+  }
+}
