@@ -1,0 +1,127 @@
+{
+  "id": "w2-p2-stock",
+  "version": 1,
+  "motion_preset": "punch",
+  "title": "Go slower",
+  "output_dir": "week2/day6/slot1-part2-go-slower",
+  "series": {
+    "name": "7 things nobody tells you before your first time",
+    "part": 2,
+    "total": 7,
+    "label": "Nobody tells you this · 2 of 7"
+  },
+  "voice": {
+    "preset": "james-default"
+  },
+  "beats": [
+    {
+      "id": "hook",
+      "role": "hook",
+      "vo": "The most underrated move your first time is going slower than feels natural.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-MtQNOobYaLQ.jpg"
+      },
+      "overlay": {
+        "text": "Go slower than feels natural.",
+        "style": "hook_slam",
+        "position": "center"
+      },
+      "visual_intent": "Water drop falling into water, slow motion, dark background.",
+      "search_queries": [
+        "water drop slow motion",
+        "droplet splash dark",
+        "water drop macro"
+      ]
+    },
+    {
+      "id": "rush",
+      "role": "body",
+      "vo": "Nerves make you rush. You want to get to the part you're worried about so it's over with. But rushing is what makes it feel mechanical, for both of you.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-DigI2ej3AFw.jpg"
+      },
+      "visual_intent": "Train passing fast at night, motion blur, no people.",
+      "search_queries": [
+        "train passing night blur",
+        "fast train motion blur",
+        "subway train speed"
+      ]
+    },
+    {
+      "id": "slow",
+      "role": "body",
+      "vo": "Slow down the kissing. Slow down everything before anything else happens.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-9DUN6eKz75A.jpg"
+      },
+      "overlay": {
+        "text": "Slow everything down.",
+        "style": "card",
+        "position": "upper"
+      },
+      "visual_intent": "Leaves moving gently in a breeze, golden hour.",
+      "search_queries": [
+        "leaves breeze golden hour",
+        "tree leaves slow wind",
+        "leaves sunlight gentle"
+      ]
+    },
+    {
+      "id": "present",
+      "role": "body",
+      "vo": "Going slow keeps you present instead of stuck in your head.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-DSGP650z8rM.jpg"
+      },
+      "visual_intent": "Feather falling slowly, dark background.",
+      "search_queries": [
+        "feather falling dark",
+        "feather floating slow",
+        "white feather black background"
+      ]
+    },
+    {
+      "id": "tease",
+      "role": "tease",
+      "vo": "Number one is next: the one thing to remember if you forget the rest.",
+      "visual": {
+        "type": "typography",
+        "text": "1 →",
+        "style": "number"
+      }
+    }
+  ],
+  "cta_pop": {
+    "text": "Follow for all 7",
+    "start": {
+      "at_sec": 4
+    },
+    "duration_sec": 2.5,
+    "style": "pill"
+  },
+  "captions": {
+    "enabled": true,
+    "style": "word_highlight"
+  },
+  "end_card": {
+    "enabled": false
+  },
+  "disclosure": {
+    "ai_generated_label": true
+  },
+  "meta": {
+    "purpose": "Week 2 Part 2 per scripts/day-04.md. Series follow pop at 4 s.",
+    "caption": "#2 of 7. Why going slow matters. What to know before your first time.",
+    "hashtags": "#datingadviceformen #relationshipadvice #confidence #datingtips"
+  },
+  "music": {
+    "file": "music/bed-01.mp3",
+    "gain_db": -22,
+    "duck_under_vo": true,
+    "license_note": "Generated locally with ffmpeg sine synthesis (placeholder fixture); no third-party rights."
+  }
+}

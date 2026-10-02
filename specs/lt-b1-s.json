@@ -1,0 +1,96 @@
+{
+  "id": "lt-b1-s",
+  "version": 1,
+  "motion_preset": "punch",
+  "title": "Stop grading yourself",
+  "output_dir": "week2/day6/slot3-lengthtest-b1-short-grading-voice",
+  "voice": {
+    "preset": "james-default"
+  },
+  "beats": [
+    {
+      "id": "hook",
+      "role": "hook",
+      "vo": "That \"am I doing this right?\" voice is what's pulling you out of the moment.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-50comlI_39U.jpg"
+      },
+      "overlay": {
+        "text": "\"Am I doing this right?\"",
+        "style": "hook_slam",
+        "position": "center"
+      },
+      "visual_intent": "Pencil ticking boxes on a checklist, close-up, dim light, no people.",
+      "search_queries": [
+        "pencil checklist close up",
+        "ticking checkbox pencil",
+        "checklist writing dark"
+      ]
+    },
+    {
+      "id": "action",
+      "role": "body",
+      "vo": "When you catch that voice, switch to one thing you can physically feel right now.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-yH66cRzpNzQ.jpg"
+      },
+      "overlay": {
+        "text": "Switch to one thing you can feel.",
+        "style": "card",
+        "position": "upper"
+      },
+      "visual_intent": "Two hands loosely holding, warm low light, no faces, no jewelry if possible.",
+      "search_queries": [
+        "holding hands close up warm light",
+        "hands together soft light",
+        "hands holding close up"
+      ]
+    },
+    {
+      "id": "close",
+      "role": "payoff",
+      "vo": "Grading keeps you in your head. Feeling keeps you in the room.",
+      "visual": {
+        "type": "still",
+        "asset": "stills/unsplash-D_6rzmdpebQ.jpg"
+      },
+      "visual_intent": "Calm room in warm, dim light, no people.",
+      "search_queries": [
+        "morning light room calm",
+        "sunlight curtain room",
+        "quiet bedroom window light"
+      ]
+    }
+  ],
+  "cta_pop": {
+    "text": "Follow — new one every day",
+    "start": {
+      "at_sec": 4
+    },
+    "duration_sec": 2.5,
+    "style": "pill"
+  },
+  "captions": {
+    "enabled": true,
+    "style": "word_highlight"
+  },
+  "end_card": {
+    "enabled": false
+  },
+  "disclosure": {
+    "ai_generated_label": true
+  },
+  "meta": {
+    "purpose": "Length test B1 Short per scripts/day-04.md. Target 12-18 s. Matched to lt-b1-l: hook, action, close, caption, hashtags, cta_pop copied unchanged.",
+    "caption": "Stop grading yourself. What to know before your first time.",
+    "hashtags": "#datingadviceformen #relationshipadvice #confidence #datingtips"
+  },
+  "music": {
+    "file": "music/bed-01.mp3",
+    "gain_db": -22,
+    "duck_under_vo": true,
+    "license_note": "Generated locally with ffmpeg sine synthesis (placeholder fixture); no third-party rights."
+  }
+}

@@ -596,5 +596,96 @@
       "dusk street warm lights"
     ],
     "picked_at": "2026-10-01T23:30:54.147Z"
+  },
+  "stills/unsplash-MtQNOobYaLQ.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/time-lapse-photography-of-dropping-water-MtQNOobYaLQ",
+    "creator": "Erda Estremera",
+    "creator_url": "https://unsplash.com/@erdaest",
+    "license": "Unsplash License",
+    "search_queries": [
+      "water drop slow motion",
+      "droplet splash dark",
+      "water drop macro"
+    ],
+    "picked_at": "2026-10-02T00:10:55.176Z"
+  },
+  "stills/unsplash-DigI2ej3AFw.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/red-and-white-train-in-train-station-DigI2ej3AFw",
+    "creator": "Marco Chilese",
+    "creator_url": "https://unsplash.com/@chmarco",
+    "license": "Unsplash License",
+    "search_queries": [
+      "train passing night blur",
+      "fast train motion blur",
+      "subway train speed"
+    ],
+    "picked_at": "2026-10-02T00:10:58.107Z"
+  },
+  "stills/unsplash-9DUN6eKz75A.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/brown-grass-field-during-daytime-9DUN6eKz75A",
+    "creator": "Bogdan Cotos",
+    "creator_url": "https://unsplash.com/@bogdan_cotos",
+    "license": "Unsplash License",
+    "search_queries": [
+      "leaves breeze golden hour",
+      "tree leaves slow wind",
+      "leaves sunlight gentle"
+    ],
+    "picked_at": "2026-10-02T00:10:58.778Z"
+  },
+  "stills/unsplash-DSGP650z8rM.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/white-animal-feather-DSGP650z8rM",
+    "creator": "Evie S.",
+    "creator_url": "https://unsplash.com/@evieshaffer",
+    "license": "Unsplash License",
+    "search_queries": [
+      "feather falling dark",
+      "feather floating slow",
+      "white feather black background"
+    ],
+    "picked_at": "2026-10-02T00:10:59.544Z"
+  },
+  "stills/unsplash-Wk63a3_NMf0.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/dark-grey-storm-clouds-Wk63a3_NMf0",
+    "creator": "Lucie Morel",
+    "creator_url": "https://unsplash.com/@kaklahad",
+    "license": "Unsplash License",
+    "search_queries": [
+      "storm clouds timelapse",
+      "dark clouds moving",
+      "stormy sky fast clouds"
+    ],
+    "picked_at": "2026-10-02T00:15:43.709Z"
+  },
+  "stills/unsplash-hz8oKcPIyAU.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/white-and-red-rope-on-black-background-hz8oKcPIyAU",
+    "creator": "Alex",
+    "creator_url": "https://unsplash.com/@photo789",
+    "license": "Unsplash License",
+    "search_queries": [
+      "rope knot close up",
+      "tight knot rope",
+      "knotted rope macro"
+    ],
+    "picked_at": "2026-10-02T00:15:51.774Z"
+  },
+  "stills/unsplash-kP1a91xzTvk.jpg": {
+    "provider": "unsplash",
+    "source_url": "https://unsplash.com/photos/photo-of-road-near-mountain-kP1a91xzTvk",
+    "creator": "Casey Horner",
+    "creator_url": "https://unsplash.com/@mischievous_penguins",
+    "license": "Unsplash License",
+    "search_queries": [
+      "empty road golden hour",
+      "open road sunset",
+      "country road evening"
+    ],
+    "picked_at": "2026-10-02T00:15:52.483Z"
   }
 }
